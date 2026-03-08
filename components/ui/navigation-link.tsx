@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import React from "react"
+import Link from "next/link";
+import React from "react";
 
 export interface NavigationLinkProps extends React.ComponentProps<typeof Link> {
-  showProgress?: boolean
+  showProgress?: boolean;
 }
 
 export function NavigationLink({ children, showProgress, ...props }: NavigationLinkProps) {
-  return <Link {...props}>{children}</Link>
+  return <Link {...props}>{children}</Link>;
 }
 
 export interface EnhancedNavigationLinkProps extends NavigationLinkProps {
-  progressDelay?: number
-  progressType?: 'immediate' | 'delayed' | 'on-hover'
-  onNavigationStart?: () => void
-  onNavigationComplete?: () => void
+  progressDelay?: number;
+  progressType?: "immediate" | "delayed" | "on-hover";
+  onNavigationStart?: () => void;
+  onNavigationComplete?: () => void;
 }
 
 export function EnhancedNavigationLink({
@@ -27,11 +27,11 @@ export function EnhancedNavigationLink({
   return (
     <Link
       onClick={() => {
-        onNavigationStart?.()
+        onNavigationStart?.();
       }}
       {...props}
     >
       {children}
     </Link>
-  )
+  );
 }
