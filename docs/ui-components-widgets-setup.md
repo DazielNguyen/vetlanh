@@ -21,6 +21,7 @@ Tài liệu này chứa toàn bộ code của tất cả UI components, có th�
 ## Tổng Quan
 
 Project sử dụng **53 UI components** được build trên:
+
 - **Radix UI** - Unstyled, accessible primitives
 - **ShadCN UI** - Pre-built component library
 - **Tailwind CSS v4** - Utility-first styling (NO `tailwind.config.ts`)
@@ -57,33 +58,40 @@ components/
 > Project này dùng **Tailwind CSS v4** — khác hoàn toàn với v3.
 
 **`postcss.config.mjs`** (chỉ cần 1 plugin):
+
 ```js
 const config = {
   plugins: {
-    '@tailwindcss/postcss': {},
+    "@tailwindcss/postcss": {},
   },
-}
-export default config
+};
+export default config;
 ```
 
 **`app/globals.css`** (không `@tailwind base/components/utilities`):
+
 ```css
 @import "tailwindcss";
 
 @theme {
   --color-primary: oklch(0.6 0.2 250);
   --color-background: oklch(1 0 0);
-  --font-sans: 'Open Sans', sans-serif;
+  --font-sans: "Open Sans", sans-serif;
   /* ...thêm custom tokens ở đây */
 }
 
 @layer base {
-  * { @apply border-border; }
-  body { @apply bg-background text-foreground; }
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 ```
 
 Install:
+
 ```bash
 npm install tailwindcss @tailwindcss/postcss
 # Không cần autoprefixer khi dùng Tailwind v4
@@ -129,8 +137,8 @@ npm install tailwindcss @tailwindcss/postcss
 **File:** `lib/utils.ts` - Copy toàn bộ file này:
 
 ```typescript
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -138,6 +146,7 @@ export function cn(...inputs: ClassValue[]) {
 ```
 
 **Usage:**
+
 ```typescript
 import { cn } from '@/lib/utils';
 
@@ -217,11 +226,13 @@ export { Button, buttonVariants };
 ```
 
 **Import:**
+
 ```typescript
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 ```
 
 **Variants:**
+
 - `default` - Primary button
 - `destructive` - Error/danger action
 - `outline` - Outlined button
@@ -230,12 +241,14 @@ import { Button } from '@/components/ui/button';
 - `link` - Link style
 
 **Sizes:**
+
 - `default` - h-10 px-4 py-2
 - `sm` - h-9 px-3
 - `lg` - h-11 px-8
 - `icon` - h-10 w-10
 
 **Usage:**
+
 ```typescript
 <Button variant="default" size="default">
   Click me
@@ -255,6 +268,7 @@ import { Button } from '@/components/ui/button';
 ```
 
 **Features:**
+
 - `asChild` prop để render as child component
 - Rounded corners (rounded-xl)
 - Focus ring
@@ -326,6 +340,7 @@ export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
 ```
 
 **Import:**
+
 ```typescript
 import {
   Card,
@@ -334,10 +349,11 @@ import {
   CardTitle,
   CardDescription,
   CardContent,
-} from '@/components/ui/card';
+} from "@/components/ui/card";
 ```
 
 **Usage:**
+
 ```typescript
 <Card>
   <CardHeader>
@@ -354,6 +370,7 @@ import {
 ```
 
 **Structure:**
+
 - `Card` - Container với border và background
 - `CardHeader` - Header với padding p-6
 - `CardTitle` - Title (text-2xl font-semibold)
@@ -393,11 +410,13 @@ export { Input };
 ```
 
 **Import:**
+
 ```typescript
-import { Input } from '@/components/ui/input';
+import { Input } from "@/components/ui/input";
 ```
 
 **Usage:**
+
 ```typescript
 <Input
   type="text"
@@ -407,6 +426,7 @@ import { Input } from '@/components/ui/input';
 ```
 
 **Features:**
+
 - Rounded corners (rounded-xl)
 - Border styling
 - Placeholder styling
@@ -445,8 +465,9 @@ export { Textarea };
 ```
 
 **Import:**
+
 ```typescript
-import { Textarea } from '@/components/ui/textarea';
+import { Textarea } from "@/components/ui/textarea";
 ```
 
 ---
@@ -612,6 +633,7 @@ export {
 ```
 
 **Import:**
+
 ```typescript
 import {
   Select,
@@ -622,10 +644,11 @@ import {
   SelectGroup,
   SelectLabel,
   SelectSeparator,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 ```
 
 **Usage:**
+
 ```typescript
 <Select>
   <SelectTrigger>
@@ -644,6 +667,7 @@ import {
 ```
 
 **Features:**
+
 - Scroll buttons for long lists
 - Grouping support
 - Separator support
@@ -1053,6 +1077,7 @@ export { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableC
 ```
 
 **Import:**
+
 ```typescript
 import {
   Table,
@@ -1063,10 +1088,11 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 ```
 
 **Usage:**
+
 ```typescript
 <Table>
   <TableCaption>A list of items</TableCaption>
@@ -1274,6 +1300,7 @@ export {
 ```
 
 **Import:**
+
 ```typescript
 import {
   Form,
@@ -1283,10 +1310,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 ```
 
 **Setup:**
+
 ```typescript
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -1337,6 +1365,7 @@ function MyForm() {
 ```
 
 **Components:**
+
 - `Form` - FormProvider wrapper
 - `FormField` - Field controller với Controller
 - `FormItem` - Field container với spacing
@@ -1461,6 +1490,7 @@ export {
 ```
 
 **Import:**
+
 ```typescript
 import {
   Dialog,
@@ -1470,10 +1500,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 ```
 
 **Usage:**
+
 ```typescript
 <Dialog>
   <DialogTrigger asChild>
@@ -1497,6 +1528,7 @@ import {
 ```
 
 **Features:**
+
 - Overlay với backdrop
 - Close button
 - Keyboard escape
@@ -1544,6 +1576,7 @@ export { Toaster };
 ```
 
 **Setup trong Root Layout:**
+
 ```typescript
 import { Toaster } from '@/components/ui/sonner';
 
@@ -1564,40 +1597,42 @@ export default function RootLayout({ children }) {
 ```
 
 **Usage:**
+
 ```typescript
-import { toast } from 'sonner';
+import { toast } from "sonner";
 
 // Basic
-toast('Event created');
+toast("Event created");
 
 // Success
-toast.success('Profile updated');
+toast.success("Profile updated");
 
 // Error
-toast.error('Something went wrong');
+toast.error("Something went wrong");
 
 // With description
-toast('Event created', {
-  description: 'Sunday, December 03, 2023 at 9:00 AM',
+toast("Event created", {
+  description: "Sunday, December 03, 2023 at 9:00 AM",
 });
 
 // With action
-toast('Event created', {
+toast("Event created", {
   action: {
-    label: 'Undo',
-    onClick: () => console.log('Undo'),
+    label: "Undo",
+    onClick: () => console.log("Undo"),
   },
 });
 
 // Promise
 toast.promise(promise, {
-  loading: 'Loading...',
-  success: 'Success!',
-  error: 'Error!',
+  loading: "Loading...",
+  success: "Success!",
+  error: "Error!",
 });
 ```
 
 **Features:**
+
 - Theme-aware (light/dark)
 - Auto-dismiss
 - Action buttons
@@ -1613,11 +1648,13 @@ toast.promise(promise, {
 **File:** `components/ui/data-table.tsx`
 
 **Import:**
+
 ```typescript
-import { DataTable } from '@/components/ui/data-table';
+import { DataTable } from "@/components/ui/data-table";
 ```
 
 **Usage:**
+
 ```typescript
 import {
   ColumnDef,
@@ -1659,6 +1696,7 @@ function DataTableDemo() {
 ```
 
 **Features:**
+
 - Built-in search
 - Sorting
 - Filtering
@@ -1766,11 +1804,13 @@ export default function SafeImage({
 ```
 
 **Import:**
+
 ```typescript
-import SafeImage from '@/components/ui/SafeImage';
+import SafeImage from "@/components/ui/SafeImage";
 ```
 
 **Usage:**
+
 ```typescript
 <SafeImage
   src="/image.jpg"
@@ -1790,6 +1830,7 @@ import SafeImage from '@/components/ui/SafeImage';
 ```
 
 **Features:**
+
 - Automatic fallback on error
 - External URL support
 - Next.js Image optimization
@@ -1797,6 +1838,7 @@ import SafeImage from '@/components/ui/SafeImage';
 - Error handling
 
 **Props:**
+
 - `src: string` - Image source
 - `alt: string` - Alt text
 - `width?: number` - Image width
@@ -1906,11 +1948,13 @@ export function TruncatedText({
 ```
 
 **Import:**
+
 ```typescript
-import { TruncatedText } from '@/components/ui/truncated-text';
+import { TruncatedText } from "@/components/ui/truncated-text";
 ```
 
 **Usage:**
+
 ```typescript
 <TruncatedText
   text="Very long text that needs to be truncated..."
@@ -1925,6 +1969,7 @@ import { TruncatedText } from '@/components/ui/truncated-text';
 ```
 
 **Features:**
+
 - Word-based truncation
 - Expand/collapse functionality
 - Custom button text
@@ -1932,6 +1977,7 @@ import { TruncatedText } from '@/components/ui/truncated-text';
 - Smooth transitions
 
 **Props:**
+
 - `text: string` - Text to truncate
 - `maxWords?: number` - Max words before truncation (default: 50)
 - `className?: string` - Additional classes
@@ -2048,11 +2094,13 @@ export { ErrorState, EmptyState, LoadingSkeleton };
 ```
 
 **Import:**
+
 ```typescript
-import { ErrorState, EmptyState, LoadingSkeleton } from '@/components/ui/state';
+import { ErrorState, EmptyState, LoadingSkeleton } from "@/components/ui/state";
 ```
 
 **Usage:**
+
 ```typescript
 // Error State
 <ErrorState
@@ -2069,6 +2117,7 @@ import { ErrorState, EmptyState, LoadingSkeleton } from '@/components/ui/state';
 ```
 
 **Features:**
+
 - Pre-styled error states
 - Empty state with CTA
 - Loading skeletons
@@ -2078,11 +2127,13 @@ import { ErrorState, EmptyState, LoadingSkeleton } from '@/components/ui/state';
 **Props:**
 
 **ErrorState:**
+
 - `message?: string` - Error message
 - `detail?: string` - Error details
 - `onRetry?: () => void` - Retry callback
 
 **LoadingSkeleton:**
+
 - `propertyCount?: number` - Number of skeleton items (default: 3)
 
 ---
@@ -2092,11 +2143,13 @@ import { ErrorState, EmptyState, LoadingSkeleton } from '@/components/ui/state';
 **File:** `components/ui/navigation-link.tsx`
 
 **Import:**
+
 ```typescript
-import { NavigationLink, EnhancedNavigationLink } from '@/components/ui/navigation-link';
+import { NavigationLink, EnhancedNavigationLink } from "@/components/ui/navigation-link";
 ```
 
 **Usage:**
+
 ```typescript
 // Basic usage
 <NavigationLink href="/page" showProgress={true}>
@@ -2116,6 +2169,7 @@ import { NavigationLink, EnhancedNavigationLink } from '@/components/ui/navigati
 ```
 
 **Features:**
+
 - Integration with NavigationProgressProvider
 - Progress bar on navigation
 - Delay support
@@ -2125,10 +2179,12 @@ import { NavigationLink, EnhancedNavigationLink } from '@/components/ui/navigati
 **Props:**
 
 **NavigationLink:**
+
 - `showProgress?: boolean` - Show progress bar (default: true)
 - `progressDelay?: number` - Delay before showing progress (default: 0)
 
 **EnhancedNavigationLink:**
+
 - All NavigationLink props plus:
 - `onNavigationStart?: () => void` - Start callback
 - `onNavigationComplete?: () => void` - Complete callback
@@ -2141,11 +2197,16 @@ import { NavigationLink, EnhancedNavigationLink } from '@/components/ui/navigati
 **File:** `components/ui/navigation-progress.tsx`
 
 **Import:**
+
 ```typescript
-import { NavigationProgress, NavigationProgressAdvanced } from '@/components/ui/navigation-progress';
+import {
+  NavigationProgress,
+  NavigationProgressAdvanced,
+} from "@/components/ui/navigation-progress";
 ```
 
 **Usage:**
+
 ```typescript
 import { useNavigationProgressContext } from '@/components/providers/navigationProgressProvider';
 
@@ -2163,6 +2224,7 @@ function MyComponent() {
 ```
 
 **Features:**
+
 - Top progress bar
 - Gradient styling
 - Smooth animations
@@ -2170,6 +2232,7 @@ function MyComponent() {
 - Auto-hide on completion
 
 **Props:**
+
 - `isNavigating: boolean` - Navigation state
 - `progress: number` - Progress percentage (0-100)
 - `className?: string` - Additional classes
@@ -2370,18 +2433,20 @@ export {
 ### 1. Component Import Pattern
 
 **Always use path aliases:**
+
 ```typescript
 // ✅ Good
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 // ❌ Bad
-import { Button } from '../../../components/ui/button';
+import { Button } from "../../../components/ui/button";
 ```
 
 ### 2. Styling with cn()
 
 **Always use cn() for class merging:**
+
 ```typescript
 import { cn } from '@/lib/utils';
 
@@ -2391,6 +2456,7 @@ import { cn } from '@/lib/utils';
 ### 3. Form Handling
 
 **Always use Form components with react-hook-form:**
+
 ```typescript
 import { useForm } from 'react-hook-form';
 import { Form, FormField, FormItem, FormLabel, FormControl } from '@/components/ui/form';
@@ -2416,18 +2482,20 @@ const form = useForm();
 ### 4. Toast Notifications
 
 **Prefer Sonner over Toast component:**
+
 ```typescript
 // ✅ Recommended
-import { toast } from 'sonner';
-toast.success('Success!');
+import { toast } from "sonner";
+toast.success("Success!");
 
 // ⚠️ Alternative (more setup)
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from "@/components/ui/use-toast";
 ```
 
 ### 5. Image Handling
 
 **Use SafeImage for all images:**
+
 ```typescript
 // ✅ Good - with fallback
 import SafeImage from '@/components/ui/SafeImage';
@@ -2441,6 +2509,7 @@ import Image from 'next/image';
 ### 6. Loading States
 
 **Use State components:**
+
 ```typescript
 import { LoadingSkeleton, ErrorState, EmptyState } from '@/components/ui/state';
 
@@ -2452,6 +2521,7 @@ import { LoadingSkeleton, ErrorState, EmptyState } from '@/components/ui/state';
 ### 7. Text Truncation
 
 **Use TruncatedText for long text:**
+
 ```typescript
 import { TruncatedText } from '@/components/ui/truncated-text';
 
@@ -2461,6 +2531,7 @@ import { TruncatedText } from '@/components/ui/truncated-text';
 ### 8. Navigation
 
 **Use NavigationLink for internal links:**
+
 ```typescript
 import { NavigationLink } from '@/components/ui/navigation-link';
 
@@ -2470,6 +2541,7 @@ import { NavigationLink } from '@/components/ui/navigation-link';
 ### 9. Component Composition
 
 **Compose components properly:**
+
 ```typescript
 // ✅ Good
 <Card>
@@ -2488,6 +2560,7 @@ import { NavigationLink } from '@/components/ui/navigation-link';
 ### 10. TypeScript
 
 **Always type your components:**
+
 ```typescript
 interface MyComponentProps {
   title: string;
@@ -2536,6 +2609,7 @@ Khi setup project mới, đảm bảo có:
 Tất cả components cần copy (theo thứ tự ưu tiên):
 
 ### Core Components (Copy ngay)
+
 1. `lib/utils.ts` - Utility function
 2. `components/ui/button.tsx`
 3. `components/ui/card.tsx`
@@ -2555,29 +2629,35 @@ Tất cả components cần copy (theo thứ tự ưu tiên):
 17. `components/ui/alert-dialog.tsx`
 
 ### Overlay Components
+
 18. `components/ui/dialog.tsx`
 19. `components/ui/sheet.tsx`
 20. `components/ui/popover.tsx`
 21. `components/ui/tooltip.tsx`
 
 ### Navigation Components
+
 22. `components/ui/tabs.tsx`
 23. `components/ui/accordion.tsx`
 24. `components/ui/pagination.tsx`
 
 ### Form Components
+
 25. `components/ui/form.tsx`
 26. `components/ui/calendar.tsx`
 27. `components/ui/date-picker.tsx`
 
 ### Feedback Components
+
 28. `components/ui/sonner.tsx`
 29. `components/ui/toast.tsx`
 
 ### Data Display
+
 30. `components/ui/data-table.tsx`
 
 ### Custom Components
+
 31. `components/ui/SafeImage.tsx`
 32. `components/ui/truncated-text.tsx`
 33. `components/ui/state.tsx`
@@ -2588,19 +2668,15 @@ Tất cả components cần copy (theo thứ tự ưu tiên):
 
 ```typescript
 // Single component
-import { ComponentName } from '@/components/ui/component-name';
+import { ComponentName } from "@/components/ui/component-name";
 
 // Multiple components
-import {
-  Component1,
-  Component2,
-  Component3,
-} from '@/components/ui/component-name';
+import { Component1, Component2, Component3 } from "@/components/ui/component-name";
 ```
 
 ---
 
-*Document được tạo từ phân tích codebase thực tế - Áp dụng cho tất cả project*
+_Document được tạo từ phân tích codebase thực tế - Áp dụng cho tất cả project_
 
 ---
 
@@ -2764,6 +2840,7 @@ export function ConfirmDialog({
 ```
 
 **Usage:**
+
 ```typescript
 <ConfirmDialog
   trigger={<Button variant="destructive">Xóa khóa học</Button>}
@@ -3016,6 +3093,7 @@ export function VidstackPlayer({ src, title, poster, subtitles, onEnded }: Vidst
 ```
 
 **Usage:**
+
 ```typescript
 // HLS stream
 <VidstackPlayer
@@ -3033,8 +3111,8 @@ export function VidstackPlayer({ src, title, poster, subtitles, onEnded }: Vidst
 ```
 
 **Notes:**
+
 - `@vidstack/react` handles HLS, DASH, MP4 automatically
 - Import CSS files là bắt buộc cho default layout
 - Custom layout: dùng `VideoLayout` từ vidstack
 - Supports subtitles/captions qua `<Track />`
-
