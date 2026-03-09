@@ -30,9 +30,9 @@ export default function HeroSection() {
                     </div>
                     <div className="flex items-center gap-4 border-t border-primary/10 pt-8">
                         <div className="flex -space-x-3">
-                            <div className="h-10 w-10 rounded-full border-2 border-background bg-slate-200" />
-                            <div className="h-10 w-10 rounded-full border-2 border-background bg-slate-300" />
-                            <div className="h-10 w-10 rounded-full border-2 border-background bg-slate-400" />
+                            <div className="h-10 w-10 rounded-full border-2 border-background bg-secondary/40" />
+                            <div className="h-10 w-10 rounded-full border-2 border-background bg-secondary/60" />
+                            <div className="h-10 w-10 rounded-full border-2 border-background bg-secondary/80" />
                         </div>
                         <p className="text-sm font-medium text-muted-foreground underline underline-offset-4 decoration-primary/30">Hơn 5,000+ người đã tìm lại sự cân bằng</p>
                     </div>
@@ -40,7 +40,7 @@ export default function HeroSection() {
                 <div className="relative">
                     <div className="absolute -right-4 -top-4 h-64 w-64 rounded-full bg-primary/10 blur-3xl"></div>
                     <div
-                        className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-slate-200 shadow-2xl"
+                        className="relative aspect-[4/3] overflow-hidden rounded-3xl bg-secondary/30 shadow-2xl"
                         style={{ backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuBzekUwsX89neMhuQBkaRYe84HxG7JDOcZ_FjbK5kA2BQb7OZAk9tyl77KYb_RGrsJCteXpr7nr6SdoJ60_9XCzRApB6qWvxjA7H1QOIeDeyf592Y6QrJOSh5HrCuGm0WTNlIDgWv5tqD_UmhDPLZThoRXGkv4tU2xW4SaVNw3QWNwaReffHQg6hxVDJeEKmCnQWFoDdTqst9NbxgR5pnqocTtbjsjpoPaHugaJjvjZaSEJjiG7g7P6ojTi3SviboLmSGRqIAQfldI")', backgroundSize: 'cover', backgroundPosition: 'center' }}>
                     </div>
                 </div>
