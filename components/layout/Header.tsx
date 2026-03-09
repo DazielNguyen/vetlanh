@@ -1,54 +1,46 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Sparkles } from "lucide-react";
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-8">
-        <div className="flex items-center gap-2">
-          <span className="text-xl font-bold tracking-tight text-primary">Vết Lành</span>
-        </div>
-        <nav className="hidden md:flex items-center gap-6">
-          <Link
-            href="#quy-trinh"
-            className="text-sm font-medium hover:text-primary transition-colors"
-          >
-            Quy trình
-          </Link>
-          <Link
-            href="#nguoi-dung"
-            className="text-sm font-medium hover:text-primary transition-colors"
-          >
-            Người dùng
-          </Link>
-          <Link
-            href="#chuyen-gia"
-            className="text-sm font-medium hover:text-primary transition-colors"
-          >
-            Chuyên gia
-          </Link>
-          <Link
-            href="#bang-gia"
-            className="text-sm font-medium hover:text-primary transition-colors"
-          >
-            Bảng giá
-          </Link>
-          <Link
-            href="#su-menh"
-            className="text-sm font-medium hover:text-primary transition-colors"
-          >
-            Sứ mệnh
-          </Link>
-        </nav>
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" asChild className="hidden md:inline-flex">
-            <Link href="/login">Đăng nhập</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/register">Bắt đầu ngay</Link>
-          </Button>
-        </div>
+    <>
+      {/* Announcement Banner */}
+      <div className="bg-primary text-primary-foreground py-2 px-4 text-center text-sm font-medium tracking-wide flex items-center justify-center gap-2">
+        <Sparkles className="h-4 w-4" />
+        Vết Lành - Hành trình chữa lành tâm hồn & tìm lại sự bình yên trong bạn.
       </div>
-    </header>
+
+      {/* Sticky Navigation */}
+      <header className="sticky top-0 z-50 sticky-nav border-b border-gray-200/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            {/* Logo */}
+            <Link href="/" className="flex-shrink-0 flex items-center gap-2">
+              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                <span className="text-primary-foreground font-bold text-xl">V</span>
+              </div>
+              <span className="text-2xl font-extrabold tracking-tight text-primary">VẾT LÀNH</span>
+            </Link>
+
+            {/* Nav Links */}
+            <div className="hidden md:flex space-x-8 items-center font-medium text-slate-700/80">
+              <Link className="hover:text-primary transition-colors" href="#">Về chúng tôi</Link>
+              <Link className="hover:text-primary transition-colors" href="#chuyen-gia">Chuyên gia</Link>
+              <Link className="hover:text-primary transition-colors" href="#">Tài nguyên</Link>
+              <Link className="hover:text-primary transition-colors" href="#bang-gia">Bảng giá</Link>
+            </div>
+
+            {/* CTA */}
+            <div className="flex items-center gap-4">
+              <Link href="/login" className="hidden md:block text-sm font-semibold text-slate-700 hover:text-primary transition-colors">Đăng nhập</Link>
+              <Button asChild className="rounded-2xl px-6 py-5 shadow-md active:scale-95 transition-all">
+                <Link href="/register">Bắt đầu miễn phí</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+    </>
   );
 }

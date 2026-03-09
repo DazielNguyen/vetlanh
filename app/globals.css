@@ -40,7 +40,7 @@
     --popover-foreground: #789dbc;
 
     /* Border Radius */
-    --radius: 0.5rem;
+    --radius: 1rem;
   }
 }
 
@@ -79,7 +79,7 @@
   --radius-sm: calc(var(--radius) - 4px);
 
   /* Fonts */
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-manrope);
 }
 
 @layer base {
@@ -89,5 +89,28 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  @keyframes subtle-float {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .float-animation {
+    animation: subtle-float 6s ease-in-out infinite;
+  }
+
+  .sticky-nav {
+    backdrop-filter: blur(8px);
+    background-color: rgba(254, 249, 242, 0.8);
   }
 }

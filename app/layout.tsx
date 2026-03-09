@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Manrope } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/lib/providers";
 import { Toaster } from "@/components/ui/sonner";
 
-const inter = Inter({
+const manrope = Manrope({
   subsets: ["latin", "vietnamese"],
-  variable: "--font-inter",
+  variable: "--font-manrope",
 });
 
 export const metadata: Metadata = {
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="vi" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans`}>
+      <body className={`${manrope.variable} font-sans`}>
         <Providers>
           {children}
           <Toaster position="bottom-center" richColors closeButton />
