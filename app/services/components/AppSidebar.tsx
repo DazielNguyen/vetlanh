@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Dumbbell, MessageSquare, Users, User, ArrowLeft } from "lucide-react";
+import { Home, Dumbbell, MessageSquare, Users, User } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -29,45 +29,54 @@ export function AppSidebar() {
 
     return (
         <Sidebar collapsible="icon" className="border-r border-border/40 bg-[#FEF9F2] text-slate-800">
-            <SidebarHeader className="p-6 group-data-[collapsible=icon]:p-2">
-                <Link href="/" className="flex items-center gap-3 mb-2 overflow-hidden">
+            <SidebarHeader className="p-4 flex flex-row items-center justify-between group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:h-16 group-data-[collapsible=icon]:justify-center">
+                <Link href="/" className="flex items-center gap-3 overflow-hidden ml-1 group-data-[collapsible=icon]:hidden">
                     <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
                         <span className="text-primary font-bold text-xl">V</span>
                     </div>
-                    <div className="flex flex-col flex-1 group-data-[collapsible=icon]:hidden">
+                    <div className="flex flex-col flex-1">
                         <span className="text-lg font-extrabold tracking-tight text-slate-800 truncate">VẾT LÀNH</span>
                         <span className="text-[10px] text-slate-400 font-medium truncate">Healing & Peace</span>
                     </div>
                 </Link>
+                {/* Logo when collapsed */}
+                <Link href="/" className="hidden items-center justify-center group-data-[collapsible=icon]:flex w-full">
+                    <div className="w-10 h-10 bg-primary/10 rounded-full items-center justify-center flex shrink-0">
+                        <span className="text-primary font-bold text-xl">V</span>
+                    </div>
+                </Link>
             </SidebarHeader>
 
-            <SidebarContent className="px-4 group-data-[collapsible=icon]:px-2">
-                <SidebarGroup>
+            <SidebarContent className="px-3 md:px-4 mt-2 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:mt-4">
+                <SidebarGroup className="group-data-[collapsible=icon]:p-0">
                     <SidebarGroupContent>
-                        <SidebarMenu className="space-y-1">
-                            {navItems.map((item) => (
-                                <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton
-                                        asChild
-                                        isActive={pathname === item.url}
-                                        tooltip={item.title}
-                                        className="py-5 px-4 rounded-xl hover:bg-slate-50 transition-colors group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:py-0 group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:justify-center"
-                                    >
-                                        <a href={item.url} className="flex items-center gap-3 font-semibold w-full">
-                                            <item.icon className="w-5 h-5 shrink-0" />
-                                            <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>
-                                        </a>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ))}
+                        <SidebarMenu className="space-y-4">
+                            {navItems.map((item) => {
+                                const isActive = pathname === item.url;
+                                return (
+                                    <SidebarMenuItem key={item.title}>
+                                        <SidebarMenuButton
+                                            asChild
+                                            isActive={isActive}
+                                            tooltip={item.title}
+                                            className={`h-12 px-4 rounded-xl text-base shadow-none hover:bg-slate-50 font-semibold transition-all group-data-[collapsible=icon]:!p-0 group-data-[collapsible=icon]:!w-10 group-data-[collapsible=icon]:!h-10 group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-full ${isActive ? 'bg-slate-100' : ''}`}
+                                        >
+                                            <a href={item.url} className={`flex items-center gap-3 w-full group-data-[collapsible=icon]:justify-center ${isActive ? 'bg-slate-100' : ''}`}>
+                                                <item.icon className={`w-5 h-5 shrink-0 ${isActive ? 'text-slate-800' : 'text-slate-500'} group-data-[collapsible=icon]:!mr-0`} />
+                                                <span className={`${isActive ? 'text-slate-800' : 'text-slate-500'} group-data-[collapsible=icon]:hidden`}>{item.title}</span>
+                                            </a>
+                                        </SidebarMenuButton>
+                                    </SidebarMenuItem>
+                                );
+                            })}
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
 
-            <SidebarFooter className="p-6 group-data-[collapsible=icon]:p-2 group-data-[collapsible=icon]:items-center">
-                <Button className="w-full bg-[#C9E9D2] hover:bg-[#C9E9D2]/90 text-slate-800 rounded-xl py-6 font-bold shadow-sm flex items-center gap-2 group-data-[collapsible=icon]:p-2 group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:w-10 overflow-hidden">
-                    <span className="text-xl">🧘‍♀️</span>
+            <SidebarFooter className="p-4 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:pb-4">
+                <Button className="w-full bg-[#C9E9D2] hover:bg-[#C9E9D2]/90 text-slate-800 rounded-xl py-6 font-bold shadow-sm flex items-center gap-2 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:rounded-full overflow-hidden transition-all group-data-[collapsible=icon]:justify-center">
+                    <span className="text-xl group-data-[collapsible=icon]:text-base group-data-[collapsible=icon]:!mr-0">🧘‍♀️</span>
                     <span className="group-data-[collapsible=icon]:hidden truncate">Start Meditation</span>
                 </Button>
             </SidebarFooter>
