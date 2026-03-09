@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
-import { Manrope } from "next/font/google";
+import { Manrope, Geist } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/lib/providers";
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 const manrope = Manrope({
   subsets: ["latin", "vietnamese"],
@@ -30,11 +34,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="vi" suppressHydrationWarning>
+    <html lang="vi" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <body className={`${manrope.variable} font-sans`}>
         <Providers>
-          {children}
-          <Toaster position="bottom-center" richColors closeButton />
+          <TooltipProvider>
+            {children}
+            <Toaster position="bottom-center" richColors closeButton />
+          </TooltipProvider>
         </Providers>
       </body>
     </html>
