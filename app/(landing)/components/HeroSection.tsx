@@ -35,7 +35,7 @@ export default function HeroSection() {
                             <div className="bg-white/90 backdrop-blur p-6 rounded-2xl shadow-xl max-w-[280px]">
                                 <div className="flex items-center gap-3 mb-2">
                                     <div className="w-8 h-8 rounded-full bg-secondary"></div>
-                                    <div className="text-sm font-bold text-foreground">AI Companion</div>
+                                    <div className="text-sm font-bold text-foreground">Trợ lý AI</div>
                                 </div>
                                 <p className="text-xs text-slate-600 italic">"Chào bạn, hôm nay bạn cảm thấy thế nào? Hãy hít thở sâu cùng mình nhé..."</p>
                             </div>

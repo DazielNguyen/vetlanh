@@ -61,7 +61,7 @@ export default function Footer() {
         </div>
 
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
-          <p>© {new Date().getFullYear()} VẾT LÀNH. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} VẾT LÀNH. Mọi quyền được bảo lưu.</p>
           <div className="flex gap-6">
             <a className="hover:text-white" href="#">Chính sách bảo mật</a>
             <a className="hover:text-white" href="#">Điều khoản sử dụng</a>
