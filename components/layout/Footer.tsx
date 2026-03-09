@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Facebook, Instagram, Twitter } from "lucide-react";
+import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -9,8 +10,8 @@ export default function Footer() {
           {/* Brand Info */}
           <div className="col-span-1 md:col-span-1">
             <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                <span className="text-slate-800 font-bold text-lg">V</span>
+              <div className="w-8 h-8 rounded-full flex items-center justify-center bg-white/10">
+                <Image src="/images/logo.svg" alt="Vết Lành Logo" width={20} height={20} className="brightness-0 invert" />
               </div>
               <span className="text-xl font-bold tracking-tight">VẾT LÀNH</span>
             </div>

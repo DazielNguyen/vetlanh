@@ -3,6 +3,7 @@
 import { Home, Dumbbell, MessageSquare, Users, User, PanelLeftClose, PanelLeftOpen, CalendarDays, Settings } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
     Sidebar,
@@ -47,7 +48,7 @@ export function AppSidebar() {
             <SidebarHeader className="p-4 flex flex-row items-center justify-between group-data-[collapsible=icon]:p-2 group-data-[collapsible=icon]:justify-center">
                 <Link href="/" className="flex items-center gap-3 overflow-hidden ml-1 group-data-[collapsible=icon]:hidden">
                     <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
-                        <span className="text-primary font-bold text-xl">V</span>
+                        <Image src="/images/logo.svg" alt="Vết Lành Logo" width={24} height={24} />
                     </div>
                     <div className="flex flex-col flex-1">
                         <span className="text-lg font-extrabold tracking-tight text-slate-800 truncate">VẾT LÀNH</span>

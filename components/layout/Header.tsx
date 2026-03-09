@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Sparkles } from "lucide-react";
+import Image from "next/image";
 
 export default function Header() {
   return (
@@ -17,8 +18,8 @@ export default function Header() {
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
             <Link href="/" className="flex-shrink-0 flex items-center gap-2">
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-xl">V</span>
+              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                <Image src="/images/logo.svg" alt="Vết Lành Logo" width={24} height={24} className="text-primary" />
               </div>
               <span className="text-2xl font-extrabold tracking-tight text-primary">VẾT LÀNH</span>
             </Link>
