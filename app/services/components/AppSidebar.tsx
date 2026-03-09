@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Dumbbell, MessageSquare, Users, User } from "lucide-react";
+import { Home, Dumbbell, MessageSquare, Users, User, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    useSidebar,
 } from "@/components/ui/sidebar";
 
 const navItems = [
@@ -24,12 +25,25 @@ const navItems = [
     { title: "Profile", url: "#", icon: User },
 ];
 
+function SidebarToggleButton() {
+    const { toggleSidebar, open } = useSidebar();
+    return (
+        <button
+            onClick={toggleSidebar}
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors shrink-0"
+            aria-label="Toggle Sidebar"
+        >
+            {open ? <PanelLeftClose className="w-5 h-5" /> : <PanelLeftOpen className="w-5 h-5" />}
+        </button>
+    );
+}
+
 export function AppSidebar() {
     const pathname = usePathname();
 
     return (
         <Sidebar collapsible="icon" className="border-r border-border/40 bg-[#FEF9F2] text-slate-800">
-            <SidebarHeader className="p-4 flex flex-row items-center justify-between group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:h-16 group-data-[collapsible=icon]:justify-center">
+            <SidebarHeader className="p-4 flex flex-row items-center justify-between group-data-[collapsible=icon]:p-2 group-data-[collapsible=icon]:justify-center">
                 <Link href="/" className="flex items-center gap-3 overflow-hidden ml-1 group-data-[collapsible=icon]:hidden">
                     <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
                         <span className="text-primary font-bold text-xl">V</span>
@@ -39,12 +53,7 @@ export function AppSidebar() {
                         <span className="text-[10px] text-slate-400 font-medium truncate">Healing & Peace</span>
                     </div>
                 </Link>
-                {/* Logo when collapsed */}
-                <Link href="/" className="hidden items-center justify-center group-data-[collapsible=icon]:flex w-full">
-                    <div className="w-10 h-10 bg-primary/10 rounded-full items-center justify-center flex shrink-0">
-                        <span className="text-primary font-bold text-xl">V</span>
-                    </div>
-                </Link>
+                <SidebarToggleButton />
             </SidebarHeader>
 
             <SidebarContent className="px-3 md:px-4 mt-2 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:mt-4">
