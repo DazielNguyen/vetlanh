@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Dumbbell, MessageSquare, Users, User, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { Home, Dumbbell, MessageSquare, Users, User, PanelLeftClose, PanelLeftOpen, CalendarDays, Settings } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -18,11 +18,11 @@ import {
 } from "@/components/ui/sidebar";
 
 const navItems = [
-    { title: "Home", url: "/services", icon: Home },
-    { title: "Exercises", url: "#", icon: Dumbbell },
-    { title: "AI Chat", url: "#", icon: MessageSquare },
-    { title: "Experts", url: "#", icon: Users },
-    { title: "Profile", url: "#", icon: User },
+    { title: "Trang chủ", url: "/services", icon: Home, exact: true },
+    { title: "Chuyên gia", url: "/services/experts", icon: Users, exact: false },
+    { title: "Lịch hẹn", url: "/services/exercises", icon: CalendarDays, exact: false },
+    { title: "Tin nhắn", url: "/services/chat", icon: MessageSquare, exact: false },
+    { title: "Cài đặt", url: "/services/profile", icon: Settings, exact: false },
 ];
 
 function SidebarToggleButton() {
@@ -61,7 +61,7 @@ export function AppSidebar() {
                     <SidebarGroupContent>
                         <SidebarMenu className="space-y-4">
                             {navItems.map((item) => {
-                                const isActive = pathname === item.url;
+                                const isActive = item.exact ? pathname === item.url : pathname.startsWith(item.url);
                                 return (
                                     <SidebarMenuItem key={item.title}>
                                         <SidebarMenuButton
