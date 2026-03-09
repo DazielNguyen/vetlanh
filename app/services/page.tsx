@@ -7,7 +7,7 @@ import { DailyQuote } from "./components/DailyQuote";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const metadata = {
-    title: "Dashboard",
+    title: "Trang chủ - VẾT LÀNH",
     description: "Bảng điều khiển chăm sóc sức khỏe tâm lý cá nhân của bạn.",
 };
 
@@ -25,13 +25,13 @@ export default function ServicesDashboard() {
                         <CardHeader className="pb-0">
                             <div className="flex justify-between items-start">
                                 <div>
-                                    <CardTitle className="text-xl text-primary font-bold">Stress Level</CardTitle>
+                                    <CardTitle className="text-xl text-primary font-bold">Mức độ căng thẳng</CardTitle>
                                     <div className="flex items-baseline gap-2 mt-2">
-                                        <span className="text-4xl font-extrabold text-slate-800">Low</span>
-                                        <span className="text-sm text-emerald-500 font-medium">~15% this week</span>
+                                        <span className="text-4xl font-extrabold text-slate-800">Thấp</span>
+                                        <span className="text-sm text-emerald-500 font-medium">~15% tuần này</span>
                                     </div>
                                 </div>
-                                <span className="text-xs text-slate-400 font-medium bg-slate-50 px-3 py-1 rounded-full">Last 7 days</span>
+                                <span className="text-xs text-slate-400 font-medium bg-slate-50 px-3 py-1 rounded-full">7 ngày qua</span>
                             </div>
                         </CardHeader>
                         <CardContent>

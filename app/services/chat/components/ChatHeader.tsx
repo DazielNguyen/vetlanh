@@ -14,7 +14,7 @@ export function ChatHeader() {
                     <h2 className="font-bold text-slate-800 text-lg">VẾT LÀNH AI</h2>
                     <p className="text-xs text-emerald-500 flex items-center gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>
-                        Always here for you
+                        Luôn ở đây vì bạn
                     </p>
                 </div>
             </div>

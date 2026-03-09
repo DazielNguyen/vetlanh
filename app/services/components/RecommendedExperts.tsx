@@ -6,8 +6,8 @@ export function RecommendedExperts() {
     return (
         <div>
             <div className="flex justify-between items-end mb-4">
-                <h2 className="text-xl font-bold text-primary">Recommended Experts</h2>
-                <a href="#" className="text-xs font-bold text-slate-400 hover:text-primary transition">See All</a>
+                <h2 className="text-xl font-bold text-primary">Chuyên gia đề xuất</h2>
+                <a href="/services/experts" className="text-xs font-bold text-slate-400 hover:text-primary transition">Xem tất cả</a>
             </div>
             <div className="space-y-3">
                 <Card className="border-none shadow-sm rounded-2xl flex items-center p-3 gap-4 hover:shadow-md transition cursor-pointer">
@@ -17,9 +17,9 @@ export function RecommendedExperts() {
                     </Avatar>
                     <div className="flex-1">
                         <h4 className="font-bold text-slate-800 text-sm flex items-center gap-1">
-                            Dr. An Nguyen
+                            TS. An Nguyễn
                         </h4>
-                        <p className="text-xs text-slate-500 italic">Trauma Specialist</p>
+                        <p className="text-xs text-slate-500 italic">Chuyên gia Sang chấn</p>
                     </div>
                     <CheckCircle2 className="w-5 h-5 text-primary" />
                 </Card>
@@ -31,9 +31,9 @@ export function RecommendedExperts() {
                     </Avatar>
                     <div className="flex-1">
                         <h4 className="font-bold text-slate-800 text-sm flex items-center gap-1">
-                            Prof. Tran Minh
+                            PGS. Trần Minh
                         </h4>
-                        <p className="text-xs text-slate-500 italic">Mindfulness Coach</p>
+                        <p className="text-xs text-slate-500 italic">Huấn luyện viên Chánh niệm</p>
                     </div>
                     <CheckCircle2 className="w-5 h-5 text-primary" />
                 </Card>

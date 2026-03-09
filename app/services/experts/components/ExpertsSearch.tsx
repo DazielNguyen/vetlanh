@@ -2,11 +2,11 @@ import { Search, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const filterTags = [
-    "Anxiety (Lo âu)",
-    "Depression (Trầm cảm)",
-    "Trauma (Sang chấn)",
-    "Relationships (Mối quan hệ)",
-    "Stress (Căng thẳng)",
+    "Lo âu",
+    "Trầm cảm",
+    "Sang chấn",
+    "Mối quan hệ",
+    "Căng thẳng",
 ];
 
 export function ExpertsSearch() {

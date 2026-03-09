@@ -3,13 +3,13 @@
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 const data = [
-    { day: "MON", stress: 30 },
-    { day: "TUE", stress: 40 },
-    { day: "WED", stress: 35 },
-    { day: "THU", stress: 60 },
-    { day: "FRI", stress: 30 },
-    { day: "SAT", stress: 80 },
-    { day: "SUN", stress: 45 },
+    { day: "T2", stress: 30 },
+    { day: "T3", stress: 40 },
+    { day: "T4", stress: 35 },
+    { day: "T5", stress: 60 },
+    { day: "T6", stress: 30 },
+    { day: "T7", stress: 80 },
+    { day: "CN", stress: 45 },
 ];
 
 export function StressChart() {

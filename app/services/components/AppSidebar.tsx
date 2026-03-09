@@ -20,7 +20,8 @@ import {
 const navItems = [
     { title: "Trang chủ", url: "/services", icon: Home, exact: true },
     { title: "Chuyên gia", url: "/services/experts", icon: Users, exact: false },
-    { title: "Lịch hẹn", url: "/services/exercises", icon: CalendarDays, exact: false },
+    { title: "Bài tập", url: "/services/exercises", icon: Dumbbell, exact: false },
+    { title: "Lịch hẹn", url: "/services/appointments", icon: CalendarDays, exact: false },
     { title: "Tin nhắn", url: "/services/chat", icon: MessageSquare, exact: false },
     { title: "Cài đặt", url: "/services/profile", icon: Settings, exact: false },
 ];
@@ -86,7 +87,7 @@ export function AppSidebar() {
             <SidebarFooter className="p-4 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:pb-4">
                 <Button className="w-full bg-[#C9E9D2] hover:bg-[#C9E9D2]/90 text-slate-800 rounded-xl py-6 font-bold shadow-sm flex items-center gap-2 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:rounded-full overflow-hidden transition-all group-data-[collapsible=icon]:justify-center">
                     <span className="text-xl group-data-[collapsible=icon]:text-base group-data-[collapsible=icon]:!mr-0">🧘‍♀️</span>
-                    <span className="group-data-[collapsible=icon]:hidden truncate">Start Meditation</span>
+                    <span className="group-data-[collapsible=icon]:hidden truncate">Bắt đầu thiền</span>
                 </Button>
             </SidebarFooter>
         </Sidebar>

@@ -7,32 +7,32 @@ import { Brain } from "lucide-react";
 const messages = [
     {
         type: "ai",
-        text: "I noticed you've been feeling a bit more stressed lately based on your recent check-ins, would you like to talk about it? I'm here to listen without judgment.",
-        time: "10:42 AM",
+        text: "Tôi nhận thấy gần đây bạn có vẻ căng thẳng hơn qua các lần check-in, bạn có muốn chia sẻ về điều đó không? Tôi ở đây để lắng nghe mà không phán xét.",
+        time: "10:42",
     },
     {
         type: "user",
-        text: "Yeah, work has been overwhelming. I can't seem to switch off my brain at night.",
-        time: "10:45 AM",
+        text: "Ừ, công việc đang quá tải. Tôi không thể ngừng suy nghĩ vào ban đêm.",
+        time: "10:45",
     },
 ];
 
 const suggestedExperts = [
     {
-        name: "Dr. Sarah Pham",
-        title: "Clinical Psychologist",
-        badge: "TOP RATED",
+        name: "TS. Sarah Phạm",
+        title: "Chuyên gia Tâm lý lâm sàng",
+        badge: "ĐÁNH GIÁ CAO",
         badgeColor: "text-red-500",
-        status: "Available Today",
+        status: "Có lịch hôm nay",
         statusColor: "text-emerald-500",
         avatar: "https://ui.shadcn.com/avatars/03.png",
     },
     {
-        name: "Mark Nguyen",
-        title: "Burnout Specialist",
-        badge: "MINDFULNESS",
+        name: "ThS. Mark Nguyễn",
+        title: "Chuyên gia Kiệt sức",
+        badge: "CHÁNH NIỆM",
         badgeColor: "text-primary",
-        status: "Next: Tomorrow",
+        status: "Lịch tiếp: Ngày mai",
         statusColor: "text-amber-500",
         avatar: "https://ui.shadcn.com/avatars/04.png",
     },
@@ -77,15 +77,15 @@ export function ChatMessages() {
                                 <Brain className="w-5 h-5 text-primary" />
                             </div>
                             <div>
-                                <h3 className="font-bold text-slate-800">High Stress Levels Detected</h3>
+                                <h3 className="font-bold text-slate-800">Phát hiện mức căng thẳng cao</h3>
                                 <p className="text-xs text-slate-500 leading-relaxed mt-0.5">
-                                    It looks like you might need more specialized support. Would you like to connect with a psychologist to help manage this burnout?
+                                    Có vẻ bạn cần sự hỗ trợ chuyên sâu hơn. Bạn có muốn kết nối với chuyên gia tâm lý để quản lý tình trạng kiệt sức này không?
                                 </p>
                             </div>
                         </div>
 
                         <Button className="w-full bg-[#C9E9D2] hover:bg-[#C9E9D2]/80 text-slate-800 rounded-xl font-semibold shadow-none">
-                            Explore Experts
+                            Tìm chuyên gia
                         </Button>
 
                         {/* Suggested Experts */}

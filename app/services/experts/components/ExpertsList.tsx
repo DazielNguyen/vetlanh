@@ -5,7 +5,7 @@ import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 const experts = [
     {
         name: "Dr. Phạm Quang Vinh",
-        title: "Child & Adolescent Psychologist",
+        title: "Chuyên gia Tâm lý trẻ em & vị thành niên",
         experience: "6 năm",
         rating: 4.7,
         price: "500.000đ/ca",
@@ -14,7 +14,7 @@ const experts = [
     },
     {
         name: "ThS. Đặng Minh Châu",
-        title: "CBT Specialist",
+        title: "Chuyên gia Trị liệu nhận thức hành vi",
         experience: "10 năm",
         rating: 4.9,
         price: "750.000đ/ca",
@@ -23,7 +23,7 @@ const experts = [
     },
     {
         name: "ThS. Hoàng Quốc Tuấn",
-        title: "Art Therapist",
+        title: "Chuyên gia Trị liệu nghệ thuật",
         experience: "4 năm",
         rating: 4.5,
         price: "450.000đ/ca",

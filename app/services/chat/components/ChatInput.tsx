@@ -10,7 +10,7 @@ export function ChatInput() {
                 <div className="flex-1 relative">
                     <input
                         type="text"
-                        placeholder="Type your feelings here..."
+                        placeholder="Nhập cảm xúc của bạn tại đây..."
                         className="w-full h-12 px-4 pr-24 rounded-2xl border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
                     />
                     <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
@@ -27,7 +27,7 @@ export function ChatInput() {
                 </Button>
             </div>
             <p className="text-[10px] text-slate-400 text-center uppercase tracking-widest font-medium">
-                Vết Lành AI is not a replacement for medical diagnosis
+                Vết Lành AI không thay thế chẩn đoán y khoa
             </p>
         </div>
     );
