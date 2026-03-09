@@ -4,6 +4,10 @@ import { CurrentHealingPath } from "./components/CurrentHealingPath";
 import { AIPromoCard } from "./components/AIPromoCard";
 import { RecommendedExperts } from "./components/RecommendedExperts";
 import { DailyQuote } from "./components/DailyQuote";
+import { DailyWellnessChecklist } from "./components/DailyWellnessChecklist";
+import { ResourcesForYou } from "./components/ResourcesForYou";
+import { WeeklyOverview } from "./components/WeeklyOverview";
+import { CommunitySupport } from "./components/CommunitySupport";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const metadata = {
@@ -39,13 +43,19 @@ export default function ServicesDashboard() {
                         </CardContent>
                     </Card>
 
+                    <DailyWellnessChecklist />
+
                     <CurrentHealingPath />
+
+                    <ResourcesForYou />
                 </div>
 
                 {/* RIGHT COLUMN - Sidebar Elements */}
                 <div className="space-y-8">
                     <AIPromoCard />
+                    <WeeklyOverview />
                     <RecommendedExperts />
+                    <CommunitySupport />
                     <DailyQuote />
                 </div>
             </div>
