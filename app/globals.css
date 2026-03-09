@@ -3,41 +3,41 @@
 @layer base {
   :root {
     /* Base */
-    --background: #f9f8f6;
-    --foreground: #2d2a26;
+    --background: #f7f8f0;
+    --foreground: #355872;
 
     /* Primary */
-    --primary: #c9b59c;
+    --primary: #355872;
     --primary-foreground: #ffffff;
 
     /* Secondary */
-    --secondary: #efe9e3;
-    --secondary-foreground: #2d2a26;
+    --secondary: #7aaace;
+    --secondary-foreground: #ffffff;
 
     /* Accent */
-    --accent: #d9cfc7;
-    --accent-foreground: #2d2a26;
+    --accent: #9cd5ff;
+    --accent-foreground: #355872;
 
     /* Muted */
-    --muted: #efe9e3;
-    --muted-foreground: #7a736d;
+    --muted: #e6ebf2;
+    --muted-foreground: #7aaace;
 
     /* Destructive */
     --destructive: #ef4444;
     --destructive-foreground: #ffffff;
 
     /* Border & Input */
-    --border: #d9cfc7;
-    --input: #efe9e3;
-    --ring: #c9b59c;
+    --border: #7aaace;
+    --input: #e6ebf2;
+    --ring: #9cd5ff;
 
     /* Card */
     --card: #ffffff;
-    --card-foreground: #2d2a26;
+    --card-foreground: #355872;
 
     /* Popover */
     --popover: #ffffff;
-    --popover-foreground: #2d2a26;
+    --popover-foreground: #355872;
 
     /* Border Radius */
     --radius: 0.5rem;
