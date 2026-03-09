@@ -25,10 +25,10 @@ export default function Header() {
 
             {/* Nav Links */}
             <div className="hidden md:flex space-x-8 items-center font-medium text-slate-700/80">
-              <Link className="hover:text-primary transition-colors" href="#">Về chúng tôi</Link>
-              <Link className="hover:text-primary transition-colors" href="#chuyen-gia">Chuyên gia</Link>
-              <Link className="hover:text-primary transition-colors" href="#">Tài nguyên</Link>
-              <Link className="hover:text-primary transition-colors" href="#bang-gia">Bảng giá</Link>
+              <Link className="hover:text-primary transition-colors" href="/">Trang chủ</Link>
+              <Link className="hover:text-primary transition-colors" href="/services">Dịch vụ</Link>
+              <Link className="hover:text-primary transition-colors" href="/#chuyen-gia">Chuyên gia</Link>
+              <Link className="hover:text-primary transition-colors" href="/#bang-gia">Bảng giá</Link>
             </div>
 
             {/* CTA */}
