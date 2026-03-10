@@ -6,38 +6,44 @@ export default function HeroSection() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center gap-16">
                 {/* Content */}
                 <div className="flex-1 text-center lg:text-left z-10">
-                    <span className="inline-block px-4 py-1.5 rounded-full bg-secondary text-foreground text-xs font-bold uppercase tracking-widest mb-6">
-                        SỨC KHỎE TÂM THẦN 4.0
-                    </span>
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground leading-[1.15] mb-6">
-                        Chữa lành tâm hồn,<br />
-                        <span className="text-primary underline decoration-accent decoration-4 underline-offset-4">Giảm bớt căng thẳng</span> cùng VẾT LÀNH
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 text-emerald-700 text-sm font-medium mb-8 border border-emerald-100">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Ứng dụng Chăm sóc Sức khỏe Tâm thần
+                    </div>
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-800 leading-[1.2] mb-6">
+                        Tìm lại sự bình yên,<br />
+                        <span className="text-[#6D8A96]">chữa lành tâm hồn</span> cùng Vết Lành
                     </h1>
-                    <p className="text-lg text-slate-600 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                        Nền tảng ứng dụng công nghệ AI tiên tiến giúp phát hiện sớm dấu hiệu stress và kết nối bạn với những phương pháp chữa lành tự nhiên, an toàn và cá nhân hóa.
+                    <p className="text-lg text-slate-600 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-light">
+                        Hệ sinh thái chăm sóc sức khỏe tinh thần toàn diện. Ứng dụng công nghệ AI tiên tiến giúp bạn xoa dịu căng thẳng và kết nối với các chuyên gia tâm lý tận tâm.
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                        <Button className="w-full sm:w-auto px-8 py-6 bg-primary text-white text-lg font-bold rounded-2xl shadow-lg shadow-primary/25 hover:translate-y-[-2px] transition-transform">
-                            Dùng thử miễn phí 7 ngày
+                        <Button className="w-full sm:w-auto px-8 py-6 bg-[#6D8A96] hover:bg-[#5A737D] text-white text-lg font-medium rounded-full shadow-md transition-all">
+                            Bắt đầu miễn phí
                         </Button>
-                        <Button variant="outline" className="w-full sm:w-auto px-8 py-6 bg-white border-2 border-primary/20 text-primary text-lg font-bold rounded-2xl hover:bg-gray-50 transition-colors">
-                            Xem cách hoạt động
+                        <Button variant="outline" className="w-full sm:w-auto px-8 py-6 bg-white border-2 border-slate-200 text-slate-600 text-lg font-medium rounded-full hover:bg-slate-50 transition-colors">
+                            Khám phá dịch vụ
                         </Button>
                     </div>
-                    <p className="mt-6 text-sm text-slate-400">Không yêu cầu thẻ tín dụng. Hủy bất cứ lúc nào.</p>
+                    <p className="mt-6 text-sm text-slate-500">Đồng hành cùng bạn trên mọi bước đường chữa lành.</p>
                 </div>
 
                 {/* Hero Image Placeholder */}
                 <div className="flex-1 w-full max-w-xl lg:max-w-none relative">
-                    <div className="aspect-square bg-gradient-to-br from-accent via-secondary to-primary/20 rounded-[40px] relative overflow-hidden shadow-2xl float-animation">
-                        <img alt="Vết Lành Hero" className="w-full h-full object-cover mix-blend-multiply opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDb87K6SEDyhP8UooMsQNtKtJW8YuKX5Vp47NBtAd_AWV9Gd2M1CnOEpdVTQTGuIwfn9lp6KttuXg-crWRCGQLkbv7CdCIj6bO-78-vitbavEDkE-N3Q8NFCCFPUePDCcALwzCiTRwIc4oeC17ZAmKST_yOX4DyTkn47NPz50dvmOL0ozSTY-V1UXMq_0qXtUUCOS07CRH5jAz5Ai0OccnU1qgnobt548DV8OFMy1gPJ__fvbbz3ZrXILizS7M5iuRRRrdMpnHZxhYF" />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="bg-white/90 backdrop-blur p-6 rounded-2xl shadow-xl max-w-[280px]">
-                                <div className="flex items-center gap-3 mb-2">
-                                    <div className="w-8 h-8 rounded-full bg-secondary"></div>
-                                    <div className="text-sm font-bold text-foreground">Trợ lý AI</div>
+                    <div className="aspect-[4/3] rounded-[32px] relative overflow-hidden shadow-xl float-animation bg-slate-100 border border-white/50">
+                        {/* Placeholder generic healing image from unsplash (nature/meditation) */}
+                        <img alt="Sự bình yên" className="w-full h-full object-cover" src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200&auto=format&fit=crop" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent"></div>
+                        <div className="absolute bottom-6 left-6 right-6 flex justify-center">
+                            <div className="bg-white/95 backdrop-blur-md p-5 rounded-2xl shadow-lg w-full max-w-sm border border-slate-100">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold">AI</div>
+                                    <div>
+                                        <div className="text-sm font-bold text-slate-800">Trợ lý Vết Lành</div>
+                                        <div className="text-[10px] text-emerald-600 font-medium">Đang hoạt động</div>
+                                    </div>
                                 </div>
-                                <p className="text-xs text-slate-600 italic">"Chào bạn, hôm nay bạn cảm thấy thế nào? Hãy hít thở sâu cùng mình nhé..."</p>
+                                <p className="text-sm text-slate-600 leading-relaxed">"Chào bạn, hãy hít một hơi thật sâu. Hôm nay mọi thứ vẫn ổn chứ?"</p>
                             </div>
                         </div>
                     </div>

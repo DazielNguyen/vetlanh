@@ -1,112 +1,126 @@
 import { Button } from "@/components/ui/button";
-import { CheckCircle2 } from "lucide-react";
+import { Check } from "lucide-react";
 
 export default function PricingSection() {
     return (
-        <section className="py-24 bg-background" id="bang-gia">
-            <div className="mx-auto max-w-[1200px] px-6">
+        <section className="py-24 bg-[#FAFDFB]" id="bang-gia">
+            <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
                 <div className="mb-16 text-center">
-                    <h2 className="text-3xl font-black md:text-4xl">Kế hoạch Tài chính & Bảng giá Năm đầu</h2>
-                    <p className="mt-4 text-muted-foreground max-w-2xl mx-auto">Trong năm đầu tiên, Vết Lành tập trung vào việc xây dựng cộng đồng và tối ưu hóa dữ liệu để mang lại giá trị tốt nhất cho sức khỏe tâm thần.</p>
+                    <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Lựa chọn người bạn đồng hành</h2>
+                    <p className="mt-4 text-slate-500 max-w-2xl mx-auto text-lg">Trong giai đoạn đầu, Vết Lành tập trung xây dựng cộng đồng hỗ trợ an toàn và tối ưu hóa trải nghiệm chữa lành cho bạn.</p>
                 </div>
                 <div className="grid gap-8 md:grid-cols-3 items-stretch">
                     {/* Tier 1 */}
-                    <div className="flex flex-col rounded-3xl border border-border bg-card p-8 shadow-sm">
+                    <div className="flex flex-col rounded-[32px] border border-slate-100 bg-white p-8 shadow-sm hover:shadow-md transition-shadow">
                         <div className="mb-8">
-                            <h3 className="text-xl font-bold">Gói Cơ bản</h3>
+                            <h3 className="text-xl font-bold text-slate-800">Dành cho Cá nhân</h3>
                             <div className="mt-4 flex items-baseline gap-1">
-                                <span className="text-4xl font-black">Miễn phí</span>
+                                <span className="text-4xl font-extrabold text-[#6D8A96]">Miễn phí</span>
                             </div>
-                            <p className="mt-2 text-sm text-muted-foreground">Dành cho sự phát triển của cộng đồng.</p>
+                            <p className="mt-2 text-sm text-slate-500">Bước đầu tìm lại sự cân bằng.</p>
                         </div>
-                        <ul className="mb-8 flex-1 space-y-4 text-sm text-muted-foreground">
+                        <ul className="mb-8 flex-1 space-y-4 text-sm text-slate-600">
                             <li className="flex items-center gap-3">
-                                <CheckCircle2 className="h-5 w-5 text-primary" />
-                                Theo dõi tâm trạng bằng AI
+                                <div className="w-6 h-6 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                                    <Check className="h-4 w-4 text-emerald-600" strokeWidth={3} />
+                                </div>
+                                Trò chuyện với Trợ lý AI (Giới hạn)
                             </li>
                             <li className="flex items-center gap-3">
-                                <CheckCircle2 className="h-5 w-5 text-primary" />
-                                Truy cập diễn đàn cộng đồng
+                                <div className="w-6 h-6 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                                    <Check className="h-4 w-4 text-emerald-600" strokeWidth={3} />
+                                </div>
+                                Tham gia cộng đồng ẩn danh
                             </li>
                             <li className="flex items-center gap-3">
-                                <CheckCircle2 className="h-5 w-5 text-primary" />
-                                Thông tin giáo dục tâm lý
+                                <div className="w-6 h-6 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                                    <Check className="h-4 w-4 text-emerald-600" strokeWidth={3} />
+                                </div>
+                                Thư viện bài tập cơ bản
                             </li>
                         </ul>
-                        <Button variant="outline" className="w-full rounded-xl border-2 border-primary/20 py-6 text-sm font-bold text-primary transition-all hover:bg-primary/5">
-                            Tham gia ngay
+                        <Button variant="outline" className="w-full rounded-full border-2 border-slate-200 py-6 text-base font-bold text-slate-600 hover:bg-slate-50 transition-all">
+                            Bắt đầu hành trình
                         </Button>
                     </div>
 
                     {/* Tier 2 */}
-                    <div className="relative flex flex-col rounded-3xl border-2 border-primary bg-card p-8 shadow-xl">
-                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-xs font-bold text-primary-foreground">
-                            PHỔ BIẾN NHẤT
+                    <div className="relative flex flex-col rounded-[32px] border-2 border-[#E1F0E3] bg-white p-8 shadow-xl">
+                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-emerald-100 px-4 py-1 text-xs font-bold text-emerald-700 border border-emerald-200 shadow-sm">
+                            KHUYÊN DÙNG
                         </div>
                         <div className="mb-8">
-                            <h3 className="text-xl font-bold text-primary">Gói Trị liệu (C2C)</h3>
+                            <h3 className="text-xl font-bold text-slate-800">Chữa lành Chuyên sâu</h3>
                             <div className="mt-4 flex items-baseline gap-1">
-                                <span className="text-4xl font-black">Cạnh tranh</span>
-                                <span className="text-sm text-muted-foreground">/tháng</span>
+                                <span className="text-4xl font-extrabold text-[#6D8A96]">Đặt lịch hẹn</span>
                             </div>
-                            <p className="mt-2 text-sm text-muted-foreground">Kết nối trực tiếp với chuyên gia.</p>
+                            <p className="mt-2 text-sm text-slate-500">Kết nối 1:1 với bộ phận chuyên môn.</p>
                         </div>
-                        <ul className="mb-8 flex-1 space-y-4 text-sm text-muted-foreground">
+                        <ul className="mb-8 flex-1 space-y-4 text-sm text-slate-600">
                             <li className="flex items-center gap-3">
-                                <CheckCircle2 className="h-5 w-5 text-primary" />
-                                Trị liệu 1 kèm 1
+                                <div className="w-6 h-6 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                                    <Check className="h-4 w-4 text-emerald-600" strokeWidth={3} />
+                                </div>
+                                Mọi tính năng của gói Cá nhân
                             </li>
                             <li className="flex items-center gap-3">
-                                <CheckCircle2 className="h-5 w-5 text-primary" />
-                                Theo dõi tiến trình với hỗ trợ AI
+                                <div className="w-6 h-6 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                                    <Check className="h-4 w-4 text-emerald-600" strokeWidth={3} />
+                                </div>
+                                Trị liệu tâm lý chuyên sâu 1:1
                             </li>
                             <li className="flex items-center gap-3">
-                                <CheckCircle2 className="h-5 w-5 text-primary" />
-                                Công cụ chăm sóc sức khỏe cá nhân hóa
+                                <div className="w-6 h-6 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                                    <Check className="h-4 w-4 text-emerald-600" strokeWidth={3} />
+                                </div>
+                                Theo dõi biểu đồ cảm xúc AI 24/7
                             </li>
                             <li className="flex items-center gap-3">
-                                <CheckCircle2 className="h-5 w-5 text-primary" />
-                                Ưu tiên đặt lịch hẹn
+                                <div className="w-6 h-6 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                                    <Check className="h-4 w-4 text-emerald-600" strokeWidth={3} />
+                                </div>
+                                Lộ trình chữa lành cá nhân hóa
                             </li>
                         </ul>
-                        <Button className="w-full rounded-xl bg-primary py-6 text-sm font-bold shadow-lg shadow-primary/20 transition-all hover:bg-primary/90">
-                            Bắt đầu trị liệu
+                        <Button className="w-full rounded-full bg-[#6D8A96] hover:bg-[#5A737D] py-6 text-base font-bold text-white shadow-lg shadow-[#6D8A96]/20 transition-all">
+                            Tìm chuyên gia ngay
                         </Button>
                     </div>
 
                     {/* Tier 3 */}
-                    <div className="flex flex-col rounded-3xl border border-border bg-card p-8 shadow-sm">
+                    <div className="flex flex-col rounded-[32px] border border-slate-100 bg-white p-8 shadow-sm hover:shadow-md transition-shadow">
                         <div className="mb-8">
-                            <h3 className="text-xl font-bold">Gói Chuyên gia</h3>
+                            <h3 className="text-xl font-bold text-slate-800">Dành cho Chuyên gia</h3>
                             <div className="mt-4 flex items-baseline gap-1">
-                                <span className="text-4xl font-black text-foreground">Liên hệ</span>
+                                <span className="text-4xl font-extrabold text-[#6D8A96]">Liên hệ</span>
                             </div>
-                            <p className="mt-2 text-sm text-muted-foreground">Dành cho các nhà tâm lý và bác sĩ.</p>
+                            <p className="mt-2 text-sm text-slate-500">Nền tảng vận hành phòng tư vấn.</p>
                         </div>
-                        <ul className="mb-8 flex-1 space-y-4 text-sm text-muted-foreground">
+                        <ul className="mb-8 flex-1 space-y-4 text-sm text-slate-600">
                             <li className="flex items-center gap-3">
-                                <CheckCircle2 className="h-5 w-5 text-primary" />
-                                Công cụ chẩn đoán AI nâng cao
+                                <div className="w-6 h-6 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                                    <Check className="h-4 w-4 text-emerald-600" strokeWidth={3} />
+                                </div>
+                                Công cụ AI hỗ trợ chẩn đoán
                             </li>
                             <li className="flex items-center gap-3">
-                                <CheckCircle2 className="h-5 w-5 text-primary" />
-                                Bảng điều khiển quản lý bệnh nhân
+                                <div className="w-6 h-6 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                                    <Check className="h-4 w-4 text-emerald-600" strokeWidth={3} />
+                                </div>
+                                Quản lý ca bệnh & lịch hẹn
                             </li>
                             <li className="flex items-center gap-3">
-                                <CheckCircle2 className="h-5 w-5 text-primary" />
-                                Phân tích dữ liệu lâm sàng
-                            </li>
-                            <li className="flex items-center gap-3">
-                                <CheckCircle2 className="h-5 w-5 text-primary" />
-                                Quản lý hồ sơ bảo mật
+                                <div className="w-6 h-6 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                                    <Check className="h-4 w-4 text-emerald-600" strokeWidth={3} />
+                                </div>
+                                Bảo mật hồ sơ y tế chuẩn HIPPA
                             </li>
                         </ul>
-                        <Button variant="outline" className="w-full rounded-xl border-2 py-6 text-sm font-bold transition-all">
-                            Ghi danh ngay
+                        <Button variant="outline" className="w-full rounded-full border-2 border-slate-200 py-6 text-base font-bold text-slate-600 hover:bg-slate-50 transition-all">
+                            Đăng ký đối tác
                         </Button>
                     </div>
                 </div>
-                <p className="mt-12 text-center text-xs text-muted-foreground italic">*Lưu ý: Trong giai đoạn đầu, mục tiêu của chúng tôi là phát triển cộng đồng và nâng cao chất lượng dữ liệu trước khi thương mại hóa toàn diện.</p>
             </div>
         </section>
     );
