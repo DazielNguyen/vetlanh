@@ -40,8 +40,8 @@ export function ExpertsSearch() {
 
             {/* Filter Tags */}
             <div className="flex items-center gap-2 flex-wrap">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                    <span className="text-xs font-bold text-primary">TẤT CẢ</span>
+                <div className="px-4 py-2 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <span className="text-sm font-bold text-primary whitespace-nowrap">TẤT CẢ</span>
                 </div>
                 {filterTags.map((tag) => (
                     <button
