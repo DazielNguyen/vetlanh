@@ -41,7 +41,7 @@ export function middleware(request: NextRequest) {
     "/login",
     "/register",
     "/reset-password",
-    "/courses",
+    "/services", // Temporarily make it public so we don't infinitely trap people if something fails, but we protect it later
     "/supscription",
   ];
   const authRoutes = ["/login", "/register", "/reset-password"];
@@ -63,7 +63,7 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/admin/dashboard", request.url));
     if (primaryRole === "ROLE_INSTRUCTOR")
       return NextResponse.redirect(new URL("/instructor/dashboard", request.url));
-    return NextResponse.redirect(new URL("/courses", request.url));
+    return NextResponse.redirect(new URL("/services", request.url));
   }
 
   const isAdminRoute = pathname.startsWith("/admin/");
@@ -109,10 +109,10 @@ export function middleware(request: NextRequest) {
 
   // STUDENT
   if (hasRole(userRoles, "ROLE_STUDENT")) {
-    if (isAdminRoute) return NextResponse.redirect(new URL("/courses", request.url));
+    if (isAdminRoute) return NextResponse.redirect(new URL("/services", request.url));
     if (isInstructorRoute && !hasRole(userRoles, "ROLE_INSTRUCTOR"))
-      return NextResponse.redirect(new URL("/courses", request.url));
-    if (isCoursesRoute || pathname === "/" || pathname === "/landing") return NextResponse.next();
+      return NextResponse.redirect(new URL("/services", request.url));
+    if (pathname.startsWith("/services") || pathname === "/" || pathname === "/landing") return NextResponse.next();
     if (isMyBeyondRoute) {
       const tab = searchParams.get("tab");
       const allowedTabs = [
