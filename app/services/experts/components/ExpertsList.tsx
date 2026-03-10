@@ -52,26 +52,28 @@ export function ExpertsList() {
                 {experts.map((expert) => (
                     <Card
                         key={expert.name}
-                        className="border border-slate-100 shadow-sm rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-4 hover:shadow-md transition"
+                        className="border border-slate-100 shadow-sm rounded-2xl flex flex-col sm:flex-row items-center justify-between p-4 sm:p-5 gap-4 sm:gap-6 hover:shadow-md transition !py-4"
                     >
                         {/* Avatar */}
-                        <img
-                            src={expert.avatar}
-                            alt={expert.name}
-                            className="w-12 h-12 rounded-full border border-slate-200 object-cover shrink-0"
-                        />
+                        <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border border-slate-200 bg-slate-50 flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
+                            <img
+                                src={expert.avatar}
+                                alt={expert.name}
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
 
                         {/* Info */}
-                        <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                                <h3 className="font-bold text-slate-800 text-sm truncate">{expert.name}</h3>
+                        <div className="flex-1 min-w-0 text-center sm:text-left flex flex-col justify-center">
+                            <div className="flex flex-col sm:flex-row items-center sm:items-baseline gap-1 sm:gap-2 mb-1">
+                                <h3 className="font-bold text-slate-800 text-base sm:text-lg truncate">{expert.name}</h3>
                                 {expert.badge && (
                                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600">
                                         {expert.badge}
                                     </span>
                                 )}
                             </div>
-                            <p className="text-xs text-slate-400 italic truncate">{expert.title}</p>
+                            <p className="text-xs sm:text-sm text-slate-400 italic truncate">{expert.title}</p>
                         </div>
 
                         {/* Stats */}
