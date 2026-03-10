@@ -1,15 +1,30 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowRight, Mail, Lock } from "lucide-react";
 
-export const metadata = {
-    title: "Đăng nhập",
-    description: "Đăng nhập vào tài khoản Vết Lành của bạn",
-};
-
 export default function LoginPage() {
+    const router = useRouter();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+
+    const handleLogin = (e: React.FormEvent) => {
+        e.preventDefault();
+        setError("");
+
+        if (email === "user@gmail.com" && password === "user@1234") {
+            router.push("/services");
+        } else {
+            setError("Tài khoản hoặc mật khẩu không chính xác.");
+        }
+    };
+
     return (
         <div className="w-full">
             <div className="text-center mb-10 text-pretty">
@@ -18,7 +33,12 @@ export default function LoginPage() {
             </div>
 
             <div className="bg-white px-8 py-10 rounded-[28px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-slate-100">
-                <form className="space-y-6">
+                <form className="space-y-6" onSubmit={handleLogin}>
+                    {error && (
+                        <div className="bg-red-50 text-red-500 text-sm p-3 rounded-xl border border-red-100 text-center font-medium">
+                            {error}
+                        </div>
+                    )}
                     <div className="space-y-2.5">
                         <Label htmlFor="email" className="text-slate-700 font-semibold ml-1">Email</Label>
                         <div className="relative">
@@ -28,6 +48,8 @@ export default function LoginPage() {
                             <Input
                                 id="email"
                                 type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 placeholder="name@example.com"
                                 className="pl-11 h-12 bg-slate-50/50 border-slate-200 focus:bg-white rounded-2xl transition-all duration-200"
                                 required
@@ -49,6 +71,8 @@ export default function LoginPage() {
                             <Input
                                 id="password"
                                 type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                                 placeholder="••••••••"
                                 className="pl-11 h-12 bg-slate-50/50 border-slate-200 focus:bg-white rounded-2xl transition-all duration-200"
                                 required
