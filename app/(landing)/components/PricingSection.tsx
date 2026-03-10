@@ -7,7 +7,7 @@ export default function PricingSection() {
             <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
                 <div className="mb-16 text-center">
                     <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Lựa chọn người bạn đồng hành</h2>
-                    <p className="mt-4 text-slate-500 max-w-2xl mx-auto text-lg">Trong giai đoạn đầu, Vết Lành tập trung xây dựng cộng đồng hỗ trợ an toàn và tối ưu hóa trải nghiệm chữa lành cho bạn.</p>
+                    <p className="mt-4 text-slate-500 max-w-2xl mx-auto text-lg">Trong giai đoạn đầu, <span className="font-dancing font-bold text-[1.1em]">Vết Lành</span> tập trung xây dựng cộng đồng hỗ trợ an toàn và tối ưu hóa trải nghiệm chữa lành cho bạn.</p>
                 </div>
                 <div className="grid gap-8 md:grid-cols-3 items-stretch">
                     {/* Tier 1 */}

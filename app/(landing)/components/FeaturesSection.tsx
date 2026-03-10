@@ -5,7 +5,7 @@ export default function FeaturesSection() {
         <section className="py-24 bg-card">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Bạn sẽ nhận được gì từ Vết Lành?</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Bạn sẽ nhận được gì từ <span className="font-dancing font-bold text-[1.1em]">Vết Lành</span>?</h2>
                     <p className="text-slate-500 max-w-2xl mx-auto text-lg">Chúng tôi cung cấp hệ sinh thái toàn diện để nuôi dưỡng sức khỏe tinh thần của bạn mỗi ngày.</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">

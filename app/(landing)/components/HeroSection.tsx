@@ -12,7 +12,7 @@ export default function HeroSection() {
                     </div>
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-800 leading-[1.2] mb-6">
                         Tìm lại sự bình yên,<br />
-                        <span className="text-[#6D8A96]">chữa lành tâm hồn</span> cùng Vết Lành
+                        <span className="text-[#6D8A96]">chữa lành tâm hồn</span> cùng <span className="font-dancing font-bold text-[1.1em]">Vết Lành</span>
                     </h1>
                     <p className="text-lg text-slate-600 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-light">
                         Hệ sinh thái chăm sóc sức khỏe tinh thần toàn diện. Ứng dụng công nghệ AI tiên tiến giúp bạn xoa dịu căng thẳng và kết nối với các chuyên gia tâm lý tận tâm.
@@ -39,7 +39,7 @@ export default function HeroSection() {
                                 <div className="flex items-center gap-3 mb-3">
                                     <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold">AI</div>
                                     <div>
-                                        <div className="text-sm font-bold text-slate-800">Trợ lý Vết Lành</div>
+                                        <div className="text-sm font-bold text-slate-800"><span className="font-dancing">Vết Lành</span> AI</div>
                                         <div className="text-[10px] text-emerald-600 font-medium">Đang hoạt động</div>
                                     </div>
                                 </div>

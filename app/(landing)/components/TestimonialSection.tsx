@@ -4,7 +4,7 @@ export default function TestimonialSection() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Câu chuyện chữa lành</h2>
-                    <p className="text-slate-500 max-w-2xl mx-auto text-lg">Cộng đồng Vết Lành chia sẻ những thay đổi tích cực từ khi bắt đầu hành trình.</p>
+                    <p className="text-slate-500 max-w-2xl mx-auto text-lg">Cộng đồng <span className="font-dancing font-bold text-[1.1em]">Vết Lành</span> chia sẻ những thay đổi tích cực từ khi bắt đầu hành trình.</p>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {/* Testimonial 1 */}
@@ -16,7 +16,7 @@ export default function TestimonialSection() {
                                 <p className="text-xs text-slate-400">@minhanh_9x</p>
                             </div>
                         </div>
-                        <p className="text-slate-600 italic leading-relaxed">"Vết Lành giúp mình vượt qua những đêm mất ngủ vì stress công việc. Các bài tập rất tinh tế và hiệu quả."</p>
+                        <p className="text-slate-600 italic leading-relaxed">"<span className="font-dancing font-bold text-[1.1em]">Vết Lành</span> giúp mình vượt qua những đêm mất ngủ vì stress công việc. Các bài tập rất tinh tế và hiệu quả."</p>
                     </div>
 
                     {/* Testimonial 2 */}

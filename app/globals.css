@@ -80,6 +80,7 @@
 /* Tailwind v4: map CSS variables → utility classes */
 @theme inline {
   --font-sans: var(--font-manrope);
+  --font-dancing: var(--font-dancing);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);

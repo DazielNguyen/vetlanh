@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope, Geist } from "next/font/google";
+import { Manrope, Geist, Dancing_Script } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/lib/providers";
 import { Toaster } from "@/components/ui/sonner";
@@ -11,6 +11,11 @@ const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 const manrope = Manrope({
   subsets: ["latin", "vietnamese"],
   variable: "--font-manrope",
+});
+
+const dancingScript = Dancing_Script({
+  subsets: ["vietnamese"],
+  variable: "--font-dancing",
 });
 
 export const metadata: Metadata = {
@@ -34,7 +39,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="vi" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
+    <html lang="vi" suppressHydrationWarning className={cn("font-sans", geist.variable, dancingScript.variable)}>
       <body className={`${manrope.variable} font-sans`}>
         <Providers>
           <TooltipProvider>

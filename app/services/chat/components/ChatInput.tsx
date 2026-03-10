@@ -27,7 +27,7 @@ export function ChatInput() {
                 </Button>
             </div>
             <p className="text-[10px] text-slate-400 text-center uppercase tracking-widest font-medium">
-                Vết Lành AI không thay thế chẩn đoán y khoa
+                <span className="font-dancing font-bold text-sm">Vết Lành</span> AI không thay thế chẩn đoán y khoa
             </p>
         </div>
     );

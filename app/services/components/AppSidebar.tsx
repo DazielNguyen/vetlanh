@@ -51,7 +51,7 @@ export function AppSidebar() {
                         <Image src="/images/logo.svg" alt="Vết Lành Logo" width={24} height={24} />
                     </div>
                     <div className="flex flex-col flex-1">
-                        <span className="text-lg font-extrabold tracking-tight text-slate-800 truncate">VẾT LÀNH</span>
+                        <span className="text-[1.35rem] font-dancing font-bold tracking-tight text-slate-800 truncate">Vết Lành</span>
                         <span className="text-[10px] text-slate-400 font-medium truncate">Healing & Peace</span>
                     </div>
                 </Link>
