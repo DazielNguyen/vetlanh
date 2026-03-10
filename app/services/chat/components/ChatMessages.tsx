@@ -25,7 +25,7 @@ const suggestedExperts = [
         badgeColor: "text-red-500",
         status: "Có lịch hôm nay",
         statusColor: "text-emerald-500",
-        avatar: "https://ui.shadcn.com/avatars/03.png",
+        avatar: "/images/placeholder-user.jpg",
     },
     {
         name: "ThS. Mark Nguyễn",
@@ -34,7 +34,7 @@ const suggestedExperts = [
         badgeColor: "text-primary",
         status: "Lịch tiếp: Ngày mai",
         statusColor: "text-amber-500",
-        avatar: "https://ui.shadcn.com/avatars/04.png",
+        avatar: "/images/placeholder-user.jpg",
     },
 ];
 

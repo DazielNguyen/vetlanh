@@ -12,7 +12,7 @@ export function RecommendedExperts() {
             <div className="space-y-3">
                 <Card className="border-none shadow-sm rounded-2xl flex items-center p-3 gap-4 hover:shadow-md transition cursor-pointer">
                     <Avatar className="w-12 h-12">
-                        <AvatarImage src="https://ui.shadcn.com/avatars/03.png" />
+                        <AvatarImage src="/images/placeholder-user.jpg" />
                         <AvatarFallback>AN</AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
@@ -26,7 +26,7 @@ export function RecommendedExperts() {
 
                 <Card className="border-none shadow-sm rounded-2xl flex items-center p-3 gap-4 hover:shadow-md transition cursor-pointer">
                     <Avatar className="w-12 h-12">
-                        <AvatarImage src="https://ui.shadcn.com/avatars/04.png" />
+                        <AvatarImage src="/images/placeholder-user.jpg" />
                         <AvatarFallback>TM</AvatarFallback>
                     </Avatar>
                     <div className="flex-1">

@@ -12,7 +12,7 @@ const upcomingAppointments = [
         typeIcon: Video,
         status: "Sắp diễn ra",
         statusColor: "bg-emerald-50 text-emerald-600",
-        avatar: "https://ui.shadcn.com/avatars/03.png",
+        avatar: "/images/placeholder-user.jpg",
     },
     {
         expert: "ThS. Lê Minh Đức",
@@ -23,7 +23,7 @@ const upcomingAppointments = [
         typeIcon: MapPin,
         status: "Đã xác nhận",
         statusColor: "bg-blue-50 text-blue-600",
-        avatar: "https://ui.shadcn.com/avatars/04.png",
+        avatar: "/images/placeholder-user.jpg",
     },
 ];
 

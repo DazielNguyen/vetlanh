@@ -12,7 +12,7 @@ const featuredExperts = [
         experience: "12 năm kinh nghiệm",
         tags: ["Lo âu", "Sang chấn", "+2"],
         price: "850.000đ / buổi",
-        avatar: "https://ui.shadcn.com/avatars/03.png",
+        avatar: "/images/placeholder-user.jpg",
     },
     {
         name: "ThS. Lê Minh Đức",
@@ -23,7 +23,7 @@ const featuredExperts = [
         experience: "8 năm kinh nghiệm",
         tags: ["Mối quan hệ", "Trầm cảm", "+1"],
         price: "600.000đ / buổi",
-        avatar: "https://ui.shadcn.com/avatars/04.png",
+        avatar: "/images/placeholder-user.jpg",
     },
     {
         name: "TS. Trần Thị Lan Anh",
@@ -34,7 +34,7 @@ const featuredExperts = [
         experience: "15 năm kinh nghiệm",
         tags: ["PTSD", "Sang chấn", "+3"],
         price: "1.200.000đ / buổi",
-        avatar: "https://ui.shadcn.com/avatars/05.png",
+        avatar: "/images/placeholder-user.jpg",
     },
 ];
 

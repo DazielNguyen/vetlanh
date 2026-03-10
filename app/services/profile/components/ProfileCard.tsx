@@ -8,7 +8,7 @@ export function ProfileCard() {
                 <div className="h-24 bg-gradient-to-br from-primary/30 to-[#C9E9D2]/50" />
                 <CardContent className="p-5 -mt-12 text-center space-y-3">
                     <img
-                        src="https://ui.shadcn.com/avatars/02.png"
+                        src="/images/placeholder-user.jpg"
                         alt="Avatar"
                         className="w-20 h-20 rounded-full border-4 border-white shadow-md mx-auto object-cover"
                     />

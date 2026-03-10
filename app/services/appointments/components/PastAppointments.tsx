@@ -9,7 +9,7 @@ const pastAppointments = [
         date: "05/03/2026",
         time: "09:00 - 10:00",
         rating: 5,
-        avatar: "https://ui.shadcn.com/avatars/01.png",
+        avatar: "/images/placeholder-user.jpg",
     },
     {
         expert: "ThS. Đặng Minh Châu",
@@ -17,7 +17,7 @@ const pastAppointments = [
         date: "28/02/2026",
         time: "16:00 - 17:00",
         rating: 4,
-        avatar: "https://ui.shadcn.com/avatars/02.png",
+        avatar: "/images/placeholder-user.jpg",
     },
 ];
 

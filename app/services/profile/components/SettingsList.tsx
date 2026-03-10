@@ -1,3 +1,5 @@
+"use client";
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { User, Bell, Shield, Palette, Globe, CreditCard, LogOut, ChevronRight, Moon, Sun } from "lucide-react";
@@ -65,7 +67,14 @@ export function SettingsList() {
             </Card>
 
             {/* Logout */}
-            <Button variant="outline" className="w-full rounded-xl border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600 font-semibold flex items-center justify-center gap-2">
+            <Button
+                variant="outline"
+                className="w-full rounded-xl border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600 font-semibold flex items-center justify-center gap-2"
+                onClick={() => {
+                    document.cookie = "authToken=; max-age=0; path=/;";
+                    window.location.href = "/login";
+                }}
+            >
                 <LogOut className="w-4 h-4" />
                 Đăng xuất
             </Button>

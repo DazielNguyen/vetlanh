@@ -9,7 +9,7 @@ const experts = [
         experience: "6 năm",
         rating: 4.7,
         price: "500.000đ/ca",
-        avatar: "https://ui.shadcn.com/avatars/01.png",
+        avatar: "/images/placeholder-user.jpg",
         badge: null,
     },
     {
@@ -18,7 +18,7 @@ const experts = [
         experience: "10 năm",
         rating: 4.9,
         price: "750.000đ/ca",
-        avatar: "https://ui.shadcn.com/avatars/02.png",
+        avatar: "/images/placeholder-user.jpg",
         badge: null,
     },
     {
@@ -27,7 +27,7 @@ const experts = [
         experience: "4 năm",
         rating: 4.5,
         price: "450.000đ/ca",
-        avatar: "https://ui.shadcn.com/avatars/03.png",
+        avatar: "/images/placeholder-user.jpg",
         badge: "Mới",
     },
 ];
