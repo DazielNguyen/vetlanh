@@ -23,6 +23,11 @@ export default function LoginPage() {
             // eyJyb2xlIjogIlJPTEVfU1RVREVOVCJ9 is Base64 for {"role": "ROLE_STUDENT"}
             document.cookie = "authToken=fake.eyJyb2xlIjogIlJPTEVfU1RVREVOVCJ9.fake; path=/";
             router.push("/services");
+        } else if (email === "admin@gmail.com" && password === "admin@1234") {
+            // Set a mock JWT cookie with ROLE_ADMIN
+            // eyJyb2xlIjogIlJPTEVfQURNSU4ifQ== is Base64 for {"role": "ROLE_ADMIN"}
+            document.cookie = "authToken=fake.eyJyb2xlIjogIlJPTEVfQURNSU4ifQ==.fake; path=/";
+            router.push("/admin/dashboard");
         } else {
             setError("Tài khoản hoặc mật khẩu không chính xác.");
         }
