@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Dumbbell, MessageSquare, Users, User, PanelLeftClose, PanelLeftOpen, CalendarDays, Settings } from "lucide-react";
+import { Home, Dumbbell, MessageSquare, Users, User, PanelLeftClose, PanelLeftOpen, CalendarDays, Settings, LogOut } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -85,10 +85,22 @@ export function AppSidebar() {
                 </SidebarGroup>
             </SidebarContent>
 
-            <SidebarFooter className="p-4 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:pb-4">
+            <SidebarFooter className="p-4 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:pb-4 space-y-3">
                 <Button className="w-full bg-[#C9E9D2] hover:bg-[#C9E9D2]/90 text-slate-800 rounded-xl py-6 font-bold shadow-sm flex items-center gap-2 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:rounded-full overflow-hidden transition-all group-data-[collapsible=icon]:justify-center">
                     <span className="text-xl group-data-[collapsible=icon]:text-base group-data-[collapsible=icon]:!mr-0">🧘‍♀️</span>
                     <span className="group-data-[collapsible=icon]:hidden truncate">Bắt đầu thiền</span>
+                </Button>
+
+                <Button
+                    variant="ghost"
+                    className="w-full text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl justify-start group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
+                    onClick={() => {
+                        document.cookie = "authToken=; max-age=0; path=/;";
+                        window.location.href = "/login";
+                    }}
+                >
+                    <LogOut className="w-5 h-5 mr-2 group-data-[collapsible=icon]:mr-0" />
+                    <span className="group-data-[collapsible=icon]:hidden">Đăng xuất</span>
                 </Button>
             </SidebarFooter>
         </Sidebar>
