@@ -41,7 +41,6 @@ export function middleware(request: NextRequest) {
     "/login",
     "/register",
     "/reset-password",
-    "/services", // Temporarily make it public so we don't infinitely trap people if something fails, but we protect it later
     "/supscription",
   ];
   const authRoutes = ["/login", "/register", "/reset-password"];
