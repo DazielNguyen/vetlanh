@@ -10,7 +10,7 @@ export function CurrentHealingPath() {
             <div className="space-y-4">
 
                 {/* Task 1 - Active */}
-                <Card className="border border-slate-100 shadow-sm rounded-[24px] flex items-center p-6 bg-white">
+                <Card className="border border-slate-100 shadow-sm rounded-[24px] flex flex-row items-center p-6 bg-white">
                     <div className="text-[#6D8A96] shrink-0 pl-2">
                         <Wind className="w-8 h-8" strokeWidth={2} />
                     </div>
@@ -28,7 +28,7 @@ export function CurrentHealingPath() {
                 </Card>
 
                 {/* Task 2 - Locked */}
-                <Card className="border border-slate-100 shadow-sm rounded-[24px] flex items-center p-6 bg-white">
+                <Card className="border border-slate-100 shadow-sm rounded-[24px] flex flex-row items-center p-6 bg-white">
                     <div className="text-[#1E293B] shrink-0 pl-2">
                         <PenLine className="w-8 h-8" strokeWidth={2} />
                     </div>
@@ -46,7 +46,7 @@ export function CurrentHealingPath() {
                 </Card>
 
                 {/* Task 3 - Upcoming (Dashed border) */}
-                <Card className="border-2 border-dashed border-slate-200 shadow-none rounded-[24px] flex items-center p-6 bg-[#FCFDFD] opacity-80">
+                <Card className="border-2 border-dashed border-slate-200 shadow-none rounded-[24px] flex flex-row items-center p-6 bg-[#FCFDFD] opacity-80">
                     <div className="text-[#94A3B8] shrink-0 pl-2">
                         <Moon className="w-8 h-8 fill-current opacity-30" strokeWidth={2} />
                     </div>
