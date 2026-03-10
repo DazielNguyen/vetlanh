@@ -52,7 +52,7 @@ export function ExpertsList() {
                 {experts.map((expert) => (
                     <Card
                         key={expert.name}
-                        className="border border-slate-100 shadow-sm rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition"
+                        className="border border-slate-100 shadow-sm rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-4 hover:shadow-md transition"
                     >
                         {/* Avatar */}
                         <img
