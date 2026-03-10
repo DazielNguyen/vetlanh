@@ -421,6 +421,6 @@ export default function AdminClientDetailsPage() {
                 </div>
 
             </div>
-        </div >
+        </div>
     );
 }
