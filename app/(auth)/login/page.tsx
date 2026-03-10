@@ -19,6 +19,9 @@ export default function LoginPage() {
         setError("");
 
         if (email === "user@gmail.com" && password === "user@1234") {
+            // Set a mock JWT cookie with ROLE_STUDENT
+            // eyJyb2xlIjogIlJPTEVfU1RVREVOVCJ9 is Base64 for {"role": "ROLE_STUDENT"}
+            document.cookie = "authToken=fake.eyJyb2xlIjogIlJPTEVfU1RVREVOVCJ9.fake; path=/";
             router.push("/services");
         } else {
             setError("Tài khoản hoặc mật khẩu không chính xác.");

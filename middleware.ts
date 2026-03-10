@@ -38,7 +38,6 @@ export function middleware(request: NextRequest) {
   const publicRoutes = [
     "/",
     "/landing",
-    "/services",
     "/login",
     "/register",
     "/reset-password",
