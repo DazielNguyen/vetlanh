@@ -9,7 +9,7 @@ export default function Header() {
       {/* Announcement Banner */}
       <div className="bg-primary text-primary-foreground py-2 px-4 text-center text-sm font-medium tracking-wide flex items-center justify-center gap-2">
         <Sparkles className="h-4 w-4" />
-        Vết Lành - Hành trình chữa lành tâm hồn & tìm lại sự bình yên trong bạn.
+        <span className="font-dancing font-bold text-[1.1rem]">Vết Lành</span> - Hành trình chữa lành tâm hồn & tìm lại sự bình yên trong bạn.
       </div>
 
       {/* Sticky Navigation */}
@@ -21,7 +21,7 @@ export default function Header() {
               <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
                 <Image src="/images/logo.svg" alt="Vết Lành Logo" width={24} height={24} className="text-primary" />
               </div>
-              <span className="text-2xl font-extrabold tracking-tight text-primary">VẾT LÀNH</span>
+              <span className="text-[1.75rem] font-bold tracking-tight text-primary font-dancing">Vết Lành</span>
             </Link>
 
             {/* Nav Links */}

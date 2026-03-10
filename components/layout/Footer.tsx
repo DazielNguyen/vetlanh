@@ -13,7 +13,7 @@ export default function Footer() {
               <div className="w-8 h-8 rounded-full flex items-center justify-center bg-white/10">
                 <Image src="/images/logo.svg" alt="Vết Lành Logo" width={20} height={20} className="brightness-0 invert" />
               </div>
-              <span className="text-xl font-bold tracking-tight">VẾT LÀNH</span>
+              <span className="text-[1.5rem] font-bold tracking-tight font-dancing">Vết Lành</span>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
               Vì một Việt Nam hạnh phúc và bình an hơn mỗi ngày.
@@ -62,7 +62,7 @@ export default function Footer() {
         </div>
 
         <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
-          <p>© {new Date().getFullYear()} VẾT LÀNH. Mọi quyền được bảo lưu.</p>
+          <p>© {new Date().getFullYear()} <span className="font-dancing font-bold text-sm">Vết Lành</span>. Mọi quyền được bảo lưu.</p>
           <div className="flex gap-6">
             <a className="hover:text-white" href="#">Chính sách bảo mật</a>
             <a className="hover:text-white" href="#">Điều khoản sử dụng</a>
