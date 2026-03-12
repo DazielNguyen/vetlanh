@@ -39,7 +39,7 @@ export default function HeroSection() {
                                 <div className="flex items-center gap-3 mb-3">
                                     <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold">AI</div>
                                     <div>
-                                        <div className="text-sm font-bold text-slate-800"><span className="font-dancing">Vết Lành</span> AI</div>
+                                        <div className="text-sm font-bold text-slate-800"><span className="font-dancing">Vết Lành AI</span></div>
                                         <div className="text-[10px] text-emerald-600 font-medium">Đang hoạt động</div>
                                     </div>
                                 </div>
