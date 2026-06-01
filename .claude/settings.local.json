@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python .claude/hooks/session_init.py)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(python .claude/hooks/subagent_init.py)",
+      "Bash(python .claude/hooks/dev_rules_reminder.py)",
+      "Bash(python .claude/hooks/caveman_watch.py)",
+      "Bash(python .claude/hooks/suggest_compact.py)",
+      "Bash(python .claude/hooks/build_check.py)",
+      "Bash(python .claude/hooks/simplify_gate.py)"
+    ]
+  }
+}
