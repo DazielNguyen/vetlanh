@@ -1,35 +1,40 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, Mail, Lock } from "lucide-react";
+import { ArrowRight, Mail, Lock, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
+import { fetchAuth } from "@/lib/api/services/fetchAuth";
 
 export default function LoginPage() {
-    const router = useRouter();
+    const { login, isLoading, error } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError("");
+        try {
+            await login({ email, password });
+        } catch {
+            // Error already shown via toast inside useAuth
+        }
+    };
 
-        if (email === "user@gmail.com" && password === "user@1234") {
-            // Set a mock JWT cookie with ROLE_STUDENT
-            // eyJyb2xlIjogIlJPTEVfU1RVREVOVCJ9 is Base64 for {"role": "ROLE_STUDENT"}
-            document.cookie = "authToken=fake.eyJyb2xlIjogIlJPTEVfU1RVREVOVCJ9.fake; path=/";
-            router.push("/services");
-        } else if (email === "admin@gmail.com" && password === "admin@1234") {
-            // Set a mock JWT cookie with ROLE_ADMIN
-            // eyJyb2xlIjogIlJPTEVfQURNSU4ifQ== is Base64 for {"role": "ROLE_ADMIN"}
-            document.cookie = "authToken=fake.eyJyb2xlIjogIlJPTEVfQURNSU4ifQ==.fake; path=/";
-            router.push("/admin/dashboard");
-        } else {
-            setError("Tài khoản hoặc mật khẩu không chính xác.");
+    const handleGoogleLogin = async () => {
+        try {
+            const { authorization_url } = await fetchAuth.googleLogin();
+            // Validate origin before redirect to prevent open-redirect attacks
+            if (!authorization_url.startsWith("https://accounts.google.com/")) {
+                toast.error("Không thể kết nối Google. Thử lại sau.");
+                return;
+            }
+            window.location.href = authorization_url;
+        } catch {
+            toast.error("Không thể kết nối Google. Thử lại sau.");
         }
     };
 
@@ -47,6 +52,7 @@ export default function LoginPage() {
                             {error}
                         </div>
                     )}
+
                     <div className="space-y-2.5">
                         <Label htmlFor="email" className="text-slate-700 font-semibold ml-1">Email</Label>
                         <div className="relative">
@@ -88,9 +94,15 @@ export default function LoginPage() {
                         </div>
                     </div>
 
-                    <Button type="submit" className="w-full h-12 text-base font-bold rounded-2xl bg-primary hover:bg-slate-800 text-white shadow-md active:scale-[0.98] transition-all group">
-                        Đăng nhập
-                        <ArrowRight className="ml-2 h-4 w-4 opacity-70 group-hover:translate-x-1 transition-transform" />
+                    <Button type="submit" disabled={isLoading} className="w-full h-12 text-base font-bold rounded-2xl bg-primary hover:bg-slate-800 text-white shadow-md active:scale-[0.98] transition-all group">
+                        {isLoading ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                            <>
+                                Đăng nhập
+                                <ArrowRight className="ml-2 h-4 w-4 opacity-70 group-hover:translate-x-1 transition-transform" />
+                            </>
+                        )}
                     </Button>
                 </form>
 
@@ -99,7 +111,7 @@ export default function LoginPage() {
                 </div>
 
                 <div className="mt-8 grid grid-cols-2 gap-4">
-                    <Button variant="outline" className="h-12 w-full rounded-2xl border-slate-200 bg-white hover:bg-slate-50 hover:text-slate-800 text-slate-600 font-semibold shadow-sm overflow-hidden flex items-center justify-center">
+                    <Button type="button" onClick={handleGoogleLogin} variant="outline" className="h-12 w-full rounded-2xl border-slate-200 bg-white hover:bg-slate-50 hover:text-slate-800 text-slate-600 font-semibold shadow-sm overflow-hidden flex items-center justify-center">
                         <svg className="w-5 h-5 mr-2" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
                             <path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path>
                         </svg>

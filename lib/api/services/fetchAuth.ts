@@ -1,4 +1,3 @@
-import type { ApiResponse } from "@/types/api";
 import apiService from "../core";
 
 // ====================================
@@ -9,42 +8,59 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface RegisterRequest {
+  email: string;
+  password: string;
+}
+
+// BE returns snake_case — no refresh token
 export interface LoginResponse {
-  isSuccess: boolean;
-  message: string;
-  data: {
-    accessToken: string;
-    refreshToken: string;
-    expiresAt: string;
-    tokenType: string;
-  };
-  metadata: unknown;
+  access_token: string;
+  token_type: "bearer";
+}
+
+export interface RegisteredUser {
+  id: number;
+  email: string;
+  is_active: boolean;
+  is_verified: boolean;
+  goals: string[];
+  display_name: string | null;
+  avatar_url: string | null;
+  timezone: string | null;
 }
 
 // ====================================
-// Service — MẪU CRUD operations
+// Service
 // ====================================
 export const fetchAuth = {
-  /**
-   * POST /api/v1/auth/login
-   */
   login: async (data: LoginRequest): Promise<LoginResponse> => {
     const response = await apiService.post<LoginResponse>("api/v1/auth/login", data);
     return response.data;
   },
 
-  /**
-   * POST /api/v1/auth/register
-   */
-  register: async (data: LoginRequest): Promise<LoginResponse> => {
-    const response = await apiService.post<LoginResponse>("api/v1/auth/register", data);
+  register: async (data: RegisterRequest): Promise<RegisteredUser> => {
+    const response = await apiService.post<RegisteredUser>("api/v1/auth/register", data);
     return response.data;
   },
 
-  /**
-   * POST /api/v1/auth/logout
-   */
-  logout: async (): Promise<void> => {
-    await apiService.post("api/v1/auth/logout");
+  verifyEmail: async (token: string): Promise<{ message: string }> => {
+    const response = await apiService.get<{ message: string }>("api/v1/auth/verify", { token });
+    return response.data;
+  },
+
+  resendVerification: async (email: string): Promise<{ message: string }> => {
+    const response = await apiService.post<{ message: string }>("api/v1/auth/resend-verification", { email });
+    return response.data;
+  },
+
+  googleLogin: async (): Promise<{ authorization_url: string }> => {
+    const response = await apiService.get<{ authorization_url: string }>("api/v1/auth/google");
+    return response.data;
+  },
+
+  googleCallback: async (code: string): Promise<LoginResponse> => {
+    const response = await apiService.get<LoginResponse>("api/v1/auth/google/callback", { code });
+    return response.data;
   },
 };

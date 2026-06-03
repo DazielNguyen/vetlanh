@@ -1,6 +1,7 @@
 "use client";
 
-import { Home, Dumbbell, MessageSquare, Users, User, PanelLeftClose, PanelLeftOpen, CalendarDays, Settings, LogOut } from "lucide-react";
+import { Home, Dumbbell, MessageSquare, PanelLeftClose, PanelLeftOpen, Settings, LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -20,9 +21,7 @@ import {
 
 const navItems = [
     { title: "Trang chủ", url: "/services", icon: Home, exact: true },
-    { title: "Chuyên gia", url: "/services/experts", icon: Users, exact: false },
     { title: "Bài tập", url: "/services/exercises", icon: Dumbbell, exact: false },
-    { title: "Lịch hẹn", url: "/services/appointments", icon: CalendarDays, exact: false },
     { title: "Tin nhắn", url: "/services/chat", icon: MessageSquare, exact: false },
     { title: "Cài đặt", url: "/services/profile", icon: Settings, exact: false },
 ];
@@ -42,6 +41,7 @@ function SidebarToggleButton() {
 
 export function AppSidebar() {
     const pathname = usePathname();
+    const { logout } = useAuth();
 
     return (
         <Sidebar collapsible="icon" className="border-r border-border/40 bg-[#FEF9F2] text-slate-800">
@@ -94,10 +94,7 @@ export function AppSidebar() {
                 <Button
                     variant="ghost"
                     className="w-full text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl justify-start group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0"
-                    onClick={() => {
-                        document.cookie = "authToken=; max-age=0; path=/;";
-                        window.location.href = "/login";
-                    }}
+                    onClick={logout}
                 >
                     <LogOut className="w-5 h-5 mr-2 group-data-[collapsible=icon]:mr-0" />
                     <span className="group-data-[collapsible=icon]:hidden">Đăng xuất</span>

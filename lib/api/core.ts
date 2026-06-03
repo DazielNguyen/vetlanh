@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import { deleteCookie } from "cookies-next";
 import { store } from "@/lib/redux/store";
 import { logout } from "@/lib/redux/slices/authSlice";
 
@@ -17,13 +16,6 @@ export interface RequestParams {
 
 class ApiService {
   private client: AxiosInstance;
-  private authToken: string | null = null;
-  private isRefreshing = false;
-  // Queue: lưu các request 401 để retry sau khi refresh token thành công
-  private failedQueue: Array<{
-    resolve: (token: string) => void;
-    reject: (error: any) => void;
-  }> = [];
 
   constructor(baseURL: string, timeout = 600000) {
     this.client = axios.create({
@@ -34,100 +26,35 @@ class ApiService {
     this.setupInterceptors();
   }
 
-  private processQueue(error: any, token: string | null = null) {
-    this.failedQueue.forEach((prom) => {
-      if (error) prom.reject(error);
-      else prom.resolve(token!);
-    });
-    this.failedQueue = [];
-  }
-
   private setupInterceptors() {
-    // Request Interceptor: tự động đính Bearer token
     this.client.interceptors.request.use(
       (config) => {
         const token = store.getState().auth.token;
         if (token) config.headers.Authorization = `Bearer ${token}`;
-        // FormData: bỏ Content-Type để browser tự set boundary
         if (config.data instanceof FormData) delete config.headers["Content-Type"];
         return config;
       },
       (error) => Promise.reject(error)
     );
 
-    // Response Interceptor: xử lý 401 — refresh token rồi retry
     this.client.interceptors.response.use(
       (response) => response,
-      async (error) => {
-        const originalRequest = error.config;
+      (error) => {
+        if (error.response?.status === 401) {
+          // logout() reducer handles cookie deletion
+          store.dispatch(logout());
 
-        if (error.response?.status === 401 && !originalRequest._retry) {
-          // Nếu đang refresh, thêm request vào queue để retry sau
-          if (this.isRefreshing) {
-            return new Promise((resolve, reject) => {
-              this.failedQueue.push({ resolve, reject });
-            })
-              .then((token) => {
-                originalRequest.headers["Authorization"] = "Bearer " + token;
-                return this.client(originalRequest);
-              })
-              .catch((err) => Promise.reject(err));
+          if (typeof window !== "undefined") {
+            window.dispatchEvent(new Event("logout"));
           }
 
-          originalRequest._retry = true;
-          this.isRefreshing = true;
-
-          try {
-            const refreshToken = store.getState().auth.refreshToken;
-            if (!refreshToken) throw new Error("No refresh token");
-
-            // Dùng axios thuần để tránh vòng lặp interceptor
-            const response = await axios.post(
-              `${process.env.NEXT_PUBLIC_API_URL}api/v1/auth/refresh-token`,
-              { refreshToken },
-              { headers: { "Content-Type": "application/json" } }
-            );
-
-            if (response.data?.data?.accessToken) {
-              const { accessToken, refreshToken: newRefreshToken } = response.data.data;
-
-              // Dynamic import để tránh circular dependency
-              const { setTokenWithRefresh } = await import("@/lib/redux/slices/authSlice");
-              const { setCookie } = await import("cookies-next");
-              const { getAuthCookieConfig } = await import("@/utils/cookieConfig");
-
-              store.dispatch(setTokenWithRefresh({ accessToken, refreshToken: newRefreshToken }));
-              setCookie("authToken", accessToken, getAuthCookieConfig());
-              this.setAuthToken(accessToken);
-
-              this.processQueue(null, accessToken);
-              this.isRefreshing = false;
-
-              originalRequest.headers["Authorization"] = "Bearer " + accessToken;
-              return this.client(originalRequest);
-            }
-
-            throw new Error("Invalid refresh response");
-          } catch (refreshError) {
-            this.isRefreshing = false;
-            this.processQueue(refreshError, null);
-
-            deleteCookie("authToken", { path: "/" });
-            store.dispatch(logout());
-
-            if (typeof window !== "undefined") {
-              window.dispatchEvent(new Event("logout"));
-            }
-
-            return Promise.reject({
-              code: 401,
-              message: "Session expired. Please login again.",
-              status: false,
-            } as ApiError);
-          }
+          return Promise.reject({
+            code: 401,
+            message: "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.",
+            status: false,
+          } as ApiError);
         }
 
-        // Standardize error format cho các lỗi khác
         const apiError: ApiError = {
           code: error.response?.status,
           message: error.response?.data?.message || error.message || "Có lỗi xảy ra",
@@ -138,10 +65,6 @@ class ApiService {
         return Promise.reject(apiError);
       }
     );
-  }
-
-  setAuthToken(token: string | null) {
-    this.authToken = token;
   }
 
   async request<T>(config: AxiosRequestConfig): Promise<AxiosResponse<T>> {
@@ -186,7 +109,6 @@ class ApiService {
   }
 }
 
-// Singleton instance
 const apiService = new ApiService(process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/");
 
 export default apiService;
