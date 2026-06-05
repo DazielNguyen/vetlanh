@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,10 +11,27 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { fetchAuth } from "@/lib/api/services/fetchAuth";
 
+function toViError(msg: string): string {
+    if (msg.toLowerCase().includes("already exists")) {
+        return "Email này đã được đăng ký bằng mật khẩu. Vui lòng đăng nhập bằng email và mật khẩu.";
+    }
+    return "Đăng nhập Google thất bại. Vui lòng thử lại.";
+}
+
 export default function LoginPage() {
     const { login, isLoading, error } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const searchParams = useSearchParams();
+    const router = useRouter();
+
+    useEffect(() => {
+        const oauthError = searchParams.get("error");
+        if (!oauthError) return;
+        toast.error(toViError(oauthError), { duration: 8000 });
+        // Remove ?error= from URL without adding a history entry
+        router.replace("/login", { scroll: false });
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -27,13 +45,22 @@ export default function LoginPage() {
     const handleGoogleLogin = async () => {
         try {
             const { authorization_url } = await fetchAuth.googleLogin();
-            // Validate origin before redirect to prevent open-redirect attacks
-            if (!authorization_url.startsWith("https://accounts.google.com/")) {
+            // Security: only allow redirect to Google's OAuth endpoint
+            try {
+                const parsed = new URL(authorization_url);
+                if (parsed.hostname !== "accounts.google.com") {
+                    console.error("[Google OAuth] Unexpected redirect host:", parsed.hostname);
+                    toast.error("Không thể kết nối Google. Thử lại sau.");
+                    return;
+                }
+            } catch {
+                console.error("[Google OAuth] Invalid authorization_url:", authorization_url);
                 toast.error("Không thể kết nối Google. Thử lại sau.");
                 return;
             }
             window.location.href = authorization_url;
-        } catch {
+        } catch (err) {
+            console.error("[Google OAuth] Failed to get authorization URL:", err);
             toast.error("Không thể kết nối Google. Thử lại sau.");
         }
     };

@@ -58,9 +58,4 @@ export const fetchAuth = {
     const response = await apiService.get<{ authorization_url: string }>("api/v1/auth/google");
     return response.data;
   },
-
-  googleCallback: async (code: string): Promise<LoginResponse> => {
-    const response = await apiService.get<LoginResponse>("api/v1/auth/google/callback", { code });
-    return response.data;
-  },
 };

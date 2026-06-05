@@ -54,8 +54,12 @@ class ApiService {
     this.client.interceptors.response.use(
       (response) => response,
       (error) => {
-        if (error.response?.status === 401) {
-          // logout() reducer handles cookie deletion
+        const hadToken = !!error.config?.headers?.Authorization;
+
+        if (error.response?.status === 401 && hadToken) {
+          // Only treat as "session expired" when the request carried a token.
+          // A 401 on an unauthenticated endpoint (e.g. /auth/login wrong credentials)
+          // must NOT trigger logout — it means "bad credentials", not "expired session".
           const store = getStore();
           if (store) store.dispatch(getLogout()());
 
@@ -70,9 +74,14 @@ class ApiService {
           } as ApiError);
         }
 
+        // FastAPI uses "detail" for error messages; fall back to "message" then generic.
         const apiError: ApiError = {
           code: error.response?.status,
-          message: error.response?.data?.message || error.message || "Có lỗi xảy ra",
+          message:
+            error.response?.data?.detail ||
+            error.response?.data?.message ||
+            error.message ||
+            "Có lỗi xảy ra",
           status: false,
           data: error.response?.data,
         };
