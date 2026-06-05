@@ -11,7 +11,7 @@ import { ArrowRight, Mail, Lock, Loader2, User } from "lucide-react";
 import { toast } from "sonner";
 import { fetchAuth } from "@/lib/api/services/fetchAuth";
 import { useAppDispatch } from "@/lib/redux/hooks";
-import { loginAsync, clearError, setToken, decodeToken } from "@/lib/redux/slices/authSlice";
+import { setToken, decodeToken } from "@/lib/redux/slices/authSlice";
 
 // ── Module-level helpers ────────────────────────────────────────────────────
 
@@ -90,22 +90,13 @@ export default function RegisterPage() {
 
         setError(null);
         setIsLoading(true);
-        let registerOk = false;
         try {
             await fetchAuth.register({ email, password: emailPassword });
-            registerOk = true;
-            await dispatch(loginAsync({ email, password: emailPassword })).unwrap();
-            toast.success("Đăng ký thành công! Chào mừng bạn đến với Vết Lành.");
-            router.push("/services");
+            toast.success("Đăng ký thành công! Hãy kiểm tra email để xác minh tài khoản.");
+            router.push("/auth/verify-pending");
         } catch (err) {
             const msg = extractError(err);
-            if (!registerOk) {
-                setError(mapRegisterError(msg));
-            } else {
-                dispatch(clearError());
-                toast.error("Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.");
-                router.push("/login");
-            }
+            setError(mapRegisterError(msg));
         } finally {
             setIsLoading(false);
         }
@@ -125,6 +116,10 @@ export default function RegisterPage() {
         try {
             const { access_token } = await fetchAuth.registerWithUsername({ username, password: usernamePassword });
             const user = decodeToken(access_token);
+            if (!user) {
+                setError("Không thể xác thực token. Vui lòng đăng nhập lại.");
+                return;
+            }
             dispatch(setToken({ token: access_token, user }));
             toast.success("Đăng ký thành công! Chào mừng bạn đến với Vết Lành.");
             toast("Thêm email để khôi phục tài khoản nếu quên mật khẩu.", {
