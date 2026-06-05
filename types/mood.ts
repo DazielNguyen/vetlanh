@@ -17,11 +17,16 @@ export interface CreateMoodEntryRequest {
   note?: string;
 }
 
+export interface InsightItem {
+  type: "overall_average" | "day_of_week" | "factor_correlation";
+  text: string;
+  delta: number | null;
+}
+
 export interface MoodInsights {
-  summary: string;
-  patterns: string[];
-  suggestions: string[];
-  entry_count: number;
+  total_entries: number;
+  has_enough_data: boolean;
+  insights: InsightItem[];
 }
 
 // Keyed by date string YYYY-MM-DD → mood value 1–5

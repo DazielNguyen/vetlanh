@@ -9,9 +9,17 @@ import { useConversationMessages } from "@/hooks/useChat";
 import { formatDate } from "@/lib/utils/formatDate";
 import type { StreamChatState } from "@/hooks/useStreamChat";
 
+const QUICK_PROMPTS = [
+  "Hôm nay tôi đang cảm thấy lo lắng...",
+  "Tôi cần ai đó lắng nghe",
+  "Giúp tôi giảm căng thẳng",
+  "Tôi muốn chia sẻ cảm xúc của mình",
+];
+
 interface Props {
-  conversationId: string | undefined;
+  conversationId: number | undefined;
   stream: StreamChatState;
+  onPromptSelect: (text: string) => void;
 }
 
 function UserBubble({ content, timestamp }: { content: string; timestamp?: string }) {
@@ -50,7 +58,7 @@ function AssistantBubble({ content, timestamp }: { content: string; timestamp?: 
   );
 }
 
-export function ChatMessages({ conversationId, stream }: Props) {
+export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) {
   const { data: serverMessages, isLoading } = useConversationMessages(conversationId);
   const bottomRef = useRef<HTMLDivElement>(null);
   const { localMessages, streamingText, isStreaming, error } = stream;
@@ -59,10 +67,46 @@ export function ChatMessages({ conversationId, stream }: Props) {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [serverMessages, localMessages, streamingText]);
 
-  if (!conversationId) {
+  const isConversationEmpty =
+    !!conversationId &&
+    !isLoading &&
+    (serverMessages ?? []).length === 0 &&
+    localMessages.length === 0 &&
+    !isStreaming;
+
+  // Welcome state — no conversation, OR conversation exists but has no messages yet
+  if (!conversationId || isConversationEmpty) {
     return (
-      <div className="flex-1 flex items-center justify-center text-sm text-slate-400">
-        Chọn hoặc tạo cuộc hội thoại mới để bắt đầu.
+      <div className="flex-1 flex flex-col items-center justify-center gap-8 px-4 pb-6">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <div className="w-16 h-16 rounded-full bg-[#C9E9D2] flex items-center justify-center text-3xl shadow-sm">
+            🌿
+          </div>
+          <div className="space-y-1.5">
+            <h2 className="font-bold text-slate-800 text-lg">
+              Xin chào! Tôi là{" "}
+              <span className="font-dancing font-bold text-primary text-xl">Vết Lành</span> AI
+            </h2>
+            <p className="text-sm text-slate-500 max-w-xs leading-relaxed">
+              Một người bạn đồng hành sẵn sàng lắng nghe và đồng hành cùng bạn bất cứ lúc nào.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-2 w-full max-w-sm">
+          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider text-center">
+            Bắt đầu bằng...
+          </p>
+          {QUICK_PROMPTS.map((prompt) => (
+            <button
+              key={prompt}
+              onClick={() => onPromptSelect(prompt)}
+              className="text-sm text-left px-4 py-3 rounded-2xl border border-slate-200 bg-white hover:border-primary/40 hover:bg-primary/5 text-slate-600 hover:text-primary transition-all shadow-xs"
+            >
+              {prompt}
+            </button>
+          ))}
+        </div>
       </div>
     );
   }
@@ -78,7 +122,7 @@ export function ChatMessages({ conversationId, stream }: Props) {
   const serverIds = new Set((serverMessages ?? []).map((m) => m.id));
   // Local text messages may be superseded once server messages reload; exercise cards always show
   const pendingLocal = localMessages.filter(
-    (m) => m.kind === "exercise" || !serverIds.has(m.id)
+    (m) => m.kind === "exercise" || !serverIds.has(Number(m.id))
   );
 
   return (
@@ -93,6 +137,8 @@ export function ChatMessages({ conversationId, stream }: Props) {
 
       {pendingLocal.map((msg) => {
         if (msg.kind === "exercise") {
+          const totalSeconds = msg.card.steps.reduce((sum, s) => sum + s.duration_seconds, 0);
+          const minutes = Math.ceil(totalSeconds / 60);
           return (
             <div key={msg.id} className="flex items-start gap-3 max-w-[85%]">
               <div className="w-8 h-8 shrink-0" />
@@ -103,17 +149,15 @@ export function ChatMessages({ conversationId, stream }: Props) {
                   </p>
                   <h4 className="font-bold text-slate-800">{msg.card.title}</h4>
                   <p className="text-xs text-slate-500 leading-relaxed">{msg.card.description}</p>
-                  {msg.card.duration_seconds && (
-                    <p className="text-xs text-emerald-600">
-                      ⏱ {Math.round(msg.card.duration_seconds / 60)} phút
-                    </p>
+                  {minutes > 0 && (
+                    <p className="text-xs text-emerald-600">⏱ {minutes} phút</p>
                   )}
                   <Button
                     asChild
                     size="sm"
                     className="w-full rounded-xl bg-[#C9E9D2] hover:bg-[#C9E9D2]/80 text-slate-800 shadow-none font-semibold"
                   >
-                    <Link href={`/services/exercises/${msg.card.slug}`}>Bắt đầu bài tập</Link>
+                    <Link href={`/services/exercises/${msg.card.id}`}>Bắt đầu bài tập</Link>
                   </Button>
                 </CardContent>
               </Card>

@@ -4,20 +4,23 @@ import type { Conversation, ChatMessage, StreamChunk } from "@/types/chat";
 
 export const fetchChat = {
   createConversation: async (): Promise<Conversation> => {
-    const res = await apiService.post<Conversation>("api/v1/chat/conversations");
+    const res = await apiService.post<Conversation>("api/v1/chat/conversations", { title: null });
     return res.data;
   },
 
-  listConversations: async (): Promise<Conversation[]> => {
-    const res = await apiService.get<Conversation[]>("api/v1/chat/conversations");
+  listConversations: async (q?: string): Promise<Conversation[]> => {
+    const res = await apiService.get<Conversation[]>(
+      "api/v1/chat/conversations",
+      q ? { q } : undefined
+    );
     return res.data;
   },
 
-  deleteConversation: async (id: string): Promise<void> => {
+  deleteConversation: async (id: number): Promise<void> => {
     await apiService.delete(`api/v1/chat/conversations/${id}`);
   },
 
-  getMessages: async (conversationId: string): Promise<ChatMessage[]> => {
+  getMessages: async (conversationId: number): Promise<ChatMessage[]> => {
     const res = await apiService.get<ChatMessage[]>(
       `api/v1/chat/conversations/${conversationId}/messages`
     );
@@ -27,7 +30,7 @@ export const fetchChat = {
   // SSE over POST — Axios cannot consume ReadableStream, so we use native fetch.
   // Token is read once at call time (no refresh token in this BE, so stale risk is minimal).
   streamChatMessage: async function* (
-    conversationId: string,
+    conversationId: number,
     message: string,
     signal: AbortSignal
   ): AsyncGenerator<StreamChunk> {
@@ -36,7 +39,7 @@ export const fetchChat = {
     }
 
     const token = getCookie("authToken");
-    const base = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/").replace(/\/$/, "");
+    const base = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/").replace(/\/$/, "");
     const url = `${base}/api/v1/chat/conversations/${conversationId}/messages`;
 
     const response = await fetch(url, {
@@ -46,12 +49,10 @@ export const fetchChat = {
         "Content-Type": "application/json",
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({ content: message }),
     });
 
     if (!response.ok) {
-      // Mirror the core.ts Axios interceptor: only treat 401 as session expiry when the
-      // request actually carried a token (same hadToken guard as core.ts line 57-65).
       if (response.status === 401 && !!token) {
         const { store } = await import("@/lib/redux/store");
         const { logout } = await import("@/lib/redux/slices/authSlice");

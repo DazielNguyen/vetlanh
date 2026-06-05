@@ -17,7 +17,7 @@ export interface StreamChatState {
   sendMessage: (text: string) => Promise<void>;
 }
 
-export function useStreamChat(conversationId: string | undefined): StreamChatState {
+export function useStreamChat(conversationId: number | undefined): StreamChatState {
   const queryClient = useQueryClient();
   const abortRef = useRef<AbortController | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -59,7 +59,6 @@ export function useStreamChat(conversationId: string | undefined): StreamChatSta
 
   const sendMessage = useCallback(
     async (text: string) => {
-      // Use ref so this check never reads stale state from closure
       if (!conversationId || isStreamingRef.current) return;
 
       setError(null);
@@ -98,6 +97,8 @@ export function useStreamChat(conversationId: string | undefined): StreamChatSta
               assistantText += chunk.content;
               setStreamingText(assistantText);
             }
+          } else if (chunk.type === "done") {
+            // exercise_card and suggest_checkin come in the done event, not chunk
             if (chunk.exercise_card) {
               setLocalMessages((prev) => [
                 ...prev,
@@ -109,10 +110,9 @@ export function useStreamChat(conversationId: string | undefined): StreamChatSta
               ]);
             }
             if (chunk.suggest_checkin) setSuggestCheckin(true);
-          } else if (chunk.type === "done") {
             break;
           } else if (chunk.type === "error") {
-            throw new Error(chunk.content || "Stream error");
+            throw new Error(chunk.detail || "Stream error");
           }
         }
 
@@ -132,7 +132,8 @@ export function useStreamChat(conversationId: string | undefined): StreamChatSta
         // refetchQueries resolves only after the network response — guarantees server data is in
         // cache before we clear optimistic messages, preventing a brief double-render.
         await queryClient.refetchQueries({ queryKey: CHAT_KEYS.messages(conversationId) });
-        setLocalMessages([]);
+        // Keep exercise cards visible after server data loads; clear only text messages
+        setLocalMessages((prev) => prev.filter((m) => m.kind === "exercise"));
       } catch (err: unknown) {
         // AbortError = either timeout abort (error already set) or navigation abort (silent)
         if ((err as Error).name === "AbortError") {

@@ -40,10 +40,8 @@ export function useMoodTrend(period: "week" | "month") {
 export function useMoodInsights() {
   return useQuery({
     queryKey: MOOD_KEYS.insights,
-    queryFn: fetchMood.getInsights,
+    queryFn: () => fetchMood.getInsights(),
     staleTime: STALE.SHORT,
-    // Don't retry on 400 — BE returns 400 when user has fewer than 7 entries
-    retry: false,
   });
 }
 

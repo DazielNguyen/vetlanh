@@ -1,23 +1,41 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { ChevronDown, PlusCircle, Trash2, Loader2, Info } from "lucide-react";
+import { ChevronDown, PlusCircle, Trash2, Loader2, Info, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useQueryClient } from "@tanstack/react-query";
-import { useConversations, useCreateConversation, useDeleteConversation, CHAT_KEYS } from "@/hooks/useChat";
+import { toast } from "sonner";
+import { useConversations, useCreateConversation, useDeleteConversation } from "@/hooks/useChat";
+import { formatRelativeTime } from "@/lib/utils/formatDate";
 import type { Conversation } from "@/types/chat";
 
 interface Props {
-  conversationId: string | undefined;
-  onConversationChange: (id: string) => void;
+  conversationId: number | undefined;
+  onConversationChange: (id: number | undefined) => void;
 }
 
 export function ChatHeader({ conversationId, onConversationChange }: Props) {
   const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState<string | undefined>(undefined);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const queryClient = useQueryClient();
 
-  const { data: conversations } = useConversations();
+  // Debounce search — avoid spamming the API on every keystroke
+  useEffect(() => {
+    const trimmed = searchQuery.trim();
+    if (!trimmed) {
+      setDebouncedQuery(undefined);
+      return;
+    }
+    const timer = setTimeout(() => setDebouncedQuery(trimmed), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Reset search when dropdown closes
+  useEffect(() => {
+    if (!open) setSearchQuery("");
+  }, [open]);
+
+  const { data: conversations } = useConversations(debouncedQuery);
   const { mutate: createConversation, isPending: isCreating } = useCreateConversation();
   const { mutate: deleteConversation } = useDeleteConversation();
 
@@ -43,18 +61,29 @@ export function ChatHeader({ conversationId, onConversationChange }: Props) {
         onConversationChange(conv.id);
         setOpen(false);
       },
+      onError: () => toast.error("Không thể tạo cuộc hội thoại mới"),
     });
   }
 
-  function handleDelete(id: string, e: React.MouseEvent) {
+  function selectNextAfterDelete(deletedId: number) {
+    if (conversationId === deletedId) {
+      const next = conversations?.find((c: Conversation) => c.id !== deletedId);
+      onConversationChange(next?.id);
+    }
+  }
+
+  function handleDelete(id: number, e: React.MouseEvent) {
     e.stopPropagation();
     deleteConversation(id, {
-      onSuccess: () => {
-        if (conversationId === id) {
-          // Read fresh cache after deletion — avoids stale-closure bug
-          const fresh = queryClient.getQueryData<Conversation[]>(CHAT_KEYS.conversations);
-          const next = fresh?.find((c) => c.id !== id);
-          if (next) onConversationChange(next.id);
+      onSuccess: () => selectNextAfterDelete(id),
+      onError: (err) => {
+        const code = (err as { code?: number })?.code;
+        if (code === 404) {
+          // Already gone — still update UI navigation
+          selectNextAfterDelete(id);
+          toast.error("Hội thoại không còn tồn tại");
+        } else {
+          toast.error("Không thể xóa cuộc hội thoại");
         }
       },
     });
@@ -72,9 +101,7 @@ export function ChatHeader({ conversationId, onConversationChange }: Props) {
             className="flex items-center gap-1 font-bold text-slate-800 text-lg hover:text-primary transition"
           >
             <span className="font-dancing font-bold text-[1.2rem] mr-1">Vết Lành</span> AI
-            <ChevronDown
-              className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`}
-            />
+            <ChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} />
           </button>
           <p className="text-xs text-slate-500 truncate max-w-50">{activeTitle}</p>
         </div>
@@ -85,10 +112,35 @@ export function ChatHeader({ conversationId, onConversationChange }: Props) {
       </Button>
 
       {open && (
-        <div className="absolute top-full left-0 mt-1 w-64 bg-white rounded-2xl shadow-lg border border-slate-100 z-50 overflow-hidden">
-          <div className="p-2 space-y-1 max-h-60 overflow-y-auto">
+        <div className="absolute top-full left-0 mt-1 w-72 bg-white rounded-2xl shadow-lg border border-slate-100 z-50 overflow-hidden">
+          {/* Search input */}
+          <div className="p-2 border-b border-slate-100">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 focus-within:border-primary/40 focus-within:bg-white transition-colors">
+              <Search className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Tìm kiếm..."
+                className="flex-1 bg-transparent text-xs text-slate-700 placeholder:text-slate-400 outline-none"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="text-slate-300 hover:text-slate-500 transition"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Conversation list */}
+          <div className="p-2 space-y-0.5 max-h-64 overflow-y-auto">
             {(!conversations || conversations.length === 0) && (
-              <p className="text-xs text-slate-400 px-3 py-2">Chưa có cuộc hội thoại nào.</p>
+              <p className="text-xs text-slate-400 px-3 py-2">
+                {debouncedQuery ? "Không tìm thấy kết quả." : "Chưa có cuộc hội thoại nào."}
+              </p>
             )}
             {conversations?.map((conv: Conversation) => (
               <div
@@ -97,22 +149,40 @@ export function ChatHeader({ conversationId, onConversationChange }: Props) {
                   onConversationChange(conv.id);
                   setOpen(false);
                 }}
-                className={`flex items-center justify-between px-3 py-2 rounded-xl cursor-pointer text-sm transition ${
+                className={`flex items-start justify-between px-3 py-2.5 rounded-xl cursor-pointer transition group ${
                   conv.id === conversationId
-                    ? "bg-primary/10 text-primary font-semibold"
+                    ? "bg-primary/10 text-primary"
                     : "hover:bg-slate-50 text-slate-700"
                 }`}
               >
-                <span className="truncate flex-1">{conv.title}</span>
-                <button
-                  onClick={(e) => handleDelete(conv.id, e)}
-                  className="ml-2 text-slate-300 hover:text-red-400 transition shrink-0"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
+                <div className="flex-1 min-w-0 mr-2">
+                  <p className={`truncate text-sm font-medium ${conv.id === conversationId ? "text-primary" : "text-slate-800"}`}>
+                    {conv.title ?? "Cuộc hội thoại mới"}
+                  </p>
+                  {conv.last_message_preview && (
+                    <p className="truncate text-xs text-slate-400 mt-0.5 leading-tight">
+                      {conv.last_message_preview}
+                    </p>
+                  )}
+                </div>
+                <div className="flex flex-col items-end gap-1.5 shrink-0">
+                  {conv.last_message_at && (
+                    <span className="text-[10px] text-slate-400 whitespace-nowrap">
+                      {formatRelativeTime(conv.last_message_at)}
+                    </span>
+                  )}
+                  <button
+                    onClick={(e) => handleDelete(conv.id, e)}
+                    className="text-slate-300 hover:text-red-400 transition opacity-0 group-hover:opacity-100"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
+
+          {/* New conversation button */}
           <div className="border-t border-slate-100 p-2">
             <button
               onClick={handleCreate}
