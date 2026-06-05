@@ -21,7 +21,11 @@ export default function GoogleCallbackPage() {
         }
 
         dispatch(setToken({ token, user: decodeToken(token) }));
-        router.replace("/services");
+        // Hard navigation so the browser sends a fresh HTTP request.
+        // router.replace is a soft navigation — Next.js may not include the newly
+        // set authToken cookie in the RSC fetch, causing middleware to see no token
+        // and redirect back to /login.
+        window.location.replace("/services");
     }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
