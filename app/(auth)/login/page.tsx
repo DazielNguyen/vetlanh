@@ -14,10 +14,15 @@ import { clearError } from "@/lib/redux/slices/authSlice";
 import { fetchAuth } from "@/lib/api/services/fetchAuth";
 
 // Maps Google OAuth ?error= param to Vietnamese
+// Handles both fastapi-users error codes (underscores) and plain messages
 function toViOAuthError(msg: string): string {
-    if (msg.toLowerCase().includes("already exists")) {
+    const lower = msg.toLowerCase();
+    if (lower.includes("already_exists") || lower.includes("already exists"))
         return "Email này đã được đăng ký bằng mật khẩu. Vui lòng đăng nhập bằng email và mật khẩu.";
-    }
+    if (lower.includes("not_verified") || lower.includes("not verified"))
+        return "Tài khoản chưa xác minh. Vui lòng kiểm tra hộp thư của bạn.";
+    if (lower.includes("bad_credentials") || lower.includes("unauthorized"))
+        return "Đăng nhập Google thất bại. Vui lòng thử lại.";
     return "Đăng nhập Google thất bại. Vui lòng thử lại.";
 }
 
@@ -159,18 +164,12 @@ export default function LoginPage() {
                     <p className="mx-4 mb-0 text-center text-xs font-medium text-slate-400 uppercase tracking-widest">Hoặc</p>
                 </div>
 
-                <div className="mt-8 grid grid-cols-2 gap-4">
+                <div className="mt-8">
                     <Button type="button" onClick={handleGoogleLogin} variant="outline" className="h-12 w-full rounded-2xl border-slate-200 bg-white hover:bg-slate-50 hover:text-slate-800 text-slate-600 font-semibold shadow-sm overflow-hidden flex items-center justify-center">
                         <svg className="w-5 h-5 mr-2" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
                             <path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path>
                         </svg>
-                        Google
-                    </Button>
-                    <Button variant="outline" className="h-12 w-full rounded-2xl border-slate-200 bg-white hover:bg-slate-50 hover:text-slate-800 text-slate-600 font-semibold shadow-sm overflow-hidden flex items-center justify-center">
-                        <svg className="w-5 h-5 mr-2" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="facebook" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                            <path fill="#1877F2" d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z"></path>
-                        </svg>
-                        Facebook
+                        Đăng nhập với Google
                     </Button>
                 </div>
             </div>

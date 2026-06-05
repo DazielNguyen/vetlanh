@@ -1,31 +1,37 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, Mail, Lock, Loader2, CheckCircle } from "lucide-react";
+import { ArrowRight, Mail, Lock, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { fetchAuth } from "@/lib/api/services/fetchAuth";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { loginAsync, clearError } from "@/lib/redux/slices/authSlice";
 
 function mapRegisterError(msg: string): string {
     const lower = msg.toLowerCase();
-    if (lower.includes("already exists") || lower.includes("already registered") || lower.includes("email already"))
+    // fastapi-users returns "REGISTER_USER_ALREADY_EXISTS" (underscores, no spaces)
+    if (lower.includes("already_exists") || lower.includes("already exists") || lower.includes("already registered") || lower.includes("email already"))
         return "Email này đã được đăng ký. Vui lòng đăng nhập hoặc dùng email khác.";
     if (lower.includes("password") && (lower.includes("short") || lower.includes("weak") || lower.includes("length")))
         return "Mật khẩu quá ngắn. Vui lòng dùng ít nhất 8 ký tự.";
-    if (lower.includes("invalid email"))
+    if (lower.includes("invalid email") || lower.includes("invalid_email"))
         return "Email không hợp lệ. Vui lòng kiểm tra lại.";
     return msg;
 }
 
 export default function RegisterPage() {
+    const dispatch = useAppDispatch();
+    const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -42,52 +48,33 @@ export default function RegisterPage() {
         }
 
         setIsLoading(true);
+        let registerOk = false;
         try {
             await fetchAuth.register({ email, password });
-            setSuccess(true);
+            registerOk = true;
+            // Auto-login after register — bypass useAuth.login() to avoid duplicate toast
+            await dispatch(loginAsync({ email, password })).unwrap();
+            toast.success("Đăng ký thành công! Chào mừng bạn đến với Vết Lành.");
+            router.push("/services");
         } catch (err: unknown) {
-            const msg = (err as { message?: string })?.message || "Đăng ký thất bại. Vui lòng thử lại.";
-            setError(mapRegisterError(msg));
+            // loginAsync.unwrap() rejects with a plain string (rejectWithValue payload);
+            // fetchAuth.register() rejects with an ApiError object — handle both shapes
+            const msg = typeof err === "string"
+                ? err
+                : (err as { message?: string })?.message ?? "Đăng ký thất bại. Vui lòng thử lại.";
+            if (!registerOk) {
+                setError(mapRegisterError(msg));
+            } else {
+                // Register succeeded but auto-login failed — clear Redux error before redirecting
+                // to prevent the stale error from flashing on the login page's first render
+                dispatch(clearError());
+                toast.error("Đăng ký thành công! Vui lòng đăng nhập để tiếp tục.");
+                router.push("/login");
+            }
         } finally {
             setIsLoading(false);
         }
     };
-
-    if (success) {
-        return (
-            <div className="w-full">
-                <div className="bg-white px-8 py-12 rounded-[28px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-slate-100 text-center flex flex-col items-center gap-5">
-                    <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center">
-                        <CheckCircle className="h-8 w-8 text-emerald-500" />
-                    </div>
-                    <div>
-                        <h2 className="text-2xl font-bold text-slate-800 mb-2">Đăng ký thành công!</h2>
-                        <p className="text-slate-500 text-sm leading-relaxed max-w-xs mx-auto">
-                            Chúng tôi đã gửi email xác minh đến <span className="font-semibold text-slate-700">{email}</span>.
-                            Vui lòng kiểm tra hộp thư và nhấp vào liên kết để kích hoạt tài khoản.
-                        </p>
-                    </div>
-                    <p className="text-xs text-slate-400">Không nhận được email? Kiểm tra thư mục Spam hoặc</p>
-                    <Link
-                        href="/verify-email"
-                        className="text-sm font-semibold text-primary hover:text-emerald-600 transition-colors underline underline-offset-4 decoration-2 decoration-primary/30"
-                    >
-                        Gửi lại email xác minh
-                    </Link>
-                </div>
-
-                <p className="mt-8 text-center text-sm text-slate-500 font-medium">
-                    Đã có tài khoản?{" "}
-                    <Link
-                        href="/login"
-                        className="font-bold text-primary hover:text-emerald-600 transition-colors underline underline-offset-4 decoration-2 decoration-primary/30"
-                    >
-                        Đăng nhập ngay
-                    </Link>
-                </p>
-            </div>
-        );
-    }
 
     return (
         <div className="w-full">
