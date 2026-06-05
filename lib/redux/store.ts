@@ -9,8 +9,23 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
-import storage from "redux-persist/lib/storage";
 import authSlice from "./slices/authSlice";
+
+// redux-persist/lib/storage uses localStorage which is undefined on the server.
+// createNoopStorage returns a no-op implementation so SSR module evaluation
+// doesn't throw "window is not defined".
+function createNoopStorage() {
+  return {
+    getItem: () => Promise.resolve(null),
+    setItem: (_key: string, value: unknown) => Promise.resolve(value),
+    removeItem: () => Promise.resolve(),
+  };
+}
+
+const storage =
+  typeof window !== "undefined"
+    ? require("redux-persist/lib/storage").default
+    : createNoopStorage();
 
 const rootReducer = combineReducers({
   auth: authSlice,

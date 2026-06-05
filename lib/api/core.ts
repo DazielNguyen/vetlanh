@@ -1,7 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "@/lib/redux/store";
-import { logout } from "@/lib/redux/slices/authSlice";
+import { getCookie } from "cookies-next";
+
+// Lazy accessor — resolves the store only when a response interceptor fires,
+// not at module-evaluation time. This breaks the circular dependency:
+//   store -> authSlice -> fetchAuth -> core -> store (would deadlock on init)
+// Only needed for dispatch (401 logout), not for reading state.
+function getStore(): any {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  return require("@/lib/redux/store").store;
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getLogout(): any {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  return require("@/lib/redux/slices/authSlice").logout;
+}
 
 export interface ApiError {
   code?: number;
@@ -29,8 +42,9 @@ class ApiService {
   private setupInterceptors() {
     this.client.interceptors.request.use(
       (config) => {
-        const token = store.getState().auth.token;
-        if (token) config.headers.Authorization = `Bearer ${token}`;
+        // Read from cookie — available immediately, no Redux rehydration race condition.
+        const token = getCookie("authToken");
+        if (typeof token === "string" && token) config.headers.Authorization = `Bearer ${token}`;
         if (config.data instanceof FormData) delete config.headers["Content-Type"];
         return config;
       },
@@ -42,7 +56,8 @@ class ApiService {
       (error) => {
         if (error.response?.status === 401) {
           // logout() reducer handles cookie deletion
-          store.dispatch(logout());
+          const store = getStore();
+          if (store) store.dispatch(getLogout()());
 
           if (typeof window !== "undefined") {
             window.dispatchEvent(new Event("logout"));
