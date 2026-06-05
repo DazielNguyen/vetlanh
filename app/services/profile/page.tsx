@@ -1,5 +1,6 @@
 import { ProfileCard } from "./components/ProfileCard";
 import { SettingsList } from "./components/SettingsList";
+import { GoalsEditor } from "./components/GoalsEditor";
 
 export default function ProfilePage() {
     return (
@@ -14,8 +15,9 @@ export default function ProfilePage() {
                 {/* Left: Profile Card */}
                 <ProfileCard />
 
-                {/* Right: Settings */}
-                <div className="lg:col-span-2">
+                {/* Right: Settings + Goals */}
+                <div className="lg:col-span-2 space-y-6">
+                    <GoalsEditor />
                     <SettingsList />
                 </div>
             </div>

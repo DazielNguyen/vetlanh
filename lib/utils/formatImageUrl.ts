@@ -1,6 +1,7 @@
 export function formatImageUrl(url: string | null | undefined): string | undefined {
   if (!url) return undefined;
-  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  if (url.startsWith("https://") || url.startsWith("http://")) return url;
   if (url.startsWith("//")) return `https:${url}`;
-  return `https://${url}`;
+  // Reject anything else (relative paths, javascript:, data:, etc.)
+  return undefined;
 }
