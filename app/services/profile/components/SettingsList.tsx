@@ -3,6 +3,9 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { User, Bell, Shield, Palette, Globe, CreditCard, LogOut, ChevronRight, Moon, Sun } from "lucide-react";
+import { NotificationSettings } from "./NotificationSettings";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { logout } from "@/lib/redux/slices/authSlice";
 
 const settingsSections = [
     {
@@ -24,6 +27,13 @@ const settingsSections = [
 ];
 
 export function SettingsList() {
+    const dispatch = useAppDispatch();
+
+    function handleLogout() {
+        dispatch(logout());
+        window.location.replace("/login");
+    }
+
     return (
         <div className="space-y-6">
             {settingsSections.map((section) => (
@@ -66,14 +76,14 @@ export function SettingsList() {
                 </div>
             </Card>
 
+            {/* Notification Settings */}
+            <NotificationSettings />
+
             {/* Logout */}
             <Button
                 variant="outline"
                 className="w-full rounded-xl border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600 font-semibold flex items-center justify-center gap-2"
-                onClick={() => {
-                    document.cookie = "authToken=; max-age=0; path=/;";
-                    window.location.href = "/login";
-                }}
+                onClick={handleLogout}
             >
                 <LogOut className="w-4 h-4" />
                 Đăng xuất
