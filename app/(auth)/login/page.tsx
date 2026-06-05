@@ -50,8 +50,9 @@ export default function LoginPage() {
         const oauthError = searchParams.get("error");
         if (!oauthError) return;
         toast.error(toViOAuthError(oauthError), { duration: 8000 });
-        // Remove ?error= from URL without adding a history entry
-        router.replace("/login", { scroll: false });
+        // router.replace("/login") on the current page is a no-op in Next.js App Router.
+        // Use window.history.replaceState to strip ?error= synchronously without navigation.
+        window.history.replaceState({}, "", "/login");
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleLogin = async (e: React.FormEvent) => {
