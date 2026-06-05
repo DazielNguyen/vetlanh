@@ -12,7 +12,7 @@ export const fetchJournal = {
     return response.data;
   },
 
-  getEntry: async (id: string): Promise<JournalEntry> => {
+  getEntry: async (id: number): Promise<JournalEntry> => {
     const response = await apiService.get<JournalEntry>(`api/v1/journal/${id}`);
     return response.data;
   },
@@ -22,12 +22,12 @@ export const fetchJournal = {
     return response.data;
   },
 
-  updateEntry: async (id: string, body: JournalUpdateRequest): Promise<JournalEntry> => {
+  updateEntry: async (id: number, body: JournalUpdateRequest): Promise<JournalEntry> => {
     const response = await apiService.patch<JournalEntry>(`api/v1/journal/${id}`, body);
     return response.data;
   },
 
-  deleteEntry: async (id: string): Promise<void> => {
+  deleteEntry: async (id: number): Promise<void> => {
     await apiService.delete(`api/v1/journal/${id}`);
   },
 };

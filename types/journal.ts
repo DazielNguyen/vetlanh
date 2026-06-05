@@ -1,14 +1,15 @@
 export interface JournalEntry {
-  id: string;
-  title: string;
+  id: number;
+  title: string | null;
   content: string;
+  word_count: number;
   created_at: string;
   updated_at: string;
 }
 
 export interface JournalCreateRequest {
-  title: string;
-  content: string;
+  title?: string | null;
+  content?: string;
 }
 
 export interface JournalUpdateRequest {

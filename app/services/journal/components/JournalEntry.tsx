@@ -7,8 +7,8 @@ import { useJournalEntry, useDeleteJournal } from "@/hooks/useJournal";
 import { formatDate } from "@/lib/utils/formatDate";
 
 interface Props {
-  id: string;
-  onEdit: (id: string) => void;
+  id: number;
+  onEdit: (id: number) => void;
   onDeleted: () => void;
 }
 
@@ -38,9 +38,11 @@ export function JournalEntry({ id, onEdit, onDeleted }: Props) {
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
             <CardTitle className="text-lg font-bold text-slate-800 break-words">
-              {entry.title}
+              {entry.title ?? "Không có tiêu đề"}
             </CardTitle>
-            <p className="text-xs text-slate-400 mt-1">{formatDate(entry.created_at)}</p>
+            <p className="text-xs text-slate-400 mt-1">
+              {formatDate(entry.created_at)} · {entry.word_count} từ
+            </p>
           </div>
           <div className="flex gap-2 shrink-0">
             <Button

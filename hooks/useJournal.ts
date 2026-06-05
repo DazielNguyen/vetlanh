@@ -8,7 +8,7 @@ export const JOURNAL_KEYS = {
   all: ["journal"] as const,
   list: ["journal", "list"] as const,
   listFiltered: (params: JournalListParams) => ["journal", "list", params] as const,
-  entry: (id: string) => ["journal", "entry", id] as const,
+  entry: (id: number | null) => ["journal", "entry", id] as const,
 };
 
 export function useJournalList(params?: JournalListParams) {
@@ -19,9 +19,9 @@ export function useJournalList(params?: JournalListParams) {
   });
 }
 
-export function useJournalEntry(id: string | null) {
+export function useJournalEntry(id: number | null) {
   return useQuery({
-    queryKey: JOURNAL_KEYS.entry(id ?? ""),
+    queryKey: JOURNAL_KEYS.entry(id),
     queryFn: () => fetchJournal.getEntry(id!),
     enabled: !!id,
     staleTime: STALE.SHORT,
@@ -43,7 +43,7 @@ export function useCreateJournal() {
   });
 }
 
-export function useUpdateJournal(id: string) {
+export function useUpdateJournal(id: number) {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -59,11 +59,24 @@ export function useUpdateJournal(id: string) {
   });
 }
 
+export function useAutoSaveJournal(id: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (body: JournalUpdateRequest) => fetchJournal.updateEntry(id, body),
+    onSuccess: (updated) => {
+      queryClient.setQueryData(JOURNAL_KEYS.entry(id), updated);
+      queryClient.invalidateQueries({ queryKey: JOURNAL_KEYS.list });
+    },
+    // Silent — no toast on success or error to avoid interrupting user while typing
+  });
+}
+
 export function useDeleteJournal() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => fetchJournal.deleteEntry(id),
+    mutationFn: (id: number) => fetchJournal.deleteEntry(id),
     onMutate: async (id) => {
       // Cancel in-flight list queries to avoid overwriting optimistic update
       await queryClient.cancelQueries({ queryKey: JOURNAL_KEYS.list });

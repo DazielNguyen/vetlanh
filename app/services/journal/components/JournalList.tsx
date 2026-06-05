@@ -10,8 +10,8 @@ import { formatDate } from "@/lib/utils/formatDate";
 const PAGE_SIZE = 10;
 
 interface Props {
-  selectedId?: string;
-  onSelect: (id: string) => void;
+  selectedId?: number;
+  onSelect: (id: number) => void;
   onNew: () => void;
 }
 
@@ -53,7 +53,7 @@ export function JournalList({ selectedId, onSelect, onNew }: Props) {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
           <input
             type="text"
-            placeholder="Tìm kiếm nhật ký..."
+            placeholder="Tìm theo tiêu đề..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-4 py-2 text-sm rounded-xl border border-slate-200 bg-slate-50 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-white transition"
@@ -81,7 +81,7 @@ export function JournalList({ selectedId, onSelect, onNew }: Props) {
                   : "bg-slate-50 hover:bg-slate-100"
               }`}
             >
-              <p className="text-sm font-semibold text-slate-800 truncate">{entry.title}</p>
+              <p className="text-sm font-semibold text-slate-800 truncate">{entry.title ?? "Không có tiêu đề"}</p>
               <p className="text-xs text-slate-400 mt-0.5 truncate">{entry.content}</p>
               <p className="text-[10px] text-slate-300 mt-1">{formatDate(entry.created_at)}</p>
             </button>

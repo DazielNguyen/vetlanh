@@ -8,18 +8,18 @@ import { DailyPromptCard } from "./components/DailyPromptCard";
 
 type View =
   | { mode: "idle" }
-  | { mode: "view"; id: string }
-  | { mode: "edit"; id: string }
+  | { mode: "view"; id: number }
+  | { mode: "edit"; id: number }
   | { mode: "create"; promptText?: string };
 
 export default function JournalPage() {
   const [view, setView] = useState<View>({ mode: "idle" });
 
-  function handleSelectEntry(id: string) {
+  function handleSelectEntry(id: number) {
     setView({ mode: "view", id });
   }
 
-  function handleEditEntry(id: string) {
+  function handleEditEntry(id: number) {
     setView({ mode: "edit", id });
   }
 
@@ -66,7 +66,7 @@ export default function JournalPage() {
 
           {showEntry && (
             <JournalEntry
-              id={(view as { mode: "view"; id: string }).id}
+              id={(view as { mode: "view"; id: number }).id}
               onEdit={handleEditEntry}
               onDeleted={handleDeleted}
             />
