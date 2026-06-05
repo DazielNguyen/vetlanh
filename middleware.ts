@@ -2,13 +2,16 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtDecode } from "jwt-decode";
 
-// FastAPI JWT has NO role claim — check token presence + expiry only
+// FastAPI JWT has NO role claim — check token presence + expiry only.
+// exp is optional: some FastAPI configs omit it; the BE validates expiry on each API call.
 const isTokenValid = (token: string | undefined): boolean => {
   if (!token) return false;
   try {
     const decoded = jwtDecode(token) as { exp?: number } | null;
-    if (!decoded?.exp) return false;
-    return decoded.exp > Math.floor(Date.now() / 1000);
+    if (!decoded) return false;
+    // Only reject if exp is present AND already expired
+    if (decoded.exp && decoded.exp <= Math.floor(Date.now() / 1000)) return false;
+    return true;
   } catch {
     return false;
   }
@@ -29,7 +32,7 @@ export function middleware(request: NextRequest) {
     "/reset-password",
     "/supscription",
     "/verify-email",
-    "/google/callback",
+    "/auth/google/callback", // Google OAuth callback — token not yet in cookie at this point
   ];
   const authRoutes = ["/login", "/register", "/reset-password"];
 

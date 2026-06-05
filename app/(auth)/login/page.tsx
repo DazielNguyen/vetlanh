@@ -9,26 +9,47 @@ import { Label } from "@/components/ui/label";
 import { ArrowRight, Mail, Lock, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { clearError } from "@/lib/redux/slices/authSlice";
 import { fetchAuth } from "@/lib/api/services/fetchAuth";
 
-function toViError(msg: string): string {
+// Maps Google OAuth ?error= param to Vietnamese
+function toViOAuthError(msg: string): string {
     if (msg.toLowerCase().includes("already exists")) {
         return "Email này đã được đăng ký bằng mật khẩu. Vui lòng đăng nhập bằng email và mật khẩu.";
     }
     return "Đăng nhập Google thất bại. Vui lòng thử lại.";
 }
 
+// Maps BE login error messages to Vietnamese
+function mapLoginError(msg: string): string {
+    const lower = msg.toLowerCase();
+    if (lower.includes("already exists"))
+        return "Tài khoản này sử dụng đăng nhập Google. Vui lòng dùng nút Google bên dưới.";
+    if (lower.includes("incorrect") || lower.includes("invalid credentials") || lower.includes("wrong password") || lower.includes("not found"))
+        return "Email hoặc mật khẩu không đúng. Vui lòng kiểm tra lại.";
+    if (lower.includes("not verified") || lower.includes("unverified"))
+        return "Email chưa được xác minh. Vui lòng kiểm tra hộp thư của bạn.";
+    if (lower.includes("disabled") || lower.includes("inactive"))
+        return "Tài khoản của bạn đã bị tạm khóa. Vui lòng liên hệ hỗ trợ.";
+    return msg;
+}
+
 export default function LoginPage() {
     const { login, isLoading, error } = useAuth();
+    const dispatch = useAppDispatch();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const searchParams = useSearchParams();
     const router = useRouter();
 
     useEffect(() => {
+        // Clear any stale error from previous login attempts or OAuth redirects
+        dispatch(clearError());
+
         const oauthError = searchParams.get("error");
         if (!oauthError) return;
-        toast.error(toViError(oauthError), { duration: 8000 });
+        toast.error(toViOAuthError(oauthError), { duration: 8000 });
         // Remove ?error= from URL without adding a history entry
         router.replace("/login", { scroll: false });
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -76,7 +97,7 @@ export default function LoginPage() {
                 <form className="space-y-6" onSubmit={handleLogin}>
                     {error && (
                         <div className="bg-red-50 text-red-500 text-sm p-3 rounded-xl border border-red-100 text-center font-medium">
-                            {error}
+                            {mapLoginError(error)}
                         </div>
                     )}
 
