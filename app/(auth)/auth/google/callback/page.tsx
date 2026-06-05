@@ -1,32 +1,41 @@
 "use client";
 
 import { useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { setToken, decodeToken } from "@/lib/redux/slices/authSlice";
 
 export default function GoogleCallbackPage() {
-    const searchParams = useSearchParams();
-    const router = useRouter();
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        const token = searchParams.get("token");
+        // Read directly from window.location.search — always accurate on client.
+        // useSearchParams() can return empty params on first render in Next.js 15
+        // App Router before hydration completes, causing a false "no token" redirect.
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get("token");
 
         if (!token) {
-            // No token — redirect to login; BE error case is handled there via ?error=
-            router.replace("/login");
+            // No token — BE error redirect goes to /login?error=... not here
+            window.location.replace("/login");
             return;
         }
 
-        dispatch(setToken({ token, user: decodeToken(token) }));
-        // Hard navigation so the browser sends a fresh HTTP request.
-        // router.replace is a soft navigation — Next.js may not include the newly
-        // set authToken cookie in the RSC fetch, causing middleware to see no token
-        // and redirect back to /login.
+        // Validate the JWT is well-formed before trusting it.
+        // decodeToken returns null for malformed input — reject to avoid setting
+        // an unauthenticated session with isAuthenticated: true.
+        const user = decodeToken(token);
+        if (!user) {
+            window.location.replace("/login?error=Xác+thực+Google+thất+bại.+Vui+lòng+thử+lại.");
+            return;
+        }
+
+        dispatch(setToken({ token, user }));
+        // Hard navigation ensures the browser sends a fresh HTTP request with the
+        // newly set authToken cookie — soft navigation (router.replace) may not
+        // include it, causing middleware to redirect back to /login.
         window.location.replace("/services");
-    }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, []); // run once on mount — window.location is stable
 
     return (
         <div className="w-full">
