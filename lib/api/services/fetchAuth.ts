@@ -13,6 +13,16 @@ export interface RegisterRequest {
   password: string;
 }
 
+export interface UsernameRegisterRequest {
+  username: string;
+  password: string;
+}
+
+export interface UsernameLoginRequest {
+  username: string;
+  password: string;
+}
+
 // BE returns snake_case — no refresh token
 export interface LoginResponse {
   access_token: string;
@@ -56,6 +66,16 @@ export const fetchAuth = {
 
   googleLogin: async (): Promise<{ authorization_url: string }> => {
     const response = await apiService.get<{ authorization_url: string }>("api/v1/auth/google");
+    return response.data;
+  },
+
+  registerWithUsername: async (data: UsernameRegisterRequest): Promise<LoginResponse> => {
+    const response = await apiService.post<LoginResponse>("api/v1/auth/register-username", data);
+    return response.data;
+  },
+
+  loginWithUsername: async (data: UsernameLoginRequest): Promise<LoginResponse> => {
+    const response = await apiService.post<LoginResponse>("api/v1/auth/login-username", data);
     return response.data;
   },
 };

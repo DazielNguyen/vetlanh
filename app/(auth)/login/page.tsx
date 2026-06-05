@@ -3,17 +3,19 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, Mail, Lock, Loader2 } from "lucide-react";
+import { ArrowRight, Mail, Lock, Loader2, User } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { useAppDispatch } from "@/lib/redux/hooks";
-import { clearError } from "@/lib/redux/slices/authSlice";
+import { clearError, setToken, decodeToken } from "@/lib/redux/slices/authSlice";
 import { fetchAuth } from "@/lib/api/services/fetchAuth";
 
-// Maps Google OAuth ?error= param to Vietnamese
+// ── Helpers ─────────────────────────────────────────────────────────────────
+
 // Handles both fastapi-users error codes (underscores) and plain messages
 function toViOAuthError(msg: string): string {
     const lower = msg.toLowerCase();
@@ -26,8 +28,7 @@ function toViOAuthError(msg: string): string {
     return "Đăng nhập Google thất bại. Vui lòng thử lại.";
 }
 
-// Maps BE login error messages to Vietnamese
-function mapLoginError(msg: string): string {
+function mapEmailLoginError(msg: string): string {
     const lower = msg.toLowerCase();
     if (lower.includes("already exists"))
         return "Tài khoản này sử dụng đăng nhập Google. Vui lòng dùng nút Google bên dưới.";
@@ -40,39 +41,88 @@ function mapLoginError(msg: string): string {
     return msg;
 }
 
+function mapUsernameLoginError(msg: string): string {
+    const lower = msg.toLowerCase();
+    if (lower.includes("invalid credentials") || lower.includes("incorrect") || lower.includes("not found"))
+        return "Tên đăng nhập hoặc mật khẩu không đúng. Vui lòng kiểm tra lại.";
+    if (lower.includes("deactivated") || lower.includes("disabled") || lower.includes("inactive"))
+        return "Tài khoản của bạn đã bị tạm khóa. Vui lòng liên hệ hỗ trợ.";
+    return msg;
+}
+
+// ── Local components ─────────────────────────────────────────────────────────
+
+function IconInput({ icon: Icon, ...props }: { icon: LucideIcon } & React.ComponentPropsWithoutRef<"input">) {
+    return (
+        <div className="relative">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400">
+                <Icon className="h-4 w-4" />
+            </div>
+            <Input className="pl-11 h-12 bg-slate-50/50 border-slate-200 focus:bg-white rounded-2xl transition-all duration-200" {...props} />
+        </div>
+    );
+}
+
+// ── Page ─────────────────────────────────────────────────────────────────────
+
+type Tab = "email" | "username";
+
 export default function LoginPage() {
-    const { login, isLoading, error } = useAuth();
+    const { login, isLoading: emailLoading, error: emailError } = useAuth();
     const dispatch = useAppDispatch();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const searchParams = useSearchParams();
     const router = useRouter();
 
-    useEffect(() => {
-        // Clear any stale error from previous login attempts or OAuth redirects
-        dispatch(clearError());
+    const [tab, setTab] = useState<Tab>("email");
 
+    // Email tab state
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    // Username tab state
+    const [username, setUsername] = useState("");
+    const [usernamePassword, setUsernamePassword] = useState("");
+    const [usernameLoading, setUsernameLoading] = useState(false);
+    const [usernameError, setUsernameError] = useState<string | null>(null);
+
+    useEffect(() => {
+        dispatch(clearError());
         const oauthError = searchParams.get("error");
         if (!oauthError) return;
         toast.error(toViOAuthError(oauthError), { duration: 8000 });
-        // router.replace("/login") on the current page is a no-op in Next.js App Router.
-        // Use window.history.replaceState to strip ?error= synchronously without navigation.
         window.history.replaceState({}, "", "/login");
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    const handleLogin = async (e: React.FormEvent) => {
+    const handleEmailLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             await login({ email, password });
         } catch {
-            // Error already shown via toast inside useAuth
+            // Error shown via toast + Redux error state inside useAuth
+        }
+    };
+
+    const handleUsernameLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setUsernameError(null);
+        setUsernameLoading(true);
+        try {
+            const { access_token } = await fetchAuth.loginWithUsername({ username, password: usernamePassword });
+            const user = decodeToken(access_token);
+            dispatch(setToken({ token: access_token, user }));
+            toast.success("Đăng nhập thành công");
+            router.push("/services");
+        } catch (err: unknown) {
+            const msg = typeof err === "string" ? err : (err as { message?: string })?.message ?? "Đăng nhập thất bại. Vui lòng thử lại.";
+            setUsernameError(mapUsernameLoginError(msg));
+        } finally {
+            setUsernameLoading(false);
         }
     };
 
     const handleGoogleLogin = async () => {
         try {
             const { authorization_url } = await fetchAuth.googleLogin();
-            // Security: only allow redirect to Google's OAuth endpoint
             try {
                 const parsed = new URL(authorization_url);
                 if (parsed.hostname !== "accounts.google.com") {
@@ -100,65 +150,76 @@ export default function LoginPage() {
             </div>
 
             <div className="bg-white px-8 py-10 rounded-[28px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-slate-100">
-                <form className="space-y-6" onSubmit={handleLogin}>
-                    {error && (
-                        <div className="bg-red-50 text-red-500 text-sm p-3 rounded-xl border border-red-100 text-center font-medium">
-                            {mapLoginError(error)}
-                        </div>
-                    )}
+                {/* Tab switcher */}
+                <div className="flex bg-slate-100 rounded-2xl p-1 mb-7">
+                    {(["email", "username"] as Tab[]).map((t) => (
+                        <button
+                            key={t}
+                            type="button"
+                            onClick={() => { setTab(t); setUsernameError(null); dispatch(clearError()); }}
+                            className={`flex-1 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 ${
+                                tab === t ? "bg-white text-slate-800 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                            }`}
+                        >
+                            {t === "email" ? "Email" : "Tên đăng nhập"}
+                        </button>
+                    ))}
+                </div>
 
-                    <div className="space-y-2.5">
-                        <Label htmlFor="email" className="text-slate-700 font-semibold ml-1">Email</Label>
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400">
-                                <Mail className="h-4 w-4" />
+                {/* ── Email form ── */}
+                {tab === "email" && (
+                    <form className="space-y-6" onSubmit={handleEmailLogin}>
+                        {emailError && (
+                            <div className="bg-red-50 text-red-500 text-sm p-3 rounded-xl border border-red-100 text-center font-medium">
+                                {mapEmailLoginError(emailError)}
                             </div>
-                            <Input
-                                id="email"
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="name@example.com"
-                                className="pl-11 h-12 bg-slate-50/50 border-slate-200 focus:bg-white rounded-2xl transition-all duration-200"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <div className="space-y-2.5">
-                        <div className="flex items-center justify-between ml-1">
-                            <Label htmlFor="password" className="text-slate-700 font-semibold">Mật khẩu</Label>
-                            <Link href="/forgot-password" className="text-xs font-semibold text-primary hover:text-emerald-600 transition-colors">
-                                Quên mật khẩu?
-                            </Link>
-                        </div>
-                        <div className="relative">
-                            <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400">
-                                <Lock className="h-4 w-4" />
-                            </div>
-                            <Input
-                                id="password"
-                                type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                placeholder="••••••••"
-                                className="pl-11 h-12 bg-slate-50/50 border-slate-200 focus:bg-white rounded-2xl transition-all duration-200"
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <Button type="submit" disabled={isLoading} className="w-full h-12 text-base font-bold rounded-2xl bg-primary hover:bg-slate-800 text-white shadow-md active:scale-[0.98] transition-all group">
-                        {isLoading ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                            <>
-                                Đăng nhập
-                                <ArrowRight className="ml-2 h-4 w-4 opacity-70 group-hover:translate-x-1 transition-transform" />
-                            </>
                         )}
-                    </Button>
-                </form>
+
+                        <div className="space-y-2.5">
+                            <Label htmlFor="email" className="text-slate-700 font-semibold ml-1">Email</Label>
+                            <IconInput icon={Mail} id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" required />
+                        </div>
+
+                        <div className="space-y-2.5">
+                            <div className="flex items-center justify-between ml-1">
+                                <Label htmlFor="password" className="text-slate-700 font-semibold">Mật khẩu</Label>
+                                <Link href="/forgot-password" className="text-xs font-semibold text-primary hover:text-emerald-600 transition-colors">
+                                    Quên mật khẩu?
+                                </Link>
+                            </div>
+                            <IconInput icon={Lock} id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" required />
+                        </div>
+
+                        <Button type="submit" disabled={emailLoading} className="w-full h-12 text-base font-bold rounded-2xl bg-primary hover:bg-slate-800 text-white shadow-md active:scale-[0.98] transition-all group">
+                            {emailLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><span>Đăng nhập</span><ArrowRight className="ml-2 h-4 w-4 opacity-70 group-hover:translate-x-1 transition-transform" /></>}
+                        </Button>
+                    </form>
+                )}
+
+                {/* ── Username form ── */}
+                {tab === "username" && (
+                    <form className="space-y-6" onSubmit={handleUsernameLogin}>
+                        {usernameError && (
+                            <div className="bg-red-50 text-red-500 text-sm p-3 rounded-xl border border-red-100 text-center font-medium">
+                                {usernameError}
+                            </div>
+                        )}
+
+                        <div className="space-y-2.5">
+                            <Label htmlFor="username" className="text-slate-700 font-semibold ml-1">Tên đăng nhập</Label>
+                            <IconInput icon={User} id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="vd: nguyen_van_a" required />
+                        </div>
+
+                        <div className="space-y-2.5">
+                            <Label htmlFor="username-password" className="text-slate-700 font-semibold ml-1">Mật khẩu</Label>
+                            <IconInput icon={Lock} id="username-password" type="password" value={usernamePassword} onChange={(e) => setUsernamePassword(e.target.value)} placeholder="••••••••" required />
+                        </div>
+
+                        <Button type="submit" disabled={usernameLoading} className="w-full h-12 text-base font-bold rounded-2xl bg-primary hover:bg-slate-800 text-white shadow-md active:scale-[0.98] transition-all group">
+                            {usernameLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><span>Đăng nhập</span><ArrowRight className="ml-2 h-4 w-4 opacity-70 group-hover:translate-x-1 transition-transform" /></>}
+                        </Button>
+                    </form>
+                )}
 
                 <div className="mt-8 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-slate-200 after:mt-0.5 after:flex-1 after:border-t after:border-slate-200">
                     <p className="mx-4 mb-0 text-center text-xs font-medium text-slate-400 uppercase tracking-widest">Hoặc</p>
