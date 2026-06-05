@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Dumbbell, MessageSquare, PanelLeftClose, PanelLeftOpen, Settings, LogOut } from "lucide-react";
+import { Home, Dumbbell, MessageSquare, PanelLeftClose, PanelLeftOpen, Settings, LogOut, Brain, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -23,6 +23,8 @@ const navItems = [
     { title: "Trang chủ", url: "/services", icon: Home, exact: true },
     { title: "Bài tập", url: "/services/exercises", icon: Dumbbell, exact: false },
     { title: "Tin nhắn", url: "/services/chat", icon: MessageSquare, exact: false },
+    { title: "Suy nghĩ", url: "/services/thought-records", icon: Brain, exact: false },
+    { title: "An toàn", url: "/services/safety-plan", icon: ShieldCheck, exact: false },
     { title: "Cài đặt", url: "/services/profile", icon: Settings, exact: false },
 ];
 

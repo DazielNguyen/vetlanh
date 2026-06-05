@@ -6,7 +6,9 @@ export const STALE = {
 export const skipRetryOn =
   (...codes: number[]) =>
   (failureCount: number, error: unknown): boolean => {
-    const status = (error as { response?: { status?: number } })?.response?.status;
-    if (status !== undefined && codes.includes(status)) return false;
+    // core.ts interceptor normalizes all Axios errors into a flat ApiError { code, message }
+    // so .response?.status is always undefined. Read .code directly.
+    const code = (error as { code?: number })?.code;
+    if (code !== undefined && codes.includes(code)) return false;
     return failureCount < 2;
   };
