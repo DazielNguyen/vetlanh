@@ -2,19 +2,36 @@
 
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
-const data = [
-    { day: "T2", stress: 30 },
-    { day: "T3", stress: 40 },
-    { day: "T4", stress: 35 },
-    { day: "T5", stress: 60 },
-    { day: "T6", stress: 30 },
-    { day: "T7", stress: 80 },
-    { day: "CN", stress: 45 },
-];
+// Vietnamese short weekday names indexed by getDay() (0=Sunday)
+const VI_DAY = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"] as const;
 
-export function StressChart() {
+function getLastNDayLabels(n: number): string[] {
+    const today = new Date();
+    return Array.from({ length: n }, (_, i) => {
+        const d = new Date(today);
+        d.setDate(today.getDate() - (n - 1 - i));
+        return VI_DAY[d.getDay()];
+    });
+}
+
+interface StressChartProps {
+    sparkline?: number[];
+}
+
+export function StressChart({ sparkline }: StressChartProps) {
+    if (!sparkline || sparkline.length === 0) {
+        return (
+            <div className="h-50 w-full mt-8 flex items-center justify-center text-slate-400 text-sm">
+                Chưa có dữ liệu tâm trạng
+            </div>
+        );
+    }
+
+    const labels = getLastNDayLabels(sparkline.length);
+    const data = sparkline.map((value, i) => ({ day: labels[i], stress: value }));
+
     return (
-        <div className="h-[200px] w-full mt-8">
+        <div className="h-50 w-full mt-8">
             <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                     <XAxis
