@@ -7,8 +7,8 @@ export const fetchJournalPrompts = {
     return response.data;
   },
 
-  getNextPrompt: async (): Promise<JournalPrompt> => {
-    const response = await apiService.get<JournalPrompt>("api/v1/journal/prompts/next");
+  getNextPrompt: async (currentId: number): Promise<JournalPrompt> => {
+    const response = await apiService.get<JournalPrompt>("api/v1/journal/prompts/next", { current_id: currentId });
     return response.data;
   },
 

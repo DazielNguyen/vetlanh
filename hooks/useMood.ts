@@ -11,6 +11,7 @@ export const MOOD_KEYS = {
   heatmap: (year: number, month: number) => ["mood", "heatmap", year, month] as const,
   trend: (period: "week" | "month") => ["mood", "trend", period] as const,
   insights: ["mood", "insights"] as const,
+  summary: (days: number) => ["mood", "summary", days] as const,
 };
 
 export function useMoodEntries(params?: MoodEntriesParams) {
@@ -45,6 +46,14 @@ export function useMoodInsights() {
   });
 }
 
+export function useMoodSummary(days = 7) {
+  return useQuery({
+    queryKey: MOOD_KEYS.summary(days),
+    queryFn: () => fetchMood.getMoodSummary(days),
+    staleTime: STALE.SHORT,
+  });
+}
+
 export function useLogMood() {
   const queryClient = useQueryClient();
 
@@ -56,8 +65,9 @@ export function useLogMood() {
       queryClient.invalidateQueries({ queryKey: MOOD_KEYS.all });
       toast.success("Đã lưu tâm trạng hôm nay");
     },
-    onError: () => {
-      toast.error("Lưu tâm trạng thất bại, vui lòng thử lại");
+    onError: (err: unknown) => {
+      const msg = (err as { message?: string })?.message;
+      toast.error(msg ?? "Lưu tâm trạng thất bại, vui lòng thử lại");
     },
   });
 }

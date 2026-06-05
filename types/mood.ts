@@ -1,8 +1,15 @@
+export type EnergyLevel = "low" | "medium" | "high";
+
+export interface MoodSummaryEntry {
+  date: string; // YYYY-MM-DD
+  sentiment_score: number; // 1–5
+}
+
 export interface MoodEntry {
   id: string;
   date: string; // YYYY-MM-DD
   mood: number; // 1–5
-  energy?: number | null; // 1–5
+  energy?: EnergyLevel | null;
   factors: string[];
   note?: string | null;
   created_at?: string;
@@ -12,7 +19,7 @@ export interface MoodEntry {
 export interface CreateMoodEntryRequest {
   date: string; // YYYY-MM-DD
   mood: number; // 1–5
-  energy?: number;
+  energy?: EnergyLevel;
   factors?: string[];
   note?: string;
 }
@@ -29,16 +36,23 @@ export interface MoodInsights {
   insights: InsightItem[];
 }
 
-// Keyed by date string YYYY-MM-DD → mood value 1–5
+// Processed map: YYYY-MM-DD → mood value 1–5
 export type MoodHeatmapData = Record<string, number>;
 
 export interface MoodTrendPoint {
   date: string;
-  mood: number;
-  energy?: number | null;
+  mood: number | null;
+  energy?: EnergyLevel | null;
+  factors: string[];
+  note?: string | null;
 }
 
 export interface MoodTrend {
   period: "week" | "month";
-  data: MoodTrendPoint[];
+  start: string;
+  end: string;
+  entries: MoodTrendPoint[];
+  best_day: string | null;
+  worst_day: string | null;
+  average_mood: number | null;
 }

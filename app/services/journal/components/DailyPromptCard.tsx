@@ -4,23 +4,24 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, Sparkles, RefreshCw } from "lucide-react";
-import { useDailyPrompt } from "@/hooks/useJournalPrompts";
-import { useQueryClient } from "@tanstack/react-query";
-import { PROMPT_KEYS } from "@/hooks/useJournalPrompts";
+import { useDailyPrompt, useNextPrompt } from "@/hooks/useJournalPrompts";
 
 interface Props {
   onUsePrompt: (text: string) => void;
 }
 
 export function DailyPromptCard({ onUsePrompt }: Props) {
-  const { data, isLoading } = useDailyPrompt();
-  const queryClient = useQueryClient();
-  const [refreshing, setRefreshing] = useState(false);
+  const { data: dailyData, isLoading } = useDailyPrompt();
+  // Track which prompt id to pass to /next — null means show daily prompt
+  const [nextFromId, setNextFromId] = useState<number | null>(null);
+  const { data: nextPrompt, isFetching: fetchingNext } = useNextPrompt(nextFromId);
 
-  async function handleRefresh() {
-    setRefreshing(true);
-    await queryClient.invalidateQueries({ queryKey: PROMPT_KEYS.daily });
-    setRefreshing(false);
+  // Show next prompt if available, otherwise fall back to daily
+  const displayedPrompt = nextPrompt ?? dailyData?.prompt;
+
+  function handleRefresh() {
+    const currentId = displayedPrompt?.id;
+    if (currentId !== undefined) setNextFromId(currentId);
   }
 
   if (isLoading) {
@@ -33,9 +34,7 @@ export function DailyPromptCard({ onUsePrompt }: Props) {
     );
   }
 
-  if (!data) return null;
-
-  const { prompt } = data;
+  if (!displayedPrompt) return null;
 
   return (
     <Card className="border-none shadow-sm rounded-3xl bg-gradient-to-br from-violet-50 to-indigo-50">
@@ -47,21 +46,21 @@ export function DailyPromptCard({ onUsePrompt }: Props) {
           </div>
           <button
             onClick={handleRefresh}
-            disabled={refreshing}
+            disabled={fetchingNext}
             className="text-violet-400 hover:text-violet-600 transition"
-            title="Làm mới gợi ý"
+            title="Gợi ý tiếp theo"
           >
-            <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+            <RefreshCw className={`h-4 w-4 ${fetchingNext ? "animate-spin" : ""}`} />
           </button>
         </div>
         <span className="text-xs font-semibold text-violet-400 uppercase tracking-wide">
-          {prompt.topic}
+          {displayedPrompt.topic}
         </span>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="text-sm text-slate-700 leading-relaxed italic">"{prompt.text}"</p>
+        <p className="text-sm text-slate-700 leading-relaxed italic">"{displayedPrompt.text}"</p>
         <Button
-          onClick={() => onUsePrompt(prompt.text)}
+          onClick={() => onUsePrompt(displayedPrompt.text)}
           className="w-full h-10 rounded-2xl font-bold bg-violet-600 hover:bg-violet-700"
         >
           Dùng gợi ý này

@@ -1,3 +1,11 @@
+export interface ExerciseStep {
+  order: number;
+  instruction: string;
+  input_prompt: string | null;
+  tense_seconds: number | null;   // PMR only; null for all other exercises
+  release_seconds: number | null; // PMR only; null for all other exercises
+}
+
 export interface Exercise {
   slug: string;
   title: string;
@@ -5,6 +13,8 @@ export interface Exercise {
   category: string;
   mood_tags: string[];
   duration_seconds?: number;
+  duration_minutes?: number; // returned by /recommended endpoint
+  steps?: ExerciseStep[];
 }
 
 export interface ExerciseLog {

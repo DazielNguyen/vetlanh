@@ -24,7 +24,7 @@ export interface JournalListParams {
 }
 
 export interface JournalPrompt {
-  id: string;
+  id: number;
   text: string;
   topic: string;
 }

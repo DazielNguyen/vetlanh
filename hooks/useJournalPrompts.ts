@@ -18,10 +18,11 @@ export function useDailyPrompt() {
   });
 }
 
-export function useNextPrompt() {
+export function useNextPrompt(currentId: number | null) {
   return useQuery({
-    queryKey: PROMPT_KEYS.next,
-    queryFn: fetchJournalPrompts.getNextPrompt,
+    queryKey: [...PROMPT_KEYS.next, currentId] as const,
+    queryFn: () => fetchJournalPrompts.getNextPrompt(currentId!),
+    enabled: currentId !== null,
     staleTime: STALE.SHORT,
   });
 }
