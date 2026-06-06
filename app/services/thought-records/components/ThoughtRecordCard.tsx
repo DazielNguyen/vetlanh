@@ -37,7 +37,7 @@ export function ThoughtRecordCard({ record, isSelected, onSelect, onEdit }: Prop
       <p className="text-sm font-semibold text-slate-800 truncate">{record.situation}</p>
       <p className="text-xs text-slate-500 mt-0.5 truncate italic">{record.automatic_thought}</p>
       <div className="flex items-center justify-between mt-1.5">
-        <p className="text-[10px] text-slate-300">{formatDate(record.created_at)}</p>
+        <p className="text-[10px] text-slate-300">{record.created_at ? formatDate(record.created_at) : "—"}</p>
         <div className="flex items-center gap-1">
           <span
             role="button"

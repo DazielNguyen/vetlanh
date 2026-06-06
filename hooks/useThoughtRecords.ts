@@ -1,7 +1,8 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, type QueryKey } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { fetchThoughtRecords, type ThoughtRecordsParams } from "@/lib/api/services/fetchThoughtRecords";
 import { STALE } from "@/lib/api/queryConfig";
+import type { ApiError } from "@/lib/api/core";
 import type { ThoughtRecord, ThoughtRecordRequest } from "@/types/thoughtRecord";
 
 export const THOUGHT_KEYS = {
@@ -38,13 +39,14 @@ export function useThoughtRecord(id: string | undefined) {
 
 export function useCreateThoughtRecord() {
   const queryClient = useQueryClient();
-  return useMutation({
+  return useMutation<ThoughtRecord, ApiError, ThoughtRecordRequest>({
     mutationFn: (body: ThoughtRecordRequest) => fetchThoughtRecords.createRecord(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: THOUGHT_KEYS.all });
       toast.success("Đã lưu ghi chú suy nghĩ");
     },
-    onError: () => {
+    onError: (err) => {
+      console.error("[useCreateThoughtRecord]", err);
       toast.error("Lưu thất bại, vui lòng thử lại");
     },
   });
@@ -52,7 +54,7 @@ export function useCreateThoughtRecord() {
 
 export function useUpdateThoughtRecord() {
   const queryClient = useQueryClient();
-  return useMutation({
+  return useMutation<ThoughtRecord, ApiError, { id: string; body: Partial<ThoughtRecordRequest> }>({
     mutationFn: ({ id, body }: { id: string; body: Partial<ThoughtRecordRequest> }) =>
       fetchThoughtRecords.updateRecord(id, body),
     onSuccess: (_, { id }) => {
@@ -60,7 +62,8 @@ export function useUpdateThoughtRecord() {
       queryClient.invalidateQueries({ queryKey: THOUGHT_KEYS.detail(id) });
       toast.success("Đã cập nhật ghi chú suy nghĩ");
     },
-    onError: () => {
+    onError: (err) => {
+      console.error("[useUpdateThoughtRecord]", err);
       toast.error("Cập nhật thất bại, vui lòng thử lại");
     },
   });
@@ -68,7 +71,7 @@ export function useUpdateThoughtRecord() {
 
 export function useDeleteThoughtRecord() {
   const queryClient = useQueryClient();
-  return useMutation({
+  return useMutation<void, ApiError, string, { snapshot: [QueryKey, ThoughtRecord[] | undefined][] }>({
     mutationFn: (id: string) => fetchThoughtRecords.deleteRecord(id),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: THOUGHT_KEYS.all });
@@ -80,7 +83,8 @@ export function useDeleteThoughtRecord() {
       );
       return { snapshot };
     },
-    onError: (_err, _id, ctx) => {
+    onError: (err, _id, ctx) => {
+      console.error("[useDeleteThoughtRecord]", err);
       ctx?.snapshot.forEach(([key, value]) => queryClient.setQueryData(key, value));
       toast.error("Xóa thất bại, vui lòng thử lại");
     },
