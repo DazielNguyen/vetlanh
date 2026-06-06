@@ -13,17 +13,33 @@ function scoreToHeight(score: number): number {
 }
 
 // score 1–2 → sad, 3 → anxious (neutral fallback), 4–5 → need_energy
-function scorToMoodFilter(score: number): string {
+function scoreToMoodFilter(score: number): string {
   if (score <= 2) return "sad";
   if (score >= 4) return "need_energy";
   return "anxious";
+}
+
+// Build 7 fixed slots so missing check-in days show as visual gaps
+function buildChartSlots(
+  entries: { date: string; sentiment_score: number }[],
+  days = 7
+): { date: string; score: number | null }[] {
+  const byDate = Object.fromEntries(entries.map((e) => [e.date, e.sentiment_score]));
+  const today = new Date();
+  return Array.from({ length: days }, (_, i) => {
+    const d = new Date(today);
+    d.setDate(today.getDate() - (days - 1 - i));
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const dateStr = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    return { date: dateStr, score: byDate[dateStr] ?? null };
+  });
 }
 
 export function LiveInsights() {
   const { data: moodSummary, isLoading: loadingMood } = useMoodSummary(7);
   const { data: latestEntries } = useMoodEntries({ limit: 1 });
   const latestScore = latestEntries?.[0]?.mood;
-  const derivedMood = latestScore !== undefined ? scorToMoodFilter(latestScore) : "anxious";
+  const derivedMood = latestScore !== undefined ? scoreToMoodFilter(latestScore) : "anxious";
   const { data: recommended, isLoading: loadingExercises } = useRecommendedExercises({ mood: derivedMood, limit: 3 });
 
   return (
@@ -45,21 +61,24 @@ export function LiveInsights() {
             <div className="flex items-center justify-center h-16">
               <Loader2 className="h-4 w-4 animate-spin text-slate-300" />
             </div>
-          ) : !moodSummary || moodSummary.length === 0 ? (
-            <div className="flex items-end gap-1.5 h-16">
-              {Array.from({ length: 7 }).map((_, i) => (
-                <div key={i} className="flex-1 rounded-sm bg-slate-100 h-full" />
-              ))}
-            </div>
           ) : (
             <div className="flex items-end gap-1.5 h-16">
-              {moodSummary.map((entry) => (
-                <div
-                  key={entry.date}
-                  className="flex-1 rounded-sm bg-primary/30"
-                  style={{ height: `${scoreToHeight(entry.sentiment_score)}%` }}
-                  title={`${entry.date}: ${entry.sentiment_score}/5`}
-                />
+              {buildChartSlots(moodSummary ?? []).map((slot) => (
+                slot.score !== null ? (
+                  <div
+                    key={slot.date}
+                    className="flex-1 rounded-sm bg-primary/30"
+                    style={{ height: `${scoreToHeight(slot.score)}%` }}
+                    title={`${slot.date}: ${slot.score}/5`}
+                  />
+                ) : (
+                  <div
+                    key={slot.date}
+                    className="flex-1 rounded-sm bg-slate-100"
+                    style={{ height: "8px" }}
+                    title={slot.date}
+                  />
+                )
               ))}
             </div>
           )}
