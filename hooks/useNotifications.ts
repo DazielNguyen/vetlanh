@@ -6,6 +6,7 @@ import type { NotificationPreferenceUpdate } from "@/types/notifications";
 
 export const NOTIFICATION_KEYS = {
   preference: ["notifications", "preference"] as const,
+  exerciseReminder: ["notifications", "exercise-reminder"] as const,
 };
 
 export function useNotificationPreference() {
@@ -28,5 +29,14 @@ export function useUpdateNotificationPreference() {
     onError: () => {
       toast.error("Lưu thất bại — vui lòng thử lại");
     },
+  });
+}
+
+export function useExerciseReminder() {
+  return useQuery({
+    queryKey: NOTIFICATION_KEYS.exerciseReminder,
+    queryFn: fetchNotifications.getExerciseReminder,
+    staleTime: STALE.SHORT,
+    retry: skipRetryOn(401),
   });
 }

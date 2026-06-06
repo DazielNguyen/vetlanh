@@ -50,8 +50,13 @@ export function Phq9History() {
           >
             <div>
               <p className="text-sm font-semibold text-slate-700">
-                {formatDate(item.created_at)}
+                {formatDate(item.submitted_at)}
               </p>
+              {item.score_delta !== null && (
+                <p className={`text-xs font-semibold mt-0.5 ${item.score_delta < 0 ? "text-emerald-600" : "text-red-500"}`}>
+                  {item.score_delta < 0 ? `▼ ${Math.abs(item.score_delta)} điểm` : `▲ ${item.score_delta} điểm`}
+                </p>
+              )}
             </div>
             <div className="flex items-center gap-3">
               <span

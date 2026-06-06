@@ -2,6 +2,7 @@ import apiService from "../core";
 import type {
   NotificationPreference,
   NotificationPreferenceUpdate,
+  ExerciseReminderResponse,
 } from "@/types/notifications";
 
 export const fetchNotifications = {
@@ -15,4 +16,8 @@ export const fetchNotifications = {
     return res.data;
   },
 
+  getExerciseReminder: async (): Promise<ExerciseReminderResponse> => {
+    const res = await apiService.get<ExerciseReminderResponse>("api/v1/notifications/exercise-reminder");
+    return res.data;
+  },
 };

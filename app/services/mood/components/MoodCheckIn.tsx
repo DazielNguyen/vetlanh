@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useMoodEntries, useLogMood } from "@/hooks/useMood";
+import type { EnergyLevel } from "@/types/mood";
 
 const MOOD_OPTIONS = [
     { value: 1, emoji: "😞", label: "Rất tệ" },
@@ -14,7 +15,11 @@ const MOOD_OPTIONS = [
     { value: 5, emoji: "😄", label: "Rất tốt" },
 ] as const;
 
-const ENERGY_OPTIONS = [1, 2, 3, 4, 5] as const;
+const ENERGY_OPTIONS = [
+    { value: "low" as const,    label: "Thấp",        emoji: "😴" },
+    { value: "medium" as const, label: "Trung bình",  emoji: "😊" },
+    { value: "high" as const,   label: "Cao",         emoji: "⚡" },
+];
 
 const PRESET_FACTORS = [
     { value: "work", label: "Công việc" },
@@ -39,7 +44,7 @@ export function MoodCheckIn() {
     const { mutate: logMood, isPending } = useLogMood();
 
     const [mood, setMood] = useState<number | null>(null);
-    const [energy, setEnergy] = useState<number | null>(null);
+    const [energy, setEnergy] = useState<EnergyLevel | null>(null);
     const [factors, setFactors] = useState<Set<string>>(new Set());
     const [note, setNote] = useState("");
     const [submitted, setSubmitted] = useState(false);
@@ -158,22 +163,22 @@ export function MoodCheckIn() {
                     <div className="space-y-2">
                         <p className="text-sm font-semibold text-slate-600">Mức năng lượng (tuỳ chọn)</p>
                         <div className="flex gap-2">
-                            {ENERGY_OPTIONS.map((level) => (
+                            {ENERGY_OPTIONS.map((option) => (
                                 <button
-                                    key={level}
+                                    key={option.value}
                                     type="button"
-                                    onClick={() => setEnergy(energy === level ? null : level)}
-                                    className={`flex-1 py-2 rounded-xl border-2 text-sm font-bold transition-all ${
-                                        energy === level
+                                    onClick={() => setEnergy(energy === option.value ? null : option.value)}
+                                    className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-xl border-2 text-sm font-bold transition-all ${
+                                        energy === option.value
                                             ? "border-emerald-500 bg-emerald-50 text-emerald-700"
                                             : "border-slate-100 bg-white text-slate-500 hover:border-slate-200"
                                     }`}
                                 >
-                                    {level}
+                                    <span className="text-lg">{option.emoji}</span>
+                                    <span className="text-[10px] font-medium">{option.label}</span>
                                 </button>
                             ))}
                         </div>
-                        <p className="text-[10px] text-slate-400">1 = kiệt sức, 5 = tràn đầy năng lượng</p>
                     </div>
 
                     {/* Factors */}

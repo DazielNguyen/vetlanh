@@ -3,24 +3,26 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, PlayCircle } from "lucide-react";
+import { Loader2, PlayCircle, Dumbbell } from "lucide-react";
 import { useExerciseList } from "@/hooks/useExercise";
+import { useExerciseReminder } from "@/hooks/useNotifications";
 
 const CATEGORY_OPTIONS = [
   { value: "", label: "Tất cả" },
   { value: "breathing", label: "Hơi thở" },
   { value: "meditation", label: "Thiền" },
-  { value: "journaling", label: "Nhật ký" },
-  { value: "movement", label: "Vận động" },
-  { value: "sound", label: "Âm thanh" },
+  { value: "grounding", label: "Hiện tại" },
+  { value: "cbt", label: "CBT" },
+  { value: "relaxation", label: "Thư giãn" },
 ];
 
 const MOOD_OPTIONS = [
   { value: "", label: "Tất cả tâm trạng" },
   { value: "anxious", label: "Lo lắng" },
   { value: "sad", label: "Buồn bã" },
-  { value: "stressed", label: "Căng thẳng" },
-  { value: "tired", label: "Mệt mỏi" },
+  { value: "cant_sleep", label: "Khó ngủ" },
+  { value: "need_energy", label: "Cần năng lượng" },
+  { value: "angry", label: "Tức giận" },
 ];
 
 function formatDuration(seconds?: number): string {
@@ -32,6 +34,7 @@ function formatDuration(seconds?: number): string {
 export function ExerciseList() {
   const [mood, setMood] = useState("");
   const [category, setCategory] = useState("");
+  const { data: reminder } = useExerciseReminder();
 
   const params = {
     ...(mood && { mood }),
@@ -47,6 +50,16 @@ export function ExerciseList() {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold text-slate-800">Lựa chọn bài tập hôm nay</h2>
       </div>
+
+      {/* Exercise reminder banner */}
+      {reminder?.should_notify && (
+        <div className="flex items-start gap-3 px-4 py-3 rounded-2xl bg-emerald-50 border border-emerald-200">
+          <Dumbbell className="h-4 w-4 text-emerald-600 mt-0.5 shrink-0" />
+          <p className="text-sm font-semibold text-emerald-800">
+            Đã đến giờ tập hôm nay! Chọn một bài tập bên dưới để bắt đầu.
+          </p>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="flex flex-wrap gap-2 mb-6">

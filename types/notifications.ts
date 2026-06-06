@@ -9,3 +9,8 @@ export interface NotificationPreference {
 
 export type NotificationPreferenceUpdate = Partial<NotificationPreference>;
 
+export interface ExerciseReminderResponse {
+  should_notify: boolean;
+  reason: string; // informational only — do not display to user
+}
+

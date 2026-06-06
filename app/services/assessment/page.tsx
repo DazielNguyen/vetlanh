@@ -56,18 +56,13 @@ export default function AssessmentPage() {
       </div>
 
       {/* Next due banner — only when not due and has a previous result */}
-      {!assessmentDue && hasPrevious && reminder?.next_due_at && (
+      {!assessmentDue && hasPrevious && reminder?.next_due_in_days != null && (
         <div className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4">
           <p className="text-sm font-semibold text-slate-700">Đánh giá tiếp theo</p>
           <p className="text-xs text-slate-500 mt-0.5">
-            Lần kiểm tra tiếp theo của bạn:{" "}
-            <span className="font-semibold">
-              {new Date(reminder.next_due_at).toLocaleDateString("vi-VN", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-              })}
-            </span>
+            Còn{" "}
+            <span className="font-semibold">{reminder.next_due_in_days} ngày</span>
+            {" "}nữa đến lần kiểm tra tiếp theo.
           </p>
         </div>
       )}

@@ -29,7 +29,7 @@ export const fetchPhq9 = {
   },
 
   getHistory: async (params?: Phq9HistoryParams): Promise<Phq9HistoryItem[]> => {
-    const response = await apiService.get<Phq9HistoryItem[]>("api/v1/assessments/phq9", params);
+    const response = await apiService.get<Phq9HistoryItem[]>("api/v1/assessments/phq9/history", params);
     return response.data;
   },
 

@@ -25,14 +25,22 @@ function formatDateLabel(dateStr: string): string {
     return `${parts[2]}/${parts[1]}`;
 }
 
+// Map BE energy string to a numeric value for the Y-axis (shared 1–5 scale with mood)
+function energyToNum(e: string | null | undefined): number | null {
+    if (e === "low") return 1;
+    if (e === "medium") return 3;
+    if (e === "high") return 5;
+    return null;
+}
+
 export function MoodTrend() {
     const [period, setPeriod] = useState<Period>("week");
     const { data: trend, isLoading } = useMoodTrend(period);
 
-    const chartData = trend?.data.map((point) => ({
+    const chartData = trend?.entries.map((point) => ({
         date: formatDateLabel(point.date),
-        mood: point.mood,
-        energy: point.energy,
+        mood: point.mood ?? null,
+        energy: energyToNum(point.energy),
     })) ?? [];
 
     return (
