@@ -6,15 +6,9 @@ Những phần dưới đây **chưa thể tích hợp hoàn toàn**. Cấu trú
 
 ---
 
-## 1. LiveInsights — mood param hardcoded "anxious"
+## 1. ~~LiveInsights — mood param hardcoded "anxious"~~ ✅ DONE
 
-**File:** `app/services/chat/components/LiveInsights.tsx`
-
-**Hiện tại:** `useRecommendedExercises({ mood: "anxious", limit: 3 })` — dùng `"anxious"` làm fallback cố định.
-
-**Cần thêm:** Lấy mood từ lần check-in gần nhất của user (ví dụ từ `useMoodEntries({ limit: 1 })`), map sang `MoodFilter` enum, truyền vào `mood` param. Nếu chưa có check-in thì giữ fallback `"anxious"`.
-
-**Lý do chưa làm:** Spec note "derive from latest check-in" nhưng không định nghĩa mapping mood score (1–5) → MoodFilter string. Cần confirm với product/BE.
+**Fixed:** `useMoodEntries({ limit: 1 })` → map `entry.mood` (1–5) → `"sad" | "anxious" | "need_energy"` → truyền vào `useRecommendedExercises`. Fallback `"anxious"` nếu chưa có check-in.
 
 ---
 
@@ -38,13 +32,9 @@ Những phần dưới đây **chưa thể tích hợp hoàn toàn**. Cấu trú
 
 ---
 
-## 4. MoodInsights — delta âm (cải thiện) hiển thị màu đỏ
+## 4. ~~MoodInsights — delta âm hiển thị màu đỏ~~ ✅ DONE
 
-**File:** `app/services/mood/components/MoodInsights.tsx` (line 65)
-
-**Hiện tại:** `+{item.delta}` luôn hiển thị màu xanh `text-emerald-600`. Nhưng delta âm = tệ hơn, delta dương = cải thiện.
-
-**Cần sửa:** Kiểm tra `item.delta > 0` → xanh; `item.delta < 0` → đỏ. Hiện component chưa xử lý trường hợp delta âm.
+**Fixed:** `delta >= 0` → `text-emerald-600 bg-emerald-50` + prefix `+`; `delta < 0` → `text-red-600 bg-red-50`, không có prefix `+`.
 
 ---
 

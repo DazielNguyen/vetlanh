@@ -6,7 +6,6 @@ import { WelcomeHeader } from "./WelcomeHeader";
 import { StressChart } from "./StressChart";
 import { CurrentHealingPath } from "./CurrentHealingPath";
 import { AIPromoCard } from "./AIPromoCard";
-import { RecommendedExperts } from "./RecommendedExperts";
 import { DailyQuote } from "./DailyQuote";
 import { DailyWellnessChecklist } from "./DailyWellnessChecklist";
 import { ResourcesForYou } from "./ResourcesForYou";
@@ -55,7 +54,6 @@ export function DashboardContent() {
                 <div className="space-y-8">
                     <AIPromoCard />
                     <WeeklyOverview streakDays={dashboard?.streak_days} />
-                    <RecommendedExperts />
                     <CommunitySupport />
                     <DailyQuote />
                 </div>

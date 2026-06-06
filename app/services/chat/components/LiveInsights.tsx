@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, AlertTriangle } from "lucide-react";
-import { useMoodSummary } from "@/hooks/useMood";
+import { useMoodSummary, useMoodEntries } from "@/hooks/useMood";
 import { useRecommendedExercises } from "@/hooks/useExercise";
 
 // sentiment_score 1 → 20%, 5 → 100%
@@ -12,10 +12,19 @@ function scoreToHeight(score: number): number {
   return (score / 5) * 100;
 }
 
+// score 1–2 → sad, 3 → anxious (neutral fallback), 4–5 → need_energy
+function scorToMoodFilter(score: number): string {
+  if (score <= 2) return "sad";
+  if (score >= 4) return "need_energy";
+  return "anxious";
+}
+
 export function LiveInsights() {
   const { data: moodSummary, isLoading: loadingMood } = useMoodSummary(7);
-  // Fallback to "anxious" — can be replaced with derived mood from latest check-in
-  const { data: recommended, isLoading: loadingExercises } = useRecommendedExercises({ mood: "anxious", limit: 3 });
+  const { data: latestEntries } = useMoodEntries({ limit: 1 });
+  const latestScore = latestEntries?.[0]?.mood;
+  const derivedMood = latestScore !== undefined ? scorToMoodFilter(latestScore) : "anxious";
+  const { data: recommended, isLoading: loadingExercises } = useRecommendedExercises({ mood: derivedMood, limit: 3 });
 
   return (
     <div className="hidden xl:flex flex-col w-72 shrink-0 space-y-6">

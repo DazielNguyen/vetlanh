@@ -62,8 +62,14 @@ export function MoodInsights() {
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-slate-700 leading-relaxed">{item.text}</p>
                     {item.delta !== null && (
-                      <span className="inline-block mt-1 text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full">
-                        +{item.delta} điểm
+                      <span
+                        className={`inline-block mt-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
+                          item.delta >= 0
+                            ? "text-emerald-600 bg-emerald-50"
+                            : "text-red-600 bg-red-50"
+                        }`}
+                      >
+                        {item.delta >= 0 ? "+" : ""}{item.delta} điểm
                       </span>
                     )}
                   </div>
