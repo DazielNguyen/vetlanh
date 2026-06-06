@@ -78,7 +78,7 @@ export function ThoughtRecordForm({ editId, onSaved, onCancel }: Props) {
   }, [existing, editId]);
 
   function getHint(field: keyof ThoughtRecordRequest): string {
-    return hints?.find((h) => h.field === field)?.hint ?? "";
+    return Array.isArray(hints) ? (hints.find((h) => h.field === field)?.hint ?? "") : "";
   }
 
   function handleChange(field: keyof ThoughtRecordRequest, value: string) {

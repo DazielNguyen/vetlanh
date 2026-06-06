@@ -10,6 +10,7 @@ export type SignalRStatus = HubConnectionState;
 
 let connection: HubConnection | null = null;
 let startPromise: Promise<void> | null = null;
+let stopPromise: Promise<void> | null = null;
 
 function getBaseUrl(): string {
   return process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/";
@@ -47,11 +48,16 @@ export function getHubConnection(): HubConnection {
 }
 
 export async function startHubConnection(): Promise<HubConnection> {
+  // If a stop is in progress (e.g. React Strict Mode cleanup), wait for it first
+  // so we never call start() on a Disconnecting connection
+  if (stopPromise) await stopPromise;
+
   const conn = getHubConnection();
   if (conn.state === HubConnectionState.Connected) return conn;
+  if (conn.state === HubConnectionState.Reconnecting) return conn;
 
-  if (conn.state === HubConnectionState.Connecting && startPromise) {
-    await startPromise;
+  if (conn.state === HubConnectionState.Connecting) {
+    if (startPromise) await startPromise;
     return conn;
   }
 
@@ -71,9 +77,9 @@ export async function startHubConnection(): Promise<HubConnection> {
 
 export async function stopHubConnection(): Promise<void> {
   if (!connection) return;
-  try {
-    await connection.stop();
-  } finally {
+  stopPromise = connection.stop().finally(() => {
     connection = null;
-  }
+    stopPromise = null;
+  });
+  await stopPromise;
 }
