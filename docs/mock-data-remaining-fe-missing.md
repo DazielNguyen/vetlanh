@@ -38,10 +38,6 @@ Những phần dưới đây **chưa thể tích hợp hoàn toàn**. Cấu trú
 
 ---
 
-## 5. Journal prompts — usePromptsByTopic chưa được dùng trong UI
+## 5. ~~Journal prompts — usePromptsByTopic chưa được dùng trong UI~~ ✅ DONE
 
-**File:** `hooks/useJournalPrompts.ts`, `lib/api/services/fetchJournalPrompts.ts`
-
-**Hiện tại:** `usePromptsByTopic(topic)` hook đã được implement và wire đúng endpoint. Nhưng không có UI component nào dùng nó.
-
-**Không cần sửa ngay** — hook sẵn sàng khi cần build topic filter UI.
+**Fixed:** Topic chips được render từ `DailyPromptResponse.topics` trong `DailyPromptCard`. Chọn topic → `usePromptsByTopic` → cycle bằng index. Bỏ chọn → quay về daily + /next mode.
