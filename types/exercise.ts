@@ -21,7 +21,7 @@ export interface ExerciseLog {
   id: string;
   exercise_slug: string;
   duration_seconds: number;
-  completed_at: string;
+  completed_at: string | null;
 }
 
 export interface ExerciseListParams {

@@ -18,11 +18,11 @@ function totalMinutes(logs: { duration_seconds: number }[]): number {
   return Math.round(logs.reduce((sum, l) => sum + l.duration_seconds, 0) / 60);
 }
 
-function currentStreak(logs: { completed_at: string }[]): number {
+function currentStreak(logs: { completed_at: string | null }[]): number {
   if (logs.length === 0) return 0;
-  // Sort descending
+  // Sort descending; skip logs where completed_at is null (exercise not yet finished)
   const dates = [...new Set(
-    logs.map((l) => l.completed_at.slice(0, 10))
+    logs.filter((l): l is { completed_at: string } => l.completed_at != null).map((l) => l.completed_at.slice(0, 10))
   )].sort().reverse();
 
   let streak = 0;
@@ -112,7 +112,7 @@ export function ProgressTracker() {
                   <div className="flex items-center gap-2 text-slate-400">
                     <span>{Math.round(log.duration_seconds / 60)} phút</span>
                     <span>·</span>
-                    <span>{getTodayLabel(log.completed_at)}</span>
+                    <span>{log.completed_at ? getTodayLabel(log.completed_at) : "—"}</span>
                   </div>
                 </div>
               ))}
