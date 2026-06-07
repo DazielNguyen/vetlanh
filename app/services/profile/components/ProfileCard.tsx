@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Pencil, Check, X } from "lucide-react";
 import { useCurrentUser, useUpdateProfile } from "@/hooks/useUser";
+import { useDashboard } from "@/hooks/useDashboard";
 import { formatImageUrl } from "@/lib/utils/formatImageUrl";
 
 export function ProfileCard() {
@@ -29,6 +29,7 @@ export function ProfileCard() {
         updateProfile({ display_name: draftName.trim() }, { onSuccess: () => setEditing(false) });
     }
 
+    const { data: dashboard } = useDashboard();
     const avatarSrc = formatImageUrl(user?.avatar_url) ?? "/images/placeholder-user.jpg";
 
     return (
@@ -73,12 +74,6 @@ export function ProfileCard() {
                         )}
                         <p className="text-xs text-slate-400">{user?.email ?? "—"}</p>
                     </div>
-                    <div className="flex items-center justify-center gap-2">
-                        <span className="text-[10px] font-bold px-3 py-1 rounded-full bg-primary/10 text-primary">Free Plan</span>
-                    </div>
-                    <Button variant="outline" className="w-full rounded-xl border-slate-200 text-sm font-semibold">
-                        Nâng cấp Pro
-                    </Button>
                 </CardContent>
             </Card>
 
@@ -88,20 +83,14 @@ export function ProfileCard() {
                     <h3 className="font-bold text-slate-800">Thống kê</h3>
                     <div className="space-y-3 text-sm">
                         <div className="flex items-center justify-between">
-                            <span className="text-slate-500">Ngày tham gia</span>
-                            <span className="font-semibold text-slate-700">–</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <span className="text-slate-500">Buổi tư vấn</span>
-                            <span className="font-semibold text-slate-700">–</span>
-                        </div>
-                        <div className="flex items-center justify-between">
                             <span className="text-slate-500">Bài tập hoàn thành</span>
                             <span className="font-semibold text-slate-700">–</span>
                         </div>
                         <div className="flex items-center justify-between">
                             <span className="text-slate-500">Streak hiện tại</span>
-                            <span className="font-semibold text-emerald-600">–</span>
+                            <span className="font-semibold text-emerald-600">
+                                {dashboard?.streak_days != null ? `${dashboard.streak_days} ngày` : "–"}
+                            </span>
                         </div>
                     </div>
                 </CardContent>

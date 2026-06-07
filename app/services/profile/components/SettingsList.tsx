@@ -2,7 +2,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { User, Bell, Shield, Palette, Globe, CreditCard, LogOut, ChevronRight, Moon, Sun } from "lucide-react";
+import { User, Bell, Shield, Palette, Globe, LogOut, ChevronRight } from "lucide-react";
 import { NotificationSettings } from "./NotificationSettings";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { logout } from "@/lib/redux/slices/authSlice";
@@ -13,7 +13,6 @@ const settingsSections = [
         items: [
             { icon: User, label: "Thông tin cá nhân", desc: "Tên, email, số điện thoại" },
             { icon: Shield, label: "Bảo mật", desc: "Mật khẩu, xác thực 2 lớp" },
-            { icon: CreditCard, label: "Thanh toán", desc: "Phương thức thanh toán, lịch sử" },
         ],
     },
     {
@@ -55,26 +54,6 @@ export function SettingsList() {
                     </Card>
                 </div>
             ))}
-
-            {/* Theme Toggle */}
-            <Card className="border-none shadow-sm rounded-2xl">
-                <div className="p-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center">
-                            <Moon className="w-5 h-5 text-slate-500" />
-                        </div>
-                        <div>
-                            <h3 className="font-semibold text-slate-800 text-sm">Chế độ tối</h3>
-                            <p className="text-xs text-slate-400">Đang tắt</p>
-                        </div>
-                    </div>
-                    <div className="w-11 h-6 rounded-full bg-slate-200 relative cursor-pointer">
-                        <div className="w-5 h-5 rounded-full bg-white shadow-sm absolute top-0.5 left-0.5 transition-transform flex items-center justify-center">
-                            <Sun className="w-3 h-3 text-amber-400" />
-                        </div>
-                    </div>
-                </div>
-            </Card>
 
             {/* Notification Settings */}
             <NotificationSettings />
