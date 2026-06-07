@@ -7,6 +7,10 @@ export function formatDate(date: string | Date, format = "DD/MM/YYYY"): string {
   return dayjs(date).format(format);
 }
 
+export function getTodayDateString(): string {
+  return dayjs().format("YYYY-MM-DD");
+}
+
 export function formatRelativeTime(date: string | Date): string {
   const now = dayjs();
   const target = dayjs(date);

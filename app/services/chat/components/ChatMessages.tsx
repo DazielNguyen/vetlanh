@@ -6,10 +6,11 @@ import { Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useConversationMessages } from "@/hooks/useChat";
+import { useQuickPrompts } from "@/hooks/useServices";
 import { formatDate } from "@/lib/utils/formatDate";
 import type { StreamChatState } from "@/hooks/useStreamChat";
 
-const QUICK_PROMPTS = [
+const FALLBACK_PROMPTS = [
   "Hôm nay tôi đang cảm thấy lo lắng...",
   "Tôi cần ai đó lắng nghe",
   "Giúp tôi giảm căng thẳng",
@@ -60,6 +61,9 @@ function AssistantBubble({ content, timestamp }: { content: string; timestamp?: 
 
 export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) {
   const { data: serverMessages, isLoading } = useConversationMessages(conversationId);
+  const { data: promptsData } = useQuickPrompts();
+  const quickPrompts = (promptsData ?? []).slice(0, 4).map((p) => p.text);
+  const prompts = quickPrompts.length > 0 ? quickPrompts : FALLBACK_PROMPTS;
   const bottomRef = useRef<HTMLDivElement>(null);
   const { localMessages, streamingText, isStreaming, error } = stream;
 
@@ -97,7 +101,7 @@ export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) 
           <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider text-center">
             Bắt đầu bằng...
           </p>
-          {QUICK_PROMPTS.map((prompt) => (
+          {prompts.map((prompt) => (
             <button
               key={prompt}
               onClick={() => onPromptSelect(prompt)}

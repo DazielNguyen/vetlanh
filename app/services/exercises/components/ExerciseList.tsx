@@ -6,23 +6,22 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Loader2, PlayCircle, Dumbbell } from "lucide-react";
 import { useExerciseList } from "@/hooks/useExercise";
 import { useExerciseReminder } from "@/hooks/useNotifications";
+import { useExerciseCategories, useExerciseMoodFilters } from "@/hooks/useServices";
 
-const CATEGORY_OPTIONS = [
-  { value: "", label: "Tất cả" },
-  { value: "breathing", label: "Hơi thở" },
-  { value: "meditation", label: "Thiền" },
-  { value: "grounding", label: "Hiện tại" },
-  { value: "cbt", label: "CBT" },
-  { value: "relaxation", label: "Thư giãn" },
+const FALLBACK_CATEGORIES = [
+  { key: "breathing", label: "Hơi thở" },
+  { key: "meditation", label: "Thiền" },
+  { key: "grounding", label: "Hiện tại" },
+  { key: "cbt", label: "CBT" },
+  { key: "relaxation", label: "Thư giãn" },
 ];
 
-const MOOD_OPTIONS = [
-  { value: "", label: "Tất cả tâm trạng" },
-  { value: "anxious", label: "Lo lắng" },
-  { value: "sad", label: "Buồn bã" },
-  { value: "cant_sleep", label: "Khó ngủ" },
-  { value: "need_energy", label: "Cần năng lượng" },
-  { value: "angry", label: "Tức giận" },
+const FALLBACK_MOODS = [
+  { key: "anxious", label: "Lo lắng" },
+  { key: "sad", label: "Buồn bã" },
+  { key: "cant_sleep", label: "Khó ngủ" },
+  { key: "need_energy", label: "Cần năng lượng" },
+  { key: "angry", label: "Tức giận" },
 ];
 
 function formatDuration(seconds?: number): string {
@@ -35,6 +34,11 @@ export function ExerciseList() {
   const [mood, setMood] = useState("");
   const [category, setCategory] = useState("");
   const { data: reminder } = useExerciseReminder();
+  const { data: categoriesData } = useExerciseCategories();
+  const { data: moodsData } = useExerciseMoodFilters();
+
+  const categoryOptions = [{ key: "", label: "Tất cả" }, ...(categoriesData ?? FALLBACK_CATEGORIES)];
+  const moodOptions = [{ key: "", label: "Tất cả tâm trạng" }, ...(moodsData ?? FALLBACK_MOODS)];
 
   const params = {
     ...(mood && { mood }),
@@ -64,12 +68,12 @@ export function ExerciseList() {
       {/* Filters */}
       <div className="flex flex-wrap gap-2 mb-6">
         <div className="flex gap-1.5 flex-wrap">
-          {CATEGORY_OPTIONS.map((opt) => (
+          {categoryOptions.map((opt) => (
             <button
-              key={opt.value}
-              onClick={() => setCategory(opt.value)}
+              key={opt.key}
+              onClick={() => setCategory(opt.key)}
               className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition ${
-                category === opt.value
+                category === opt.key
                   ? "bg-primary text-white border-primary"
                   : "bg-white text-slate-600 border-slate-200 hover:border-primary/50"
               }`}
@@ -79,12 +83,12 @@ export function ExerciseList() {
           ))}
         </div>
         <div className="flex gap-1.5 flex-wrap">
-          {MOOD_OPTIONS.map((opt) => (
+          {moodOptions.map((opt) => (
             <button
-              key={opt.value}
-              onClick={() => setMood(opt.value)}
+              key={opt.key}
+              onClick={() => setMood(opt.key)}
               className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition ${
-                mood === opt.value
+                mood === opt.key
                   ? "bg-emerald-600 text-white border-emerald-600"
                   : "bg-white text-slate-600 border-slate-200 hover:border-emerald-300"
               }`}

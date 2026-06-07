@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useMoodEntries, useLogMood } from "@/hooks/useMood";
+import { getTodayDateString } from "@/lib/utils/formatDate";
 import type { EnergyLevel } from "@/types/mood";
 
 const MOOD_OPTIONS = [
@@ -33,13 +34,8 @@ const PRESET_FACTORS = [
     { value: "study", label: "Học tập" },
 ];
 
-function getTodayDate(): string {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
 export function MoodCheckIn() {
-    const today = getTodayDate();
+    const today = getTodayDateString();
     const { data: entries, isLoading: loadingEntries } = useMoodEntries({ start: today, end: today });
     const { mutate: logMood, isPending } = useLogMood();
 
