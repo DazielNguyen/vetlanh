@@ -15,7 +15,7 @@ export default function HeroSection() {
     prefersReduced ? { duration: 0 } : { duration: 0.8, delay, ease: EASING };
 
   return (
-    <section ref={ref} className="relative h-screen min-h-150 w-full overflow-hidden">
+    <section ref={ref} className="relative min-h-dvh w-full overflow-hidden">
       {/* Background video */}
       <video
         autoPlay
