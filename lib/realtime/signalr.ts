@@ -77,6 +77,9 @@ export async function startHubConnection(): Promise<HubConnection> {
 
 export async function stopHubConnection(): Promise<void> {
   if (!connection) return;
+  // Wait for any in-progress start before stopping — calling stop() during
+  // negotiation causes "The connection was stopped during negotiation" error
+  if (startPromise) await startPromise.catch(() => {});
   stopPromise = connection.stop().finally(() => {
     connection = null;
     stopPromise = null;
