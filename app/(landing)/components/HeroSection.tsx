@@ -1,54 +1,88 @@
-import { Button } from "@/components/ui/button";
+"use client";
+
+import { useRef } from "react";
+import { motion, useInView, useReducedMotion } from "motion/react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { WordsPullUp } from "@/components/ui/words-pull-up";
+import { EASING } from "@/lib/motion";
 
 export default function HeroSection() {
-    return (
-        <section className="relative overflow-hidden pt-16 pb-24 lg:pt-32 lg:pb-40">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center gap-16">
-                {/* Content */}
-                <div className="flex-1 text-center lg:text-left z-10">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 text-emerald-700 text-sm font-medium mb-8 border border-emerald-100">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        Ứng dụng Chăm sóc Sức khỏe Tâm thần
-                    </div>
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-800 leading-[1.2] mb-6">
-                        Tìm lại sự bình yên,<br />
-                        <span className="text-[#6D8A96]">chữa lành tâm hồn</span> cùng <span className="font-dancing font-bold text-[1.1em]">Vết Lành</span>
-                    </h1>
-                    <p className="text-lg text-slate-600 mb-10 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-light">
-                        Hệ sinh thái chăm sóc sức khỏe tinh thần toàn diện. Ứng dụng công nghệ AI tiên tiến giúp bạn xoa dịu căng thẳng và kết nối với các chuyên gia tâm lý tận tâm.
-                    </p>
-                    <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                        <Button className="w-full sm:w-auto px-8 py-6 bg-[#6D8A96] hover:bg-[#5A737D] text-white text-lg font-medium rounded-full shadow-md transition-all">
-                            Bắt đầu miễn phí
-                        </Button>
-                        <Button variant="outline" className="w-full sm:w-auto px-8 py-6 bg-white border-2 border-slate-200 text-slate-600 text-lg font-medium rounded-full hover:bg-slate-50 transition-colors">
-                            Khám phá dịch vụ
-                        </Button>
-                    </div>
-                    <p className="mt-6 text-sm text-slate-500">Đồng hành cùng bạn trên mọi bước đường chữa lành.</p>
-                </div>
+  const ref = useRef<HTMLElement>(null);
+  const isInView = useInView(ref, { once: true });
+  const prefersReduced = useReducedMotion();
+  const transition = (delay: number) =>
+    prefersReduced ? { duration: 0 } : { duration: 0.8, delay, ease: EASING };
 
-                {/* Hero Image Placeholder */}
-                <div className="flex-1 w-full max-w-xl lg:max-w-none relative">
-                    <div className="aspect-[4/3] rounded-[32px] relative overflow-hidden shadow-xl float-animation bg-slate-100 border border-white/50">
-                        {/* Placeholder generic healing image from unsplash (nature/meditation) */}
-                        <img alt="Sự bình yên" className="w-full h-full object-cover" src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1200&auto=format&fit=crop" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent"></div>
-                        <div className="absolute bottom-6 left-6 right-6 flex justify-center">
-                            <div className="bg-white/95 backdrop-blur-md p-5 rounded-2xl shadow-lg w-full max-w-sm border border-slate-100">
-                                <div className="flex items-center gap-3 mb-3">
-                                    <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold">AI</div>
-                                    <div>
-                                        <div className="text-sm font-bold text-slate-800"><span className="font-dancing">Vết Lành AI</span></div>
-                                        <div className="text-[10px] text-emerald-600 font-medium">Đang hoạt động</div>
-                                    </div>
-                                </div>
-                                <p className="text-sm text-slate-600 leading-relaxed">"Chào bạn, hãy hít một hơi thật sâu. Hôm nay mọi thứ vẫn ổn chứ?"</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    );
+  return (
+    <section ref={ref} className="relative h-screen min-h-150 w-full overflow-hidden">
+      {/* Background video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 h-full w-full object-cover"
+        src="/images/vetlanh_landing.mp4"
+      />
+
+      {/* Gradient overlays */}
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-black/30 via-transparent to-black/70" />
+
+      {/* Gradient bleed into next section */}
+      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-card" />
+
+      {/* Hero content — bottom grid */}
+      <div className="absolute bottom-0 left-0 right-0 px-6 pb-10 md:px-10 md:pb-16">
+        <div className="grid grid-cols-12 items-end gap-4">
+
+          {/* Brand name — left */}
+          <div className="col-span-12 lg:col-span-7">
+            <h1
+              className="font-dancing font-bold leading-[0.85] tracking-tight text-[22vw] sm:text-[20vw] md:text-[16vw] lg:text-[13vw] xl:text-[11vw]"
+              style={{ color: "#E1E0CC" }}
+            >
+              <WordsPullUp text="Vết Lành" />
+            </h1>
+          </div>
+
+          {/* Tagline + CTA — right */}
+          <div className="col-span-12 lg:col-span-5 flex flex-col gap-5 pb-2 lg:pb-6">
+            <motion.p
+              initial={prefersReduced ? {} : { y: 20, opacity: 0 }}
+              animate={prefersReduced ? {} : isInView ? { y: 0, opacity: 1 } : {}}
+              transition={transition(0.5)}
+              className="text-sm text-white/80 sm:text-base md:text-lg leading-relaxed max-w-sm"
+            >
+              Hệ sinh thái chăm sóc sức khỏe tinh thần toàn diện — AI luôn lắng nghe, bài tập chữa lành và lộ trình cá nhân hóa cho bạn.
+            </motion.p>
+
+            <motion.div
+              className="flex flex-col sm:flex-row gap-3"
+              initial={prefersReduced ? {} : { y: 20, opacity: 0 }}
+              animate={prefersReduced ? {} : isInView ? { y: 0, opacity: 1 } : {}}
+              transition={transition(0.7)}
+            >
+              <Link
+                href="/register"
+                className="group inline-flex items-center gap-2 self-start rounded-full bg-white/10 border border-white/30 backdrop-blur-sm py-2 pl-6 pr-2 text-sm font-semibold text-white transition-all hover:bg-white/20 hover:gap-3 sm:text-base"
+              >
+                Bắt đầu miễn phí
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 transition-transform group-hover:scale-110">
+                  <ArrowRight className="h-4 w-4 text-white" />
+                </span>
+              </Link>
+              <Link
+                href="#dich-vu"
+                className="inline-flex items-center self-start rounded-full px-6 py-3 text-sm font-semibold text-white/70 hover:text-white transition-colors"
+              >
+                Khám phá dịch vụ
+              </Link>
+            </motion.div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  );
 }

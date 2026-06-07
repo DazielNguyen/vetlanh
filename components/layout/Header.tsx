@@ -17,7 +17,7 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
-            <Link href="/" className="flex-shrink-0 flex items-center gap-2">
+            <Link href="/" className="shrink-0 flex items-center gap-2">
               <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
                 <Image src="/images/logo.svg" alt="Vết Lành Logo" width={24} height={24} className="text-primary" />
               </div>
@@ -27,9 +27,9 @@ export default function Header() {
             {/* Nav Links */}
             <div className="hidden md:flex space-x-8 items-center font-medium text-slate-700/80">
               <Link className="hover:text-primary transition-colors" href="/">Trang chủ</Link>
-              <Link className="hover:text-primary transition-colors" href="/services">Dịch vụ</Link>
-              <Link className="hover:text-primary transition-colors" href="/#chuyen-gia">Chuyên gia</Link>
+              <Link className="hover:text-primary transition-colors" href="/#dich-vu">Dịch vụ</Link>
               <Link className="hover:text-primary transition-colors" href="/#bang-gia">Bảng giá</Link>
+              <Link className="hover:text-primary transition-colors" href="/#cau-chuyen">Câu chuyện</Link>
             </div>
 
             {/* CTA */}
