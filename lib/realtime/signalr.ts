@@ -28,12 +28,28 @@ function getAccessToken(): string | null {
   }
 }
 
+/**
+ * Lazily resolves the bearer token on every negotiation/reconnect request.
+ *
+ * Returning `null` tells SignalR to omit the Authorization header entirely,
+ * which produces a clear connection error instead of a server-side HTTP 401
+ * caused by an empty or invalid Bearer value.
+ */
+function accessTokenFactory(): string | null {
+  const token = getAccessToken();
+  if (!token) {
+    console.warn("[SignalR] accessTokenFactory: no token in store — connection will be rejected by server");
+    return null;
+  }
+  return token;
+}
+
 export function getHubConnection(): HubConnection {
   if (typeof window === "undefined") throw new Error("SignalR chỉ chạy trên browser");
   if (connection) return connection;
 
   connection = new HubConnectionBuilder()
-    .withUrl(getHubUrl(), { accessTokenFactory: () => getAccessToken() || "" })
+    .withUrl(getHubUrl(), { accessTokenFactory })
     .withAutomaticReconnect()
     .configureLogging(
       process.env.NODE_ENV === "development" ? LogLevel.Information : LogLevel.Warning
