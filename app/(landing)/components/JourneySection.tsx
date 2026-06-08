@@ -81,7 +81,7 @@ export default function JourneySection() {
               transition={transition(0.2)}
             >
               <Image
-                src="/images/thiền.jpg"
+                src="/images/healing.gif"
                 alt="Hành trình chữa lành"
                 fill
                 priority
