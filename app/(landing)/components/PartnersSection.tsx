@@ -1,7 +1,11 @@
+import Image from "next/image";
+
 export default function PartnersSection() {
     return (
-        <section className="py-12 bg-background/50 border-y border-gray-100">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="relative py-12 overflow-hidden border-y border-gray-100">
+            <Image src="/images/bg4.png" alt="" fill className="object-cover" />
+            <div className="pointer-events-none absolute inset-0 bg-white/75 dark:bg-zinc-950/80" />
+            <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <p className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-8">Đối tác đồng hành & Bảo trợ chuyên môn</p>
                 <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all">
                     <img alt="Partner 1" className="h-8" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWQbcGNamLZOpMwoZaU744ogpUExYve78YfsfD8u2Ia101m5gRy7uemINAhnd4F-nj0l_AiGofO3AqpFak7tfXqpvhdHYjeL-v8wckfvjuU0mvqlTMNLB-Gx0VCA8bSqPt0spJ64BcYOS5E5lqAwve9RfLbnRUccdDbIePOiPhnky0w7irA4UXFkdMgkleQGzq8WqpCZA4WBK50YIlAv5UEJSTrgPIIkcuyDLA_rXZchbYDDli8JG9WjMFXj2JDPBTxkhl-_cpZAXP" />
