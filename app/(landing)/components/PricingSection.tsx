@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { motion, useInView, useReducedMotion } from "motion/react";
+import Image from "next/image";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,13 +32,13 @@ const PACKAGES: Package[] = [
     label: "1 năm",
     price: "599.000 ₫",
     perMonth: "~50.000 ₫/tháng",
-    badge: { text: "KHUYÊN DÙNG", className: "bg-emerald-100 text-emerald-700 border border-emerald-200" },
+    badge: { text: "KHUYÊN DÙNG", className: "bg-white/20 text-white border border-white/30" },
   },
   {
     key: "tronddoi",
     label: "Trọn đời",
     price: "999.000 ₫",
-    badge: { text: "PHỔ BIẾN NHẤT", className: "bg-amber-100 text-amber-700 border border-amber-200" },
+    badge: { text: "PHỔ BIẾN NHẤT", className: "bg-amber-400/20 text-amber-200 border border-amber-300/30" },
   },
 ];
 
@@ -73,16 +74,20 @@ export default function PricingSection() {
     prefersReduced ? { duration: 0 } : { duration: 0.7, ease: EASING, delay };
 
   return (
-    <section id="bang-gia" className="py-32 bg-[#FAFDFB]" ref={ref}>
-      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
+    <section id="bang-gia" className="relative py-32 overflow-hidden" ref={ref}>
+      <Image src="/images/bg4.png" alt="" fill className="object-cover" />
+      <div className="pointer-events-none absolute inset-0 bg-black/45" />
+      <div className="pointer-events-none absolute top-0 inset-x-0 h-28 bg-linear-to-b from-black/70 to-transparent" />
+      <div className="pointer-events-none absolute bottom-0 inset-x-0 h-28 bg-linear-to-b from-transparent to-black/70" />
+      <div className="relative mx-auto max-w-300 px-4 sm:px-6 lg:px-8">
         <motion.div
           className="mb-16 text-center"
           initial={initial}
           animate={animate}
           transition={transition()}
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-4">Lựa chọn gói phù hợp với bạn</h2>
-          <p className="mt-4 text-slate-500 max-w-2xl mx-auto text-lg">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Lựa chọn gói phù hợp với bạn</h2>
+          <p className="mt-4 text-white/75 max-w-2xl mx-auto text-lg">
             Bắt đầu miễn phí, nâng cấp khi bạn sẵn sàng để mở khoá toàn bộ hành trình chữa lành.
           </p>
         </motion.div>
@@ -90,55 +95,55 @@ export default function PricingSection() {
         <div className="grid gap-8 md:grid-cols-2 items-start">
           {/* Free card */}
           <motion.div
-            className="flex flex-col rounded-[32px] border border-slate-100 bg-white p-8 shadow-sm hover:shadow-md transition-shadow"
+            className="flex flex-col rounded-[32px] border border-white/20 bg-white/10 backdrop-blur-md p-8 shadow-xl hover:bg-white/15 transition-all"
             initial={initial}
             animate={animate}
             transition={transition(0.1)}
           >
             <div className="mb-8">
-              <h3 className="text-xl font-bold text-slate-800">Dành cho Cá nhân</h3>
+              <h3 className="text-xl font-bold text-white">Dành cho Cá nhân</h3>
               <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-4xl font-extrabold text-[#6D8A96]">Miễn phí</span>
+                <span className="text-4xl font-extrabold text-white">Miễn phí</span>
               </div>
-              <p className="mt-2 text-sm text-slate-500">Bước đầu tìm lại sự cân bằng.</p>
+              <p className="mt-2 text-sm text-white/65">Bước đầu tìm lại sự cân bằng.</p>
             </div>
-            <ul className="mb-8 flex-1 space-y-4 text-sm text-slate-600">
+            <ul className="mb-8 flex-1 space-y-4 text-sm text-white/80">
               {FREE_FEATURES.map((f) => (
                 <li key={f} className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
-                    <Check className="h-4 w-4 text-emerald-600" strokeWidth={3} />
+                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                    <Check className="h-4 w-4 text-white" strokeWidth={3} />
                   </div>
                   {f}
                 </li>
               ))}
             </ul>
-            <Button variant="outline" asChild className="w-full rounded-full border-2 border-slate-200 py-6 text-base font-bold text-slate-600 hover:bg-slate-50 transition-all">
+            <Button variant="outline" asChild className="w-full rounded-full border-2 border-white/40 py-6 text-base font-bold text-white bg-transparent hover:bg-white/10 transition-all">
               <Link href="/register">Bắt đầu hành trình</Link>
             </Button>
           </motion.div>
 
           {/* Pro card */}
           <motion.div
-            className="relative flex flex-col rounded-[32px] border-2 border-[#6D8A96] bg-white p-8 shadow-xl"
+            className="relative flex flex-col rounded-[32px] border-2 border-white/40 bg-white/15 backdrop-blur-md p-8 shadow-2xl"
             initial={initial}
             animate={animate}
             transition={transition(0.2)}
           >
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-[#6D8A96] px-4 py-1 text-xs font-bold text-white shadow-sm whitespace-nowrap">
-              PRO — MỞ KHOÁ TẤT CẢ
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-white/20 backdrop-blur-md px-4 py-1 text-xs font-bold text-white shadow-sm whitespace-nowrap border border-white/30">
+              PRO - MỞ KHOÁ TẤT CẢ
             </div>
 
             <div className="mb-6">
-              <h3 className="text-xl font-bold text-slate-800">Gói Pro</h3>
-              <p className="mt-2 text-sm text-slate-500">Toàn bộ tính năng, không giới hạn.</p>
+              <h3 className="text-xl font-bold text-white">Gói Pro</h3>
+              <p className="mt-2 text-sm text-white/65">Toàn bộ tính năng, không giới hạn.</p>
             </div>
 
             {/* Pro features */}
-            <ul className="mb-6 space-y-3 text-sm text-slate-600">
+            <ul className="mb-6 space-y-3 text-sm text-white/80">
               {PRO_FEATURES.map((f) => (
                 <li key={f} className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-[#6D8A96]/10 flex items-center justify-center shrink-0">
-                    <Check className="h-4 w-4 text-[#6D8A96]" strokeWidth={3} />
+                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                    <Check className="h-4 w-4 text-white" strokeWidth={3} />
                   </div>
                   {f}
                 </li>
@@ -146,7 +151,7 @@ export default function PricingSection() {
             </ul>
 
             {/* Package selector */}
-            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Chọn thời hạn</p>
+            <p className="text-xs font-bold text-white/60 uppercase tracking-widest mb-3">Chọn thời hạn</p>
             <div className="space-y-2 mb-6">
               {PACKAGES.map((pkg) => (
                 <button
@@ -155,12 +160,12 @@ export default function PricingSection() {
                   onClick={() => setSelectedKey(pkg.key)}
                   className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-left transition-all ${
                     selectedKey === pkg.key
-                      ? "border-[#6D8A96] bg-[#6D8A96]/5"
-                      : "border-slate-100 hover:border-slate-200 bg-white"
+                      ? "border-white/60 bg-white/20 backdrop-blur-sm"
+                      : "border-white/15 hover:border-white/30 bg-white/5 hover:bg-white/10"
                   }`}
                 >
                   <div className="flex items-center gap-2 min-w-0">
-                    <span className="font-semibold text-slate-800 text-sm">{pkg.label}</span>
+                    <span className="font-semibold text-white text-sm">{pkg.label}</span>
                     {pkg.badge && (
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border shrink-0 ${pkg.badge.className}`}>
                         {pkg.badge.text}
@@ -168,9 +173,9 @@ export default function PricingSection() {
                     )}
                   </div>
                   <div className="text-right shrink-0 ml-2">
-                    <span className="font-bold text-slate-800 text-sm">{pkg.price}</span>
+                    <span className="font-bold text-white text-sm">{pkg.price}</span>
                     {pkg.perMonth && (
-                      <span className="block text-[11px] text-slate-400">{pkg.perMonth}</span>
+                      <span className="block text-[11px] text-white/55">{pkg.perMonth}</span>
                     )}
                   </div>
                 </button>
@@ -179,7 +184,7 @@ export default function PricingSection() {
 
             <Button
               onClick={() => setDialogOpen(true)}
-              className="w-full rounded-full bg-[#6D8A96] hover:bg-[#5A737D] py-6 text-base font-bold text-white shadow-lg shadow-[#6D8A96]/20 transition-all"
+              className="w-full rounded-full bg-white hover:bg-white/90 py-6 text-base font-bold text-[#6D8A96] shadow-lg transition-all"
             >
               Nâng cấp Pro ngay
             </Button>
@@ -222,7 +227,6 @@ export default function PricingSection() {
               asChild
               className="w-full rounded-full bg-[#6D8A96] hover:bg-[#5A737D] text-white font-bold py-5"
             >
-              {/* TODO: replace with checkout route when payment is implemented */}
               <Link href={`/register?package=${selectedPkg.key}`}>
                 Tiếp tục đăng ký
               </Link>

@@ -30,7 +30,7 @@ export default function HeroSection() {
       <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-black/30 via-transparent to-black/70" />
 
       {/* Gradient bleed into next section */}
-      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-card" />
+      <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-32 bg-linear-to-b from-transparent to-black/80" />
 
       {/* Hero content — bottom grid */}
       <div className="absolute bottom-0 left-0 right-0 px-6 pb-10 md:px-10 md:pb-16">

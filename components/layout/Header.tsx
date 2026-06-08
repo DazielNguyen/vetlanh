@@ -35,11 +35,13 @@ export default function Header() {
           </Link>
 
           {/* Nav Links */}
-          <div className={`hidden md:flex space-x-8 items-center font-medium transition-colors duration-500 ${scrolled ? "text-slate-700/80" : "text-white/80"}`}>
+          <div className={`hidden md:flex space-x-6 items-center font-medium transition-colors duration-500 ${scrolled ? "text-slate-700/80" : "text-white/80"}`}>
             <Link className="hover:text-primary transition-colors" href="/">Trang chủ</Link>
             <Link className="hover:text-primary transition-colors" href="/#dich-vu">Dịch vụ</Link>
             <Link className="hover:text-primary transition-colors" href="/#bang-gia">Bảng giá</Link>
             <Link className="hover:text-primary transition-colors" href="/#cau-chuyen">Câu chuyện</Link>
+            <Link className="hover:text-primary transition-colors" href="/#faq">FAQ</Link>
+            <Link className="hover:text-primary transition-colors" href="/#lien-he">Liên hệ</Link>
           </div>
 
           {/* CTA */}
