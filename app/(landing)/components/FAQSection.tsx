@@ -40,7 +40,7 @@ export default function FAQSection() {
       <Image src="/images/bg5.png" alt="" fill className="object-cover" />
       <div className="pointer-events-none absolute inset-0 bg-black/40" />
       <div className="pointer-events-none absolute top-0 inset-x-0 h-28 bg-linear-to-b from-black/70 to-transparent" />
-      <div className="pointer-events-none absolute bottom-0 inset-x-0 h-28 bg-linear-to-b from-transparent to-slate-800" />
+      <div className="pointer-events-none absolute bottom-0 inset-x-0 h-32 bg-linear-to-b from-transparent to-black/70" />
       <div className="relative mx-auto max-w-200 px-6">
         <motion.div
           className="mb-16 text-center"

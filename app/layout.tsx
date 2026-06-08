@@ -35,6 +35,10 @@ export const metadata: Metadata = {
     siteName: "Vết Lành",
   },
   robots: { index: true, follow: true },
+  icons: {
+    icon: '/images/logo.svg',
+    shortcut: '/images/logo.svg',
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

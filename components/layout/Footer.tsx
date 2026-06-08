@@ -1,11 +1,14 @@
 import Link from "next/link";
-import { Facebook, Instagram, Twitter } from "lucide-react";
+import { Facebook, Instagram } from "lucide-react";
 import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer id="lien-he" className="bg-slate-800 text-white pt-20 pb-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <footer id="lien-he" className="relative overflow-hidden text-white pt-20 pb-10">
+      <Image src="/images/bg5.png" alt="" fill className="object-cover object-top" />
+      <div className="pointer-events-none absolute inset-0 bg-black/65" />
+      <div className="pointer-events-none absolute top-0 inset-x-0 h-32 bg-linear-to-b from-black/70 to-transparent" />
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           {/* Brand Info */}
           <div className="col-span-1 md:col-span-1">
@@ -15,7 +18,7 @@ export default function Footer() {
               </div>
               <span className="text-[1.5rem] font-bold tracking-tight font-dancing">Vết Lành</span>
             </div>
-            <p className="text-gray-400 text-sm leading-relaxed mb-6">
+            <p className="text-white/60 text-sm leading-relaxed mb-6">
               Vì một Việt Nam hạnh phúc và bình an hơn mỗi ngày.
             </p>
             <div className="flex gap-4">
@@ -31,9 +34,8 @@ export default function Footer() {
           {/* Links 1 */}
           <div>
             <h5 className="text-sm font-bold uppercase tracking-widest mb-6">Khám phá</h5>
-            <ul className="space-y-4 text-gray-400 text-sm">
+            <ul className="space-y-4 text-white/60 text-sm">
               <li><a className="hover:text-white transition-colors" href="#">Về chúng tôi</a></li>
-              <li><a className="hover:text-white transition-colors" href="#">Chuyên gia tâm lý</a></li>
               <li><a className="hover:text-white transition-colors" href="#">Cộng đồng</a></li>
               <li><a className="hover:text-white transition-colors" href="#">Hướng dẫn sử dụng</a></li>
             </ul>
@@ -42,9 +44,8 @@ export default function Footer() {
           {/* Links 2 */}
           <div>
             <h5 className="text-sm font-bold uppercase tracking-widest mb-6">Tài nguyên</h5>
-            <ul className="space-y-4 text-gray-400 text-sm">
+            <ul className="space-y-4 text-white/60 text-sm">
               <li><a className="hover:text-white transition-colors" href="#">Thư viện thiền</a></li>
-              <li><a className="hover:text-white transition-colors" href="#">Podcast chữa lành</a></li>
               <li><a className="hover:text-white transition-colors" href="#">Blog tâm lý</a></li>
               <li><a className="hover:text-white transition-colors" href="#">Kiểm tra stress</a></li>
             </ul>
@@ -53,15 +54,15 @@ export default function Footer() {
           {/* Newsletter */}
           <div>
             <h5 className="text-sm font-bold uppercase tracking-widest mb-6">Nhận bản tin tâm hồn</h5>
-            <p className="text-gray-400 text-sm mb-4">Nhận những lời khuyên nuôi dưỡng tâm hồn mỗi tuần.</p>
+            <p className="text-white/60 text-sm mb-4">Nhận những lời khuyên nuôi dưỡng tâm hồn mỗi tuần.</p>
             <form className="flex flex-col gap-3">
               <input className="bg-white/10 border-white/20 rounded-2xl px-4 py-3 text-sm focus:ring-primary focus:border-primary text-white" placeholder="Email của bạn" type="email" />
-              <button className="bg-primary hover:bg-white hover:text-slate-800 transition-all text-white font-bold py-3 rounded-2xl text-sm">Đăng ký ngay</button>
+              <button className="inline-flex items-center justify-center rounded-full border border-white/30 bg-white/10 backdrop-blur-sm px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-white/20 active:scale-95">Đăng ký ngay</button>
             </form>
           </div>
         </div>
 
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/45">
           <p>© {new Date().getFullYear()} <span className="font-dancing font-bold text-sm">Vết Lành</span>. Mọi quyền được bảo lưu.</p>
           <div className="flex gap-6">
             <a className="hover:text-white" href="#">Chính sách bảo mật</a>
