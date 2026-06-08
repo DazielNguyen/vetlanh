@@ -113,10 +113,10 @@ export default function AdminUsersPage() {
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-9 h-9 rounded-full bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
-                                                    <span className="text-xs font-bold text-white/70 uppercase">{u.displayName[0]}</span>
+                                                    <span className="text-xs font-bold text-white/70 uppercase">{(u.displayName ?? u.username ?? "?")[0]}</span>
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-bold text-white/90">{u.displayName}</p>
+                                                    <p className="text-sm font-bold text-white/90">{u.displayName ?? u.username}</p>
                                                     <p className="text-xs text-white/35 font-medium">@{u.username}</p>
                                                 </div>
                                             </div>

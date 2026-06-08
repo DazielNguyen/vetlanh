@@ -118,10 +118,10 @@ export default function AdminSubscriptionsPage() {
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-8 h-8 rounded-full bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
-                                                    <span className="text-xs font-bold text-white/60 uppercase">{item.displayName[0]}</span>
+                                                    <span className="text-xs font-bold text-white/60 uppercase">{(item.displayName ?? item.username ?? "?")[0]}</span>
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-bold text-white/90">{item.displayName}</p>
+                                                    <p className="text-sm font-bold text-white/90">{item.displayName ?? item.username}</p>
                                                     <p className="text-xs text-white/35 font-medium">@{item.username}</p>
                                                 </div>
                                             </div>
@@ -186,10 +186,10 @@ export default function AdminSubscriptionsPage() {
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="w-8 h-8 rounded-full bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center shrink-0">
-                                                    <span className="text-xs font-bold text-emerald-400 uppercase">{item.displayName[0]}</span>
+                                                    <span className="text-xs font-bold text-emerald-400 uppercase">{(item.displayName ?? item.username ?? "?")[0]}</span>
                                                 </div>
                                                 <div>
-                                                    <p className="text-sm font-bold text-white/90">{item.displayName}</p>
+                                                    <p className="text-sm font-bold text-white/90">{item.displayName ?? item.username}</p>
                                                     <p className="text-xs text-white/35 font-medium">@{item.username}</p>
                                                 </div>
                                             </div>
