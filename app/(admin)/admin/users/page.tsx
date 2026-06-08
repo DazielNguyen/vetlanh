@@ -48,7 +48,7 @@ export default function AdminUsersPage() {
         fetchAdmin
             .getUsers({ page, limit: PAGE_LIMIT, search: debouncedSearch || undefined })
             .then(data => { setUsers(data.items); setTotal(data.total); })
-            .catch(console.error)
+            .catch(() => {})
             .finally(() => setLoading(false));
     }, [debouncedSearch, page]);
 

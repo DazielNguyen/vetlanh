@@ -78,9 +78,9 @@ export default function AdminDashboardPage() {
     const [recentErrors, setRecentErrors] = useState<AdminError[]>([]);
 
     useEffect(() => {
-        fetchAdmin.getStats().then(setStatsData).catch(console.error);
-        fetchAdmin.getPendingSubscriptions().then(setPending).catch(console.error);
-        fetchAdmin.getErrors("open").then(data => setRecentErrors(data.slice(0, 3))).catch(console.error);
+        fetchAdmin.getStats().then(setStatsData).catch(() => {});
+        fetchAdmin.getPendingSubscriptions().then(setPending).catch(() => {});
+        fetchAdmin.getErrors("open").then(data => setRecentErrors(data.slice(0, 3))).catch(() => {});
     }, []);
 
     const stats   = buildStatCards(statsData);

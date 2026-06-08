@@ -32,7 +32,7 @@ export default function AdminErrorsPage() {
         const status = filter === "all" ? undefined : filter;
         fetchAdmin.getErrors(status)
             .then(setErrors)
-            .catch(console.error)
+            .catch(() => {})
             .finally(() => setLoading(false));
     }, [filter]);
 
@@ -44,8 +44,7 @@ export default function AdminErrorsPage() {
         try {
             const updated = await fetchAdmin.resolveError(id);
             setErrors(prev => prev.map(e => e.id === id ? updated : e));
-        } catch (err) {
-            console.error(err);
+        } catch {
         }
     };
 

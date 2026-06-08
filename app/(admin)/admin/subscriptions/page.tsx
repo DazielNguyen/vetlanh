@@ -28,7 +28,7 @@ export default function AdminSubscriptionsPage() {
             fetchAdmin.getActiveSubscriptions(),
         ])
             .then(([p, a]) => { setPending(p); setActive(a); })
-            .catch(console.error)
+            .catch(() => {})
             .finally(() => setLoading(false));
     };
 
@@ -41,8 +41,7 @@ export default function AdminSubscriptionsPage() {
             setActive(prev => [granted, ...prev]);
             setPending(prev => prev.filter(x => x.id !== item.id));
             setConfirmId(null);
-        } catch (err) {
-            console.error(err);
+        } catch {
         } finally {
             setActing(false);
         }
@@ -53,8 +52,7 @@ export default function AdminSubscriptionsPage() {
         try {
             await fetchAdmin.rejectSubscription(id);
             setPending(prev => prev.filter(x => x.id !== id));
-        } catch (err) {
-            console.error(err);
+        } catch {
         } finally {
             setActing(false);
         }
