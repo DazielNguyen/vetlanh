@@ -86,6 +86,23 @@ class ApiService {
           data: error.response?.data,
         };
 
+        // Fire-and-forget error report — severity HIGH for 5xx, MEDIUM for other 4xx.
+        // Uses native fetch (not apiService) to avoid recursive interceptor calls.
+        const status = error.response?.status ?? 0;
+        if (status !== 401 && status >= 400) {
+          const base = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080/").replace(/\/$/, "");
+          fetch(`${base}/api/v1/errors/report`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              error_type: `HTTP ${status}`,
+              route: (error.config?.url ?? "unknown").slice(0, 500),
+              severity: status >= 500 ? "HIGH" : "MEDIUM",
+              description: (apiError.message ?? error.message ?? "").slice(0, 2000),
+            }),
+          }).catch(() => {});
+        }
+
         return Promise.reject(apiError);
       }
     );

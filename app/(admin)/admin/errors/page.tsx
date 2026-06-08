@@ -1,24 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CheckCircle2, Copy, Check } from "lucide-react";
+import { fetchAdmin, type AdminError } from "@/lib/api/services/fetchAdmin";
 
-type Severity  = "HIGH" | "MEDIUM" | "LOW";
-type Status    = "open" | "resolved";
 type FilterTab = "all" | "open" | "resolved";
 
-type ErrorEntry = { id: number; timestamp: string; type: string; route: string; severity: Severity; status: Status; description: string };
+const fmtDateTime = (iso: string) => {
+    const d = new Date(iso);
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
 
-const initialErrors: ErrorEntry[] = [
-    { id: 1, timestamp: "08/06/2026 14:23", type: "SignalR 401",         route: "/services/chat",               severity: "HIGH",   status: "open",     description: "Failed to complete negotiation with the server: Invalid or expired token. Status code 401." },
-    { id: 2, timestamp: "08/06/2026 11:05", type: "API Timeout",         route: "/api/exercises",               severity: "MEDIUM", status: "open",     description: "Request timeout after 30s. Endpoint /api/exercises/list did not respond." },
-    { id: 3, timestamp: "08/06/2026 08:47", type: "404 Not Found",       route: "/services/journal/undefined",  severity: "LOW",    status: "open",     description: "User navigated to journal entry with id=undefined. Missing null guard before route push." },
-    { id: 4, timestamp: "07/06/2026 22:10", type: "Redux State Mismatch",route: "/services",                    severity: "MEDIUM", status: "resolved", description: "authSlice token decoded as null after Google OAuth callback. User was logged out immediately." },
-    { id: 5, timestamp: "07/06/2026 18:33", type: "Image Load Error",    route: "/landing",                     severity: "LOW",    status: "resolved", description: "bg3.png failed to load on Safari iOS 17. Missing webp fallback." },
-    { id: 6, timestamp: "06/06/2026 09:14", type: "CORS Error",          route: "/api/auth/google/callback",    severity: "HIGH",   status: "resolved", description: "Cross-origin request blocked. Backend CORS policy missing localhost:5173 in allowed origins." },
-];
-
-const severityStyle: Record<Severity, string> = {
+const severityStyle: Record<string, string> = {
     HIGH:   "bg-rose-500/15 text-rose-400 border-rose-500/20",
     MEDIUM: "bg-amber-500/15 text-amber-400 border-amber-500/20",
     LOW:    "bg-white/8 text-white/40 border-white/10",
@@ -27,19 +21,36 @@ const severityStyle: Record<Severity, string> = {
 const cardStyle = { background: "rgba(255,255,255,0.04)", backdropFilter: "blur(16px)" };
 
 export default function AdminErrorsPage() {
-    const [errors, setErrors]     = useState<ErrorEntry[]>(initialErrors);
-    const [filter, setFilter]     = useState<FilterTab>("all");
-    const [copiedId, setCopiedId] = useState<number | null>(null);
-    const [expandedId, setExpandedId] = useState<number | null>(null);
+    const [errors, setErrors]         = useState<AdminError[]>([]);
+    const [filter, setFilter]         = useState<FilterTab>("all");
+    const [loading, setLoading]       = useState(false);
+    const [copiedId, setCopiedId]     = useState<string | null>(null);
+    const [expandedId, setExpandedId] = useState<string | null>(null);
 
-    const filtered     = errors.filter((e) => filter === "all" ? true : e.status === filter);
-    const openCount    = errors.filter((e) => e.status === "open").length;
-    const resolvedCount = errors.filter((e) => e.status === "resolved").length;
+    useEffect(() => {
+        setLoading(true);
+        const status = filter === "all" ? undefined : filter;
+        fetchAdmin.getErrors(status)
+            .then(setErrors)
+            .catch(console.error)
+            .finally(() => setLoading(false));
+    }, [filter]);
 
-    const markResolved = (id: number) => setErrors((p) => p.map((e) => e.id === id ? { ...e, status: "resolved" } : e));
+    // counts for summary cards (from current loaded list — all when filter=all)
+    const openCount     = errors.filter(e => e.status === "open").length;
+    const resolvedCount = errors.filter(e => e.status === "resolved").length;
 
-    const copyError = (e: ErrorEntry) => {
-        navigator.clipboard.writeText(`[${e.timestamp}] ${e.type} - ${e.route}\n${e.description}`).catch(() => {});
+    const markResolved = async (id: string) => {
+        try {
+            const updated = await fetchAdmin.resolveError(id);
+            setErrors(prev => prev.map(e => e.id === id ? updated : e));
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const copyError = (e: AdminError) => {
+        navigator.clipboard.writeText(`[${fmtDateTime(e.timestamp)}] ${e.type} - ${e.route}\n${e.description}`).catch(() => {});
         setCopiedId(e.id);
         setTimeout(() => setCopiedId(null), 1800);
     };
@@ -54,9 +65,9 @@ export default function AdminErrorsPage() {
             {/* Summary */}
             <div className="grid grid-cols-3 gap-4">
                 {[
-                    { label: "Tổng lỗi",     value: errors.length,  accent: "rgba(255,255,255,0.04)", border: "border-white/9",        textCls: "text-white" },
-                    { label: "Chưa xử lý",   value: openCount,      accent: "rgba(239,68,68,0.08)",  border: "border-rose-500/20",    textCls: "text-rose-400" },
-                    { label: "Đã xử lý",     value: resolvedCount,  accent: "rgba(16,185,129,0.08)", border: "border-emerald-500/20", textCls: "text-emerald-400" },
+                    { label: "Tổng lỗi",   value: errors.length, accent: "rgba(255,255,255,0.04)", border: "border-white/9",        textCls: "text-white" },
+                    { label: "Chưa xử lý", value: openCount,     accent: "rgba(239,68,68,0.08)",   border: "border-rose-500/20",    textCls: "text-rose-400" },
+                    { label: "Đã xử lý",   value: resolvedCount, accent: "rgba(16,185,129,0.08)",  border: "border-emerald-500/20", textCls: "text-emerald-400" },
                 ].map((s) => (
                     <div key={s.label} className={`rounded-[20px] border ${s.border} px-5 py-4`} style={{ background: s.accent, backdropFilter: "blur(12px)" }}>
                         <p className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${s.textCls} opacity-60`}>{s.label}</p>
@@ -67,7 +78,7 @@ export default function AdminErrorsPage() {
 
             {/* Filter Tabs */}
             <div className="flex p-1 w-fit rounded-2xl border border-white/9" style={{ background: "rgba(255,255,255,0.04)" }}>
-                {([["all", "Tất cả", errors.length], ["open", "Chưa xử lý", openCount], ["resolved", "Đã xử lý", resolvedCount]] as [FilterTab, string, number][]).map(([value, label, count]) => (
+                {([["all", "Tất cả"], ["open", "Chưa xử lý"], ["resolved", "Đã xử lý"]] as [FilterTab, string][]).map(([value, label]) => (
                     <button
                         key={value}
                         onClick={() => setFilter(value)}
@@ -78,14 +89,18 @@ export default function AdminErrorsPage() {
                         }`}
                     >
                         {label}
-                        <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded-full ${filter === value ? "bg-white/15 text-white" : "bg-white/8 text-white/40"}`}>{count}</span>
                     </button>
                 ))}
             </div>
 
             {/* Error List */}
-            <div className="rounded-[24px] border border-white/9 divide-y divide-white/[0.06]" style={cardStyle}>
-                {filtered.length === 0 && (
+            <div className="rounded-[24px] border border-white/9 divide-y divide-white/6" style={cardStyle}>
+                {loading && (
+                    <div className="py-12 flex items-center justify-center">
+                        <p className="text-sm text-white/30 font-medium">Đang tải...</p>
+                    </div>
+                )}
+                {!loading && errors.length === 0 && (
                     <div className="py-16 flex flex-col items-center gap-3">
                         <div className="w-12 h-12 rounded-full bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center">
                             <CheckCircle2 className="w-6 h-6 text-emerald-400" />
@@ -94,8 +109,8 @@ export default function AdminErrorsPage() {
                         <p className="text-xs text-white/35 font-medium">Hệ thống đang hoạt động bình thường</p>
                     </div>
                 )}
-                {filtered.map((e) => (
-                    <div key={e.id} className="px-6 py-5 hover:bg-white/[0.03] transition-colors">
+                {!loading && errors.map((e) => (
+                    <div key={e.id} className="px-6 py-5 hover:bg-white/3 transition-colors">
                         <div className="flex items-start gap-4">
                             <span className={`text-[10px] font-bold px-2 py-1 rounded-md border shrink-0 mt-0.5 ${severityStyle[e.severity]}`}>
                                 {e.severity}
@@ -108,7 +123,7 @@ export default function AdminErrorsPage() {
                                         <span className="text-[10px] font-bold bg-emerald-500/15 text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-500/20">Đã xử lý</span>
                                     )}
                                 </div>
-                                <p className="text-xs text-white/35 font-medium mb-2">{e.timestamp}</p>
+                                <p className="text-xs text-white/35 font-medium mb-2">{fmtDateTime(e.timestamp)}</p>
                                 {expandedId === e.id ? (
                                     <p className="text-sm text-white/60 font-medium leading-relaxed rounded-xl p-3 border border-white/[0.07]" style={{ background: "rgba(255,255,255,0.04)" }}>
                                         {e.description}
@@ -144,8 +159,6 @@ export default function AdminErrorsPage() {
                     </div>
                 ))}
             </div>
-
-            <p className="text-xs text-white/25 font-medium text-center">Dữ liệu mock. Kết nối BE để lưu lỗi thực tế.</p>
         </div>
     );
 }
