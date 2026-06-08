@@ -17,6 +17,24 @@ const isTokenValid = (token: string | undefined): boolean => {
   }
 };
 
+// Reads ADMIN_USERS env var (comma-separated list of JWT sub values or usernames).
+// Returns true if the token's sub claim is in the whitelist.
+const isAdminToken = (token: string | undefined): boolean => {
+  if (!token) return false;
+  const adminList = (process.env.ADMIN_USERS ?? "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (adminList.length === 0) return false;
+  try {
+    const decoded = jwtDecode(token) as { sub?: string } | null;
+    if (!decoded?.sub) return false;
+    return adminList.includes(decoded.sub);
+  } catch {
+    return false;
+  }
+};
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get("authToken")?.value;
@@ -45,6 +63,11 @@ export function middleware(request: NextRequest) {
     const res = NextResponse.redirect(new URL("/login", request.url));
     if (token) res.cookies.delete("authToken");
     return res;
+  }
+
+  // Admin route guard — authenticated but not whitelisted → redirect to services
+  if (pathname.startsWith("/admin") && !isAdminToken(token)) {
+    return NextResponse.redirect(new URL("/services", request.url));
   }
 
   // Already authenticated — redirect away from login/register
