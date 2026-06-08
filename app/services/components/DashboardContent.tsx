@@ -8,6 +8,7 @@ import { CurrentHealingPath } from "./CurrentHealingPath";
 import { AIPromoCard } from "./AIPromoCard";
 import { DailyQuote } from "./DailyQuote";
 import { DailyWellnessChecklist } from "./DailyWellnessChecklist";
+import { QuickReliefCard } from "./QuickReliefCard";
 import { ResourcesForYou } from "./ResourcesForYou";
 import { WeeklyOverview } from "./WeeklyOverview";
 import { CommunitySupport } from "./CommunitySupport";
@@ -45,6 +46,7 @@ export function DashboardContent() {
                         </CardContent>
                     </Card>
 
+                    <QuickReliefCard />
                     <DailyWellnessChecklist />
                     <CurrentHealingPath />
                     <ResourcesForYou />

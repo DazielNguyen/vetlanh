@@ -24,6 +24,14 @@ const FALLBACK_MOODS = [
   { key: "angry", label: "Tức giận" },
 ];
 
+const EMOJI_MOOD_MAP: Record<string, string> = {
+  anxious: "😰",
+  sad: "😢",
+  cant_sleep: "🌙",
+  need_energy: "⚡",
+  angry: "😤",
+};
+
 function formatDuration(seconds?: number): string {
   if (!seconds) return "";
   const mins = Math.round(seconds / 60);
@@ -38,7 +46,9 @@ export function ExerciseList() {
   const { data: moodsData } = useExerciseMoodFilters();
 
   const categoryOptions = [{ key: "", label: "Tất cả" }, ...(categoriesData ?? FALLBACK_CATEGORIES)];
-  const moodOptions = [{ key: "", label: "Tất cả tâm trạng" }, ...(moodsData ?? FALLBACK_MOODS)];
+  const allMoods = moodsData ?? FALLBACK_MOODS;
+  const emojiMoods = allMoods.filter((m) => EMOJI_MOOD_MAP[m.key]);
+  const extraMoods = allMoods.filter((m) => !EMOJI_MOOD_MAP[m.key]);
 
   const params = {
     ...(mood && { mood }),
@@ -82,21 +92,47 @@ export function ExerciseList() {
             </button>
           ))}
         </div>
-        <div className="flex gap-1.5 flex-wrap">
-          {moodOptions.map((opt) => (
+        <div className="flex gap-2 flex-wrap">
+          {emojiMoods.map((opt) => (
             <button
               key={opt.key}
               onClick={() => setMood(opt.key)}
-              className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition ${
+              className={`flex flex-col items-center gap-0.5 px-3 py-2 rounded-2xl border transition ${
                 mood === opt.key
-                  ? "bg-emerald-600 text-white border-emerald-600"
-                  : "bg-white text-slate-600 border-slate-200 hover:border-emerald-300"
+                  ? "bg-emerald-50 border-emerald-400 ring-2 ring-emerald-400"
+                  : "bg-white border-slate-200 hover:border-emerald-300"
               }`}
             >
-              {opt.label}
+              <span className="text-2xl leading-none">{EMOJI_MOOD_MAP[opt.key]}</span>
+              <span className="text-[10px] font-semibold text-slate-600">{opt.label}</span>
             </button>
           ))}
         </div>
+        {extraMoods.length > 0 && (
+          <div className="flex gap-1.5 flex-wrap mt-1">
+            {extraMoods.map((opt) => (
+              <button
+                key={opt.key}
+                onClick={() => setMood(opt.key)}
+                className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition ${
+                  mood === opt.key
+                    ? "bg-emerald-600 text-white border-emerald-600"
+                    : "bg-white text-slate-600 border-slate-200 hover:border-emerald-300"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        )}
+        {mood && (
+          <button
+            onClick={() => setMood("")}
+            className="text-xs font-semibold text-emerald-600 underline underline-offset-2 hover:text-emerald-700 transition"
+          >
+            Xem tất cả
+          </button>
+        )}
       </div>
 
       {isLoading ? (

@@ -2,6 +2,7 @@
 
 import { use, useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { AnimatePresence, motion, useAnimate, useReducedMotion } from "motion/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, ArrowLeft, Play, Square, CheckCircle, ChevronRight } from "lucide-react";
@@ -18,18 +19,116 @@ function formatTime(seconds: number): string {
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
+// ─── Feeling picker (shared across all session types) ────────────────────────
+
+const FEELINGS = [
+  { value: "much_better", emoji: "😌", label: "Rất nhẹ" },
+  { value: "better", emoji: "😊", label: "Nhẹ hơn" },
+  { value: "same", emoji: "😐", label: "Bình thường" },
+  { value: "worse", emoji: "😣", label: "Vẫn căng" },
+];
+
+interface FeelingPickerProps {
+  onSelect: (value: string) => void;
+  onSkip: () => void;
+}
+
+function FeelingPicker({ onSelect, onSkip }: FeelingPickerProps) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 16 }}
+      className="w-full space-y-3"
+    >
+      <p className="text-sm font-semibold text-slate-600 text-center">
+        Bạn cảm thấy thế nào sau buổi tập?
+      </p>
+      <div className="grid grid-cols-2 gap-2">
+        {FEELINGS.map((f) => (
+          <button
+            key={f.value}
+            onClick={() => onSelect(f.value)}
+            className="flex flex-col items-center gap-1 px-3 py-3 rounded-2xl border border-slate-200 bg-white hover:border-emerald-300 hover:bg-emerald-50 transition"
+          >
+            <span className="text-2xl leading-none">{f.emoji}</span>
+            <span className="text-xs font-semibold text-slate-600">{f.label}</span>
+          </button>
+        ))}
+      </div>
+      <button
+        onClick={onSkip}
+        className="w-full text-xs font-semibold text-slate-400 underline underline-offset-2 hover:text-slate-600 transition"
+      >
+        Bỏ qua
+      </button>
+    </motion.div>
+  );
+}
+
+// ─── Shared session utilities ─────────────────────────────────────────────────
+
+type DoneState = "done_pending" | "done_logged";
+
+function resolveFeelingAndComplete(
+  slug: string,
+  feeling: string | undefined,
+  elapsed: number,
+  setDone: () => void,
+  onComplete: (d: number) => void
+) {
+  if (feeling) localStorage.setItem(`feeling_after_${slug}_last`, feeling);
+  setDone();
+  onComplete(elapsed);
+}
+
+interface SessionDoneViewProps {
+  isLogging: boolean;
+  doneState: DoneState;
+  elapsed?: number;
+  onFeelingResolved: (feeling?: string) => void;
+}
+
+function SessionDoneView({ isLogging, doneState, elapsed, onFeelingResolved }: SessionDoneViewProps) {
+  return (
+    <div className="flex flex-col items-center gap-4 text-center py-6">
+      {doneState === "done_logged" && isLogging ? (
+        <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
+      ) : doneState === "done_pending" ? (
+        <CheckCircle className="h-10 w-10 text-emerald-200" />
+      ) : (
+        <CheckCircle className="h-12 w-12 text-emerald-500" />
+      )}
+      <p className="text-lg font-bold text-slate-800">Tuyệt vời! Buổi tập hoàn thành.</p>
+      {elapsed != null && (
+        <p className="text-sm text-slate-500">Thời gian: {formatTime(elapsed)}</p>
+      )}
+      <AnimatePresence>
+        {doneState === "done_pending" && (
+          <FeelingPicker
+            onSelect={(v) => onFeelingResolved(v)}
+            onSkip={() => onFeelingResolved()}
+          />
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 // ─── General session timer (non-step exercises) ──────────────────────────────
 
 interface TimerSessionProps {
+  slug: string;
   onComplete: (durationSeconds: number) => void;
   isLogging: boolean;
 }
 
-function TimerSession({ onComplete, isLogging }: TimerSessionProps) {
-  const [state, setState] = useState<"idle" | "running" | "done">("idle");
+function TimerSession({ slug, onComplete, isLogging }: TimerSessionProps) {
+  const [state, setState] = useState<"idle" | "running" | DoneState>("idle");
   const [elapsed, setElapsed] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const elapsedRef = useRef(0);
+  const doneElapsedRef = useRef(0);
 
   function start() {
     setState("running");
@@ -47,8 +146,8 @@ function TimerSession({ onComplete, isLogging }: TimerSessionProps) {
 
   function complete() {
     stop();
-    setState("done");
-    onComplete(elapsedRef.current);
+    doneElapsedRef.current = elapsedRef.current; // capture before any queued interval tick
+    setState("done_pending");
   }
 
   function cancel() {
@@ -58,15 +157,20 @@ function TimerSession({ onComplete, isLogging }: TimerSessionProps) {
     elapsedRef.current = 0;
   }
 
+  function handleFeelingResolved(feeling?: string) {
+    resolveFeelingAndComplete(slug, feeling, doneElapsedRef.current, () => setState("done_logged"), onComplete);
+  }
+
   useEffect(() => () => stop(), []);
 
-  if (state === "done") {
+  if (state === "done_pending" || state === "done_logged") {
     return (
-      <div className="flex flex-col items-center gap-4 text-center py-8">
-        <CheckCircle className="h-12 w-12 text-emerald-500" />
-        <p className="text-lg font-bold text-slate-800">Tuyệt vời! Buổi tập đã được ghi lại.</p>
-        <p className="text-sm text-slate-500">Thời gian: {formatTime(elapsed)}</p>
-      </div>
+      <SessionDoneView
+        isLogging={isLogging}
+        doneState={state}
+        elapsed={doneElapsedRef.current}
+        onFeelingResolved={handleFeelingResolved}
+      />
     );
   }
 
@@ -88,12 +192,12 @@ function TimerSession({ onComplete, isLogging }: TimerSessionProps) {
           <Button variant="outline" onClick={cancel} className="flex-1 h-11 rounded-2xl gap-2 text-slate-600">
             <Square className="h-4 w-4" /> Hủy
           </Button>
+          {/* transitions to done_pending on click — unmounts before isLogging=true, so no disabled guard needed */}
           <Button
             onClick={complete}
-            disabled={isLogging}
             className="flex-1 h-11 rounded-2xl font-bold gap-2 bg-emerald-600 hover:bg-emerald-700"
           >
-            {isLogging ? <Loader2 className="h-4 w-4 animate-spin" /> : <><CheckCircle className="h-4 w-4" /> Hoàn thành</>}
+            <CheckCircle className="h-4 w-4" /> Hoàn thành
           </Button>
         </div>
       )}
@@ -204,15 +308,17 @@ function StepCountdown({ step, stepIndex, totalSteps, onNext, isLastStep }: Step
 // ─── Step-based session ───────────────────────────────────────────────────────
 
 interface StepSessionProps {
+  slug: string;
   steps: ExerciseStep[];
   onComplete: (durationSeconds: number) => void;
   isLogging: boolean;
 }
 
-function StepSession({ steps, onComplete, isLogging }: StepSessionProps) {
-  const [state, setState] = useState<"idle" | "running" | "done">("idle");
+function StepSession({ slug, steps, onComplete, isLogging }: StepSessionProps) {
+  const [state, setState] = useState<"idle" | "running" | DoneState>("idle");
   const [currentStep, setCurrentStep] = useState(0);
   const startTimeRef = useRef<number>(0);
+  const elapsedRef = useRef<number>(0);
 
   function start() {
     setState("running");
@@ -223,10 +329,13 @@ function StepSession({ steps, onComplete, isLogging }: StepSessionProps) {
     if (currentStep < steps.length - 1) {
       setCurrentStep((s) => s + 1);
     } else {
-      const elapsed = Math.round((Date.now() - startTimeRef.current) / 1000);
-      setState("done");
-      onComplete(elapsed);
+      elapsedRef.current = Math.round((Date.now() - startTimeRef.current) / 1000);
+      setState("done_pending");
     }
+  }
+
+  function handleFeelingResolved(feeling?: string) {
+    resolveFeelingAndComplete(slug, feeling, elapsedRef.current, () => setState("done_logged"), onComplete);
   }
 
   if (state === "idle") {
@@ -237,18 +346,14 @@ function StepSession({ steps, onComplete, isLogging }: StepSessionProps) {
     );
   }
 
-  if (state === "done") {
+  if (state === "done_pending" || state === "done_logged") {
     return (
-      <div className="flex flex-col items-center gap-4 text-center py-8">
-        {isLogging ? (
-          <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
-        ) : (
-          <>
-            <CheckCircle className="h-12 w-12 text-emerald-500" />
-            <p className="text-lg font-bold text-slate-800">Tuyệt vời! Buổi tập đã được ghi lại.</p>
-          </>
-        )}
-      </div>
+      <SessionDoneView
+        isLogging={isLogging}
+        doneState={state}
+        elapsed={elapsedRef.current}
+        onFeelingResolved={handleFeelingResolved}
+      />
     );
   }
 
@@ -277,6 +382,121 @@ function StepSession({ steps, onComplete, isLogging }: StepSessionProps) {
   );
 }
 
+// ─── 4-7-8 Breathing session ──────────────────────────────────────────────────
+// tense_seconds / release_seconds are PMR-only fields; breathing exercises always use hardcoded 4-7-8.
+
+const BREATH_INHALE = 4;
+const BREATH_HOLD = 7;
+const BREATH_EXHALE = 8;
+const PHASE_LABEL: Record<"inhale" | "hold" | "exhale", string> = {
+  inhale: "Hít vào...",
+  hold: "Giữ lại...",
+  exhale: "Thở ra...",
+};
+
+interface BreathingSessionProps {
+  slug: string;
+  onComplete: (durationSeconds: number) => void;
+  isLogging: boolean;
+}
+
+function BreathingSession({ slug, onComplete, isLogging }: BreathingSessionProps) {
+  const [state, setState] = useState<"idle" | "running" | DoneState>("idle");
+  const [breathPhase, setBreathPhase] = useState<"inhale" | "hold" | "exhale">("inhale");
+  const prefersReducedMotion = useReducedMotion();
+  const prefersReducedMotionRef = useRef(!!prefersReducedMotion);
+  const [scope, animate] = useAnimate();
+  const startTimeRef = useRef<number>(0);
+  const elapsedRef = useRef<number>(0);
+
+  useEffect(() => { prefersReducedMotionRef.current = !!prefersReducedMotion; }, [prefersReducedMotion]);
+
+  useEffect(() => {
+    if (state !== "running") return;
+
+    let cancelled = false;
+
+    async function runLoop() {
+      while (!cancelled) {
+        if (!scope.current) return;
+        const reduced = prefersReducedMotionRef.current;
+        const dur = (s: number) => (reduced ? 0.01 : s);
+        const expandScale = reduced ? 1 : 1.6;
+
+        setBreathPhase("inhale");
+        await animate(scope.current, { scale: expandScale }, { duration: dur(BREATH_INHALE), ease: "easeInOut" });
+        if (cancelled || !scope.current) return;
+
+        setBreathPhase("hold");
+        await animate(scope.current, { scale: expandScale }, { duration: dur(BREATH_HOLD), ease: "linear" });
+        if (cancelled || !scope.current) return;
+
+        setBreathPhase("exhale");
+        await animate(scope.current, { scale: 1 }, { duration: dur(BREATH_EXHALE), ease: "easeInOut" });
+        if (cancelled || !scope.current) return;
+      }
+    }
+
+    startTimeRef.current = Date.now();
+    runLoop();
+
+    return () => { cancelled = true; };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // animate is stable; prefersReducedMotion is read via ref so OS toggle takes effect next cycle
+  }, [state]);
+
+  function start() {
+    setState("running");
+  }
+
+  function finish() {
+    elapsedRef.current = Math.round((Date.now() - startTimeRef.current) / 1000);
+    setState("done_pending");
+  }
+
+  function handleFeelingResolved(feeling?: string) {
+    resolveFeelingAndComplete(slug, feeling, elapsedRef.current, () => setState("done_logged"), onComplete);
+  }
+
+  if (state === "done_pending" || state === "done_logged") {
+    return (
+      <SessionDoneView
+        isLogging={isLogging}
+        doneState={state}
+        elapsed={elapsedRef.current}
+        onFeelingResolved={handleFeelingResolved}
+      />
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-6 py-4">
+      <div ref={scope} className="w-36 h-36 rounded-full bg-emerald-100 border-4 border-emerald-400 flex items-center justify-center">
+        <div className="w-16 h-16 rounded-full bg-emerald-400 opacity-60" />
+      </div>
+
+      {state === "running" && (
+        <p className="text-base font-semibold text-slate-600 tracking-wide">{PHASE_LABEL[breathPhase]}</p>
+      )}
+
+      {state === "idle" && (
+        <Button onClick={start} className="w-full h-12 rounded-2xl font-bold text-base gap-2">
+          <Play className="h-5 w-5" /> Bắt đầu buổi thở
+        </Button>
+      )}
+
+      {state === "running" && (
+        <Button
+          onClick={finish}
+          className="w-full h-11 rounded-2xl font-bold gap-2 bg-emerald-600 hover:bg-emerald-700"
+        >
+          <CheckCircle className="h-4 w-4" /> Kết thúc buổi tập
+        </Button>
+      )}
+    </div>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function ExerciseDetailPage({ params }: Props) {
@@ -285,9 +505,14 @@ export default function ExerciseDetailPage({ params }: Props) {
 
   const { data: exercise, isLoading } = useExercise(slug);
   const { mutate: logSession, isPending: isLogging } = useLogExercise();
+  const [sessionDone, setSessionDone] = useState(false);
 
   function handleComplete(durationSeconds: number) {
-    logSession({ exercise_slug: slug, duration_seconds: durationSeconds });
+    setSessionDone(true);
+    logSession(
+      { exercise_slug: slug, duration_seconds: durationSeconds },
+      { onError: () => setSessionDone(false) }
+    );
   }
 
   if (isLoading) {
@@ -306,6 +531,7 @@ export default function ExerciseDetailPage({ params }: Props) {
     );
   }
 
+  const isBreathing = exercise.category === "breathing";
   const hasSteps = !!(exercise.steps?.length);
 
   return (
@@ -340,17 +566,16 @@ export default function ExerciseDetailPage({ params }: Props) {
         <CardContent className="space-y-6">
           <p className="text-sm text-slate-600 leading-relaxed">{exercise.description}</p>
 
-          {hasSteps ? (
-            <StepSession
-              steps={exercise.steps!}
-              onComplete={handleComplete}
-              isLogging={isLogging}
-            />
+          {/* Priority: breathing → steps → timer */}
+          {isBreathing ? (
+            <BreathingSession slug={slug} onComplete={handleComplete} isLogging={isLogging} />
+          ) : hasSteps ? (
+            <StepSession slug={slug} steps={exercise.steps!} onComplete={handleComplete} isLogging={isLogging} />
           ) : (
-            <TimerSession onComplete={handleComplete} isLogging={isLogging} />
+            <TimerSession slug={slug} onComplete={handleComplete} isLogging={isLogging} />
           )}
 
-          {!isLogging && (
+          {!isLogging && !sessionDone && (
             <Button
               variant="outline"
               onClick={() => router.push("/services/exercises")}
