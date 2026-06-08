@@ -50,6 +50,9 @@ export function middleware(request: NextRequest) {
     "/reset-password",
     "/supscription",
     "/verify-email",
+    "/verify",
+    "/verify-pending",
+    "/resend-verification",
     "/auth/google/callback", // Google OAuth callback — token not yet in cookie at this point
   ];
   const authRoutes = ["/login", "/register", "/reset-password"];

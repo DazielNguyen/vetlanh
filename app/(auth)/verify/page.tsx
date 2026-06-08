@@ -97,7 +97,7 @@ export default function VerifyPage() {
           <p className="text-slate-500 text-base mb-8">{errorMsg}</p>
 
           <div className="space-y-3">
-            <Link href="/auth/resend-verification">
+            <Link href="/resend-verification">
               <Button className="w-full h-12 text-base font-bold rounded-2xl bg-primary hover:bg-slate-800 text-white shadow-md active:scale-[0.98] transition-all">
                 Gửi lại email xác minh
               </Button>

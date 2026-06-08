@@ -27,13 +27,18 @@ function toViOAuthError(msg: string): string {
     return "Đăng nhập Google thất bại. Vui lòng thử lại.";
 }
 
+function isUnverifiedError(msg: string): boolean {
+    const lower = msg.toLowerCase();
+    return lower.includes("verify your email") || lower.includes("not verified") || lower.includes("unverified");
+}
+
 function mapEmailLoginError(msg: string): string {
     const lower = msg.toLowerCase();
     if (lower.includes("already exists"))
         return "Tài khoản này sử dụng đăng nhập Google. Vui lòng dùng nút Google bên dưới.";
     if (lower.includes("incorrect") || lower.includes("invalid credentials") || lower.includes("wrong password") || lower.includes("not found"))
         return "Email hoặc mật khẩu không đúng. Vui lòng kiểm tra lại.";
-    if (lower.includes("not verified") || lower.includes("unverified"))
+    if (isUnverifiedError(msg))
         return "Email chưa được xác minh. Vui lòng kiểm tra hộp thư của bạn.";
     if (lower.includes("disabled") || lower.includes("inactive"))
         return "Tài khoản của bạn đã bị tạm khóa. Vui lòng liên hệ hỗ trợ.";
@@ -172,8 +177,13 @@ export default function LoginPage() {
                 {tab === "email" && (
                     <form className="space-y-6" onSubmit={handleEmailLogin}>
                         {emailError && (
-                            <div className="bg-red-500/20 text-red-300 text-sm p-3 rounded-xl border border-red-400/30 text-center font-medium">
-                                {mapEmailLoginError(emailError)}
+                            <div className="bg-red-500/20 text-red-300 text-sm p-3 rounded-xl border border-red-400/30 text-center font-medium space-y-1.5">
+                                <p>{mapEmailLoginError(emailError)}</p>
+                                {isUnverifiedError(emailError) && (
+                                    <Link href="/resend-verification" className="inline-block text-xs font-bold text-white/70 underline underline-offset-2 hover:text-white transition-colors">
+                                        Gửi lại email xác minh →
+                                    </Link>
+                                )}
                             </div>
                         )}
 
