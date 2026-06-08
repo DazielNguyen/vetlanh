@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Users, Activity, Wallet, Bug, CreditCard, ChevronRight, Clock } from "lucide-react";
 import { BarChart, Bar, XAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
-import { fetchAdmin, type AdminStats, type PendingSubscription, type AdminError } from "@/lib/api/services/fetchAdmin";
+import { fetchAdmin, type AdminStats, type PendingSubscription, type ActiveSubscription, type AdminError } from "@/lib/api/services/fetchAdmin";
 
 // -- helpers --
 const fmtDate = (iso: string) => {
@@ -19,7 +19,9 @@ const fmtTime = (iso: string) => {
     return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()} ${hh}:${mm}`;
 };
 
-// -- static chart / plan breakdown (no BE endpoint for these) --
+const PLAN_COLORS = ["bg-emerald-400", "bg-blue-400", "bg-violet-400", "bg-amber-400"];
+
+// -- static chart data (no BE endpoint) --
 const subChartData = [
     { day: "T2", value: 3 },
     { day: "T3", value: 5 },
@@ -75,13 +77,24 @@ function buildStatCards(data: AdminStats | null) {
 export default function AdminDashboardPage() {
     const [statsData, setStatsData]   = useState<AdminStats | null>(null);
     const [pending, setPending]       = useState<PendingSubscription[]>([]);
+    const [active, setActive]         = useState<ActiveSubscription[]>([]);
     const [recentErrors, setRecentErrors] = useState<AdminError[]>([]);
 
     useEffect(() => {
         fetchAdmin.getStats().then(setStatsData).catch(() => {});
         fetchAdmin.getPendingSubscriptions().then(setPending).catch(() => {});
+        fetchAdmin.getActiveSubscriptions().then(setActive).catch(() => {});
         fetchAdmin.getErrors("open").then(data => setRecentErrors(data.slice(0, 3))).catch(() => {});
     }, []);
+
+    const planBreakdown = Object.entries(
+        active.reduce<Record<string, number>>((acc, s) => {
+            acc[s.plan] = (acc[s.plan] ?? 0) + 1;
+            return acc;
+        }, {})
+    )
+        .sort((a, b) => b[1] - a[1])
+        .map(([label, count], i) => ({ label, count, color: PLAN_COLORS[i % PLAN_COLORS.length] }));
 
     const stats   = buildStatCards(statsData);
     const preview = pending.slice(0, 3);
@@ -148,11 +161,9 @@ export default function AdminDashboardPage() {
                     <div className={cardCls} style={cardStyle}>
                         <h3 className="text-sm font-bold text-white mb-4">Phân loại gói</h3>
                         <div className="space-y-3">
-                            {[
-                                { label: "Pro 1 tháng", count: 21, color: "bg-emerald-400" },
-                                { label: "Pro 3 tháng", count: 9,  color: "bg-blue-400" },
-                                { label: "Pro 6 tháng", count: 5,  color: "bg-violet-400" },
-                            ].map((item) => (
+                            {planBreakdown.length === 0 ? (
+                                <p className="text-sm text-white/30 font-medium">Chưa có gói nào đang hoạt động</p>
+                            ) : planBreakdown.map((item) => (
                                 <div key={item.label} className="flex items-center gap-3">
                                     <div className={`w-2 h-2 rounded-full shrink-0 ${item.color}`} />
                                     <span className="text-sm font-medium text-white/60 flex-1">{item.label}</span>
