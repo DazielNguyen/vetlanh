@@ -54,10 +54,13 @@ function mapUsernameRegisterError(msg: string): string {
 function IconInput({ icon: Icon, ...props }: { icon: LucideIcon } & React.ComponentPropsWithoutRef<"input">) {
     return (
         <div className="relative">
-            <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-white/40">
                 <Icon className="h-4 w-4" />
             </div>
-            <Input className="pl-11 h-12 bg-slate-50/50 border-slate-200 focus:bg-white rounded-2xl transition-all duration-200" {...props} />
+            <Input
+                className="pl-11 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/35 focus:bg-white/15 focus-visible:ring-white/20 rounded-2xl transition-all duration-200"
+                {...props}
+            />
         </div>
     );
 }
@@ -136,21 +139,23 @@ export default function RegisterPage() {
 
     return (
         <div className="w-full">
-            <div className="text-center mb-10 text-pretty">
-                <h2 className="text-3xl font-bold text-slate-800 mb-3 tracking-tight">Tạo tài khoản mới</h2>
-                <p className="text-slate-500 text-base">Bắt đầu hành trình chữa lành của bạn ngay hôm nay.</p>
+            <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-white mb-2.5 tracking-tight">Tạo tài khoản mới</h2>
+                <p className="text-white/65 text-base">Bắt đầu hành trình chữa lành của bạn ngay hôm nay.</p>
             </div>
 
-            <div className="bg-white px-8 py-10 rounded-[28px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-slate-100">
+            <div className="bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl px-8 py-10 rounded-[28px]">
                 {/* Tab switcher */}
-                <div className="flex bg-slate-100 rounded-2xl p-1 mb-7">
+                <div className="flex bg-white/10 border border-white/15 rounded-2xl p-1 mb-7">
                     {(["email", "username"] as Tab[]).map((t) => (
                         <button
                             key={t}
                             type="button"
                             onClick={() => { setTab(t); setError(null); }}
                             className={`flex-1 py-2.5 text-sm font-semibold rounded-xl transition-all duration-200 ${
-                                tab === t ? "bg-white text-slate-800 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                                tab === t
+                                    ? "bg-white/20 text-white shadow-sm"
+                                    : "text-white/55 hover:text-white"
                             }`}
                         >
                             {t === "email" ? "Email" : "Tên đăng nhập"}
@@ -159,60 +164,60 @@ export default function RegisterPage() {
                 </div>
 
                 {error && (
-                    <div className="bg-red-50 text-red-500 text-sm p-3 rounded-xl border border-red-100 text-center font-medium mb-5">
+                    <div className="bg-red-500/20 text-red-300 text-sm p-3 rounded-xl border border-red-400/30 text-center font-medium mb-5">
                         {error}
                     </div>
                 )}
 
-                {/* ── Email form ── */}
+                {/* Email form */}
                 {tab === "email" && (
                     <form className="space-y-5" onSubmit={handleEmailSubmit}>
                         <div className="space-y-2.5">
-                            <Label htmlFor="email" className="text-slate-700 font-semibold ml-1">Email</Label>
+                            <Label htmlFor="email" className="text-white/80 font-semibold ml-1">Email</Label>
                             <IconInput icon={Mail} id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" required />
                         </div>
                         <div className="space-y-2.5">
-                            <Label htmlFor="email-password" className="text-slate-700 font-semibold ml-1">Mật khẩu</Label>
+                            <Label htmlFor="email-password" className="text-white/80 font-semibold ml-1">Mật khẩu</Label>
                             <IconInput icon={Lock} id="email-password" type="password" value={emailPassword} onChange={(e) => setEmailPassword(e.target.value)} placeholder="Tối thiểu 8 ký tự" required minLength={8} />
                         </div>
                         <div className="space-y-2.5">
-                            <Label htmlFor="email-confirm" className="text-slate-700 font-semibold ml-1">Xác nhận mật khẩu</Label>
+                            <Label htmlFor="email-confirm" className="text-white/80 font-semibold ml-1">Xác nhận mật khẩu</Label>
                             <IconInput icon={Lock} id="email-confirm" type="password" value={emailConfirm} onChange={(e) => setEmailConfirm(e.target.value)} placeholder="Nhập lại mật khẩu" required />
                         </div>
                         <SubmitButton isLoading={isLoading} label="Đăng ký" />
                     </form>
                 )}
 
-                {/* ── Username form ── */}
+                {/* Username form */}
                 {tab === "username" && (
                     <form className="space-y-5" onSubmit={handleUsernameSubmit}>
                         <div className="space-y-2.5">
-                            <Label htmlFor="username" className="text-slate-700 font-semibold ml-1">Tên đăng nhập</Label>
+                            <Label htmlFor="username" className="text-white/80 font-semibold ml-1">Tên đăng nhập</Label>
                             <IconInput icon={User} id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="vd: nguyen_van_a" required minLength={3} maxLength={50} />
-                            <p className="text-xs text-slate-400 ml-1">Chữ cái, số, dấu - và _. Từ 3 đến 50 ký tự.</p>
+                            <p className="text-xs text-white/40 ml-1">Chữ cái, số, dấu - và _. Từ 3 đến 50 ký tự.</p>
                         </div>
                         <div className="space-y-2.5">
-                            <Label htmlFor="username-password" className="text-slate-700 font-semibold ml-1">Mật khẩu</Label>
+                            <Label htmlFor="username-password" className="text-white/80 font-semibold ml-1">Mật khẩu</Label>
                             <IconInput icon={Lock} id="username-password" type="password" value={usernamePassword} onChange={(e) => setUsernamePassword(e.target.value)} placeholder="Tối thiểu 8 ký tự" required minLength={8} />
                         </div>
                         <div className="space-y-2.5">
-                            <Label htmlFor="username-confirm" className="text-slate-700 font-semibold ml-1">Xác nhận mật khẩu</Label>
+                            <Label htmlFor="username-confirm" className="text-white/80 font-semibold ml-1">Xác nhận mật khẩu</Label>
                             <IconInput icon={Lock} id="username-confirm" type="password" value={usernameConfirm} onChange={(e) => setUsernameConfirm(e.target.value)} placeholder="Nhập lại mật khẩu" required />
                         </div>
                         <SubmitButton isLoading={isLoading} label="Đăng ký nhanh" />
                     </form>
                 )}
 
-                <p className="mt-6 text-center text-xs text-slate-400 leading-relaxed">
+                <p className="mt-6 text-center text-xs text-white/40 leading-relaxed">
                     Bằng cách đăng ký, bạn đồng ý với{" "}
-                    <span className="font-semibold text-slate-600">Điều khoản dịch vụ</span> và{" "}
-                    <span className="font-semibold text-slate-600">Chính sách bảo mật</span> của Vết Lành.
+                    <span className="font-semibold text-white/65">Điều khoản dịch vụ</span> và{" "}
+                    <span className="font-semibold text-white/65">Chính sách bảo mật</span> của Vết Lành.
                 </p>
             </div>
 
-            <p className="mt-8 text-center text-sm text-slate-500 font-medium">
+            <p className="mt-8 text-center text-sm text-white/60 font-medium">
                 Đã có tài khoản?{" "}
-                <Link href="/login" className="font-bold text-primary hover:text-emerald-600 transition-colors underline underline-offset-4 decoration-2 decoration-primary/30">
+                <Link href="/login" className="font-bold text-primary hover:text-emerald-400 transition-colors underline underline-offset-4 decoration-2 decoration-primary/40">
                     Đăng nhập ngay
                 </Link>
             </p>
@@ -222,7 +227,7 @@ export default function RegisterPage() {
 
 function SubmitButton({ isLoading, label }: { isLoading: boolean; label: string }) {
     return (
-        <Button type="submit" disabled={isLoading} className="w-full h-12 text-base font-bold rounded-2xl bg-primary hover:bg-slate-800 text-white shadow-md active:scale-[0.98] transition-all group mt-2">
+        <Button type="submit" disabled={isLoading} className="w-full h-12 text-base font-bold rounded-2xl bg-primary hover:bg-emerald-600 text-white shadow-md active:scale-[0.98] transition-all group mt-2">
             {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
