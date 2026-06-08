@@ -89,7 +89,8 @@ class ApiService {
         // Fire-and-forget error report — severity HIGH for 5xx, MEDIUM for other 4xx.
         // Uses native fetch (not apiService) to avoid recursive interceptor calls.
         const status = error.response?.status ?? 0;
-        if (status !== 401 && status >= 400) {
+        // Skip 401 (handled above) and 403 (permission denied — not a system error).
+        if (status >= 400 && status !== 401 && status !== 403) {
           const base = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080/").replace(/\/$/, "");
           fetch(`${base}/api/v1/errors/report`, {
             method: "POST",
