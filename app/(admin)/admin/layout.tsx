@@ -6,114 +6,115 @@ import { usePathname } from "next/navigation";
 import {
     LayoutDashboard,
     Users,
-    UserSquare2,
-    CalendarCheck,
-    BarChart3,
+    CreditCard,
+    Bug,
     Settings,
     Search,
     Bell,
-    HelpCircle,
     ShieldPlus
 } from "lucide-react";
 
 const sidebarNav = [
     { title: "Bảng điều khiển", href: "/admin/dashboard", icon: LayoutDashboard },
     { title: "Người dùng", href: "/admin/users", icon: Users },
-    { title: "Chuyên gia", href: "#", icon: UserSquare2 },
-    { title: "Lịch hẹn", href: "#", icon: CalendarCheck },
-    { title: "Báo cáo", href: "#", icon: BarChart3 },
+    { title: "Đăng ký gói", href: "/admin/subscriptions", icon: CreditCard },
+    { title: "Báo lỗi hệ thống", href: "/admin/errors", icon: Bug },
     { title: "Cài đặt", href: "#", icon: Settings },
 ];
 
-export default function AdminLayout({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
 
     return (
-        <div className="flex min-h-screen bg-[#FEF9F2] text-slate-800 font-sans">
-            {/* Sidebar (Left) */}
-            <aside className="fixed inset-y-0 left-0 w-[260px] bg-white border-r border-slate-200 flex flex-col z-50">
-                {/* Logo Area */}
-                <div className="h-24 flex items-center px-6 border-b border-transparent">
-                    <Link href="/admin/dashboard" className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-sm shrink-0 text-white">
-                            <ShieldPlus className="w-6 h-6" />
+        <div className="flex min-h-[100dvh] text-white relative" style={{ background: "#0b0f0d" }}>
+            {/* Ambient gradient blobs */}
+            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+                <div
+                    className="absolute -top-32 -left-32 w-[700px] h-[700px] rounded-full opacity-[0.08]"
+                    style={{ background: "radial-gradient(circle, #10b981 0%, transparent 65%)" }}
+                />
+                <div
+                    className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full opacity-[0.05]"
+                    style={{ background: "radial-gradient(circle, #3b82f6 0%, transparent 65%)" }}
+                />
+            </div>
+
+            {/* Sidebar */}
+            <aside
+                className="fixed inset-y-0 left-0 w-[260px] flex flex-col z-50 border-r border-white/[0.07]"
+                style={{ background: "rgba(255,255,255,0.03)", backdropFilter: "blur(12px)" }}
+            >
+                {/* Logo */}
+                <div className="h-20 flex items-center px-5 border-b border-white/[0.07]">
+                    <Link href="/admin/dashboard" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                        <div className="w-9 h-9 rounded-full bg-white/10 border border-white/20 flex items-center justify-center shrink-0">
+                            <Image src="/images/logo.svg" alt="Vết Lành Logo" width={18} height={18} className="brightness-0 invert" />
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-lg font-bold tracking-tight text-slate-800 leading-tight">VẾT LÀNH</span>
-                            <span className="text-xs text-slate-400 font-medium">Hệ thống Quản trị</span>
+                            <span className="text-lg font-bold font-dancing text-white leading-tight">Vết Lành</span>
+                            <span className="text-[10px] text-white/40 font-medium">Hệ thống Quản trị</span>
                         </div>
                     </Link>
                 </div>
 
-                {/* Navigation Menu */}
-                <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
+                {/* Nav */}
+                <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
                     {sidebarNav.map((item) => {
                         const isActive = pathname === item.href || (item.href !== "#" && pathname.startsWith(item.href));
                         return (
                             <Link
                                 key={item.title}
                                 href={item.href}
-                                className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl font-semibold transition-all ${isActive
-                                    ? "bg-primary text-white shadow-md shadow-primary/20"
-                                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
-                                    }`}
+                                className={`flex items-center gap-3 px-4 py-3 rounded-2xl font-semibold transition-all text-sm ${
+                                    isActive
+                                        ? "bg-emerald-500/15 text-white border border-emerald-500/25 shadow-sm"
+                                        : "text-white/50 hover:bg-white/[0.06] hover:text-white/90"
+                                }`}
                             >
-                                <item.icon className="w-[18px] h-[18px]" strokeWidth={isActive ? 2.5 : 2} />
+                                <item.icon className={`w-4.5 h-4.5 shrink-0 ${isActive ? "text-emerald-400" : ""}`} strokeWidth={isActive ? 2.5 : 2} />
                                 {item.title}
                             </Link>
                         );
                     })}
                 </nav>
 
-                {/* User Footer */}
-                <div className="p-4 mt-auto">
-                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-100 mb-2">
-                        <img
-                            src="/images/placeholder-user.jpg"
-                            alt="Admin Avatar"
-                            className="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover"
-                        />
+                {/* User footer */}
+                <div className="p-3 mt-auto border-t border-white/[0.07]">
+                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/[0.05] border border-white/[0.08]">
+                        <div className="w-9 h-9 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
+                            <span className="text-xs font-bold text-emerald-400 uppercase">D</span>
+                        </div>
                         <div className="flex flex-col min-w-0 flex-1">
-                            <span className="text-sm font-bold text-slate-800 truncate">Admin Vết Lành</span>
-                            <span className="text-[10px] text-slate-400 font-medium truncate">Quản trị viên cấp cao</span>
+                            <span className="text-sm font-bold text-white/90 truncate">duy1</span>
+                            <span className="text-[10px] text-white/40 font-medium">Quản trị viên</span>
                         </div>
                     </div>
                 </div>
             </aside>
 
-            {/* Main Content Area (Right) */}
-            <div className="flex-1 flex flex-col pl-[260px]">
+            {/* Main */}
+            <div className="flex-1 flex flex-col pl-[260px] relative z-10">
                 {/* Header */}
-                <header className="sticky top-0 z-40 h-20 bg-[#FEF9F2] px-8 flex items-center justify-between">
-                    {/* Search Bar */}
-                    <div className="relative w-[400px]">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <Search className="h-4 w-4 text-slate-400" />
-                        </div>
+                <header
+                    className="sticky top-0 z-40 h-20 px-8 flex items-center justify-between border-b border-white/[0.06]"
+                    style={{ background: "rgba(11,15,13,0.85)", backdropFilter: "blur(16px)" }}
+                >
+                    <div className="relative w-80">
+                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 pointer-events-none" />
                         <input
                             type="text"
-                            placeholder="Tìm kiếm dữ liệu, chuyên gia..."
-                            className="w-full pl-10 pr-4 h-11 bg-white border-slate-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all font-medium text-slate-700 placeholder:text-slate-400 shadow-sm"
+                            placeholder="Tìm kiếm..."
+                            className="w-full pl-10 pr-4 h-10 rounded-xl text-sm font-medium text-white/80 placeholder:text-white/25 focus:outline-none focus:ring-1 focus:ring-white/20 transition-all border border-white/[0.09]"
+                            style={{ background: "rgba(255,255,255,0.05)" }}
                         />
                     </div>
-
-                    {/* Right Controls */}
-                    <div className="flex items-center gap-4">
-                        <button className="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:bg-white hover:text-slate-700 hover:shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-primary/20">
-                            <Bell className="w-5 h-5 fill-slate-700 text-slate-700" />
-                        </button>
-                        <button className="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:bg-white hover:text-slate-700 hover:shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-primary/20">
-                            <HelpCircle className="w-5 h-5 fill-slate-700 text-white" />
-                        </button>
-                    </div>
+                    <button className="w-10 h-10 rounded-full flex items-center justify-center text-white/40 hover:text-white/80 hover:bg-white/[0.07] transition-all">
+                        <Bell className="w-5 h-5" />
+                    </button>
                 </header>
 
                 {/* Content */}
-                <main className="flex-1 p-8 pt-4">
+                <main className="flex-1 p-8 pt-6">
                     {children}
                 </main>
             </div>

@@ -1,236 +1,199 @@
 "use client";
 
-import { User, ShieldCheck, HeartPulse, Wallet, TriangleAlert, Info, ShieldAlert, CheckCircle2 } from "lucide-react";
-import { BarChart, Bar, Cell, XAxis, ResponsiveContainer, Tooltip } from "recharts";
+import Link from "next/link";
+import { Users, Activity, Wallet, Bug, CreditCard, ChevronRight, Clock } from "lucide-react";
+import { BarChart, Bar, XAxis, ResponsiveContainer, Tooltip, Cell } from "recharts";
 
 const stats = [
-    { title: "TỔNG NGƯỜI DÙNG", value: "12,840", percent: "+12%", bg: "bg-slate-50", iconBg: "bg-slate-100", iconColor: "text-slate-500", icon: User },
-    { title: "CHUYÊN GIA HOẠT ĐỘNG", value: "156", percent: "+5%", bg: "bg-emerald-50", iconBg: "bg-emerald-100", iconColor: "text-emerald-500", icon: ShieldCheck },
-    { title: "CA CHỮA LÀNH THÀNH CÔNG", value: "8,420", percent: "+18%", bg: "bg-rose-50", iconBg: "bg-rose-100", iconColor: "text-rose-500", icon: HeartPulse },
-    { title: "DOANH THU (VNĐ)", value: "450.0M", percent: "+10%", bg: "bg-blue-50", iconBg: "bg-blue-100", iconColor: "text-blue-500", icon: Wallet },
+    { title: "TỔNG NGƯỜI DÙNG", value: "12,840", sub: "+127 tháng này", icon: Users, accent: "rgba(255,255,255,0.08)", iconColor: "text-white/60", badge: "+1%", badgeCls: "bg-white/10 text-white/60" },
+    { title: "ĐANG HOẠT ĐỘNG", value: "847", sub: "Trực tuyến 24h qua", icon: Activity, accent: "rgba(16,185,129,0.10)", iconColor: "text-emerald-400", badge: "+12%", badgeCls: "bg-emerald-500/15 text-emerald-400" },
+    { title: "DOANH THU THÁNG", value: "45.9M", sub: "VND · tháng 06/2026", icon: Wallet, accent: "rgba(59,130,246,0.10)", iconColor: "text-blue-400", badge: "+18%", badgeCls: "bg-blue-500/15 text-blue-400" },
+    { title: "LỖI CHƯA XỬ LÝ", value: "3", sub: "Cần báo cho DEV", icon: Bug, accent: "rgba(239,68,68,0.10)", iconColor: "text-rose-400", badge: "Mới", badgeCls: "bg-rose-500/15 text-rose-400" },
 ];
 
-const chartData = [
-    { name: "00:00", value: 40, type: "low" },
-    { name: "", value: 50, type: "low" },
-    { name: "06:00", value: 80, type: "medium" },
-    { name: "", value: 95, type: "medium" },
-    { name: "12:00", value: 65, type: "low" },
-    { name: "", value: 120, type: "high" },
-    { name: "18:00", value: 100, type: "high" },
-    { name: "", value: 85, type: "medium" },
-    { name: "23:59", value: 45, type: "low" },
-    { name: "", value: 40, type: "low" }
+const subChartData = [
+    { day: "T2", value: 3 },
+    { day: "T3", value: 5 },
+    { day: "T4", value: 2 },
+    { day: "T5", value: 7 },
+    { day: "T6", value: 4 },
+    { day: "T7", value: 8 },
+    { day: "CN", value: 6 },
 ];
 
-const getBarColor = (type: string) => {
-    switch (type) {
-        case "low": return "#dcfce7"; // bg-green-100
-        case "medium": return "#bae6fd"; // bg-sky-100
-        case "high": return "#fce7f3"; // bg-pink-100
-        default: return "#e2e8f0";
-    }
+const pendingSubs = [
+    { username: "nguyen_van_an", plan: "Pro 1 tháng", amount: "199,000đ", date: "07/06/2026" },
+    { username: "tran_thi_mai", plan: "Pro 3 tháng", amount: "499,000đ", date: "07/06/2026" },
+    { username: "le_hoang_nam", plan: "Pro 1 tháng", amount: "199,000đ", date: "06/06/2026" },
+];
+
+const recentErrors = [
+    { type: "SignalR 401", route: "/services/chat", severity: "HIGH", time: "14:23 hôm nay" },
+    { type: "API Timeout", route: "/api/exercises", severity: "MEDIUM", time: "11:05 hôm nay" },
+    { type: "404 Not Found", route: "/services/journal/undefined", severity: "LOW", time: "08:47 hôm nay" },
+];
+
+const severityStyle: Record<string, string> = {
+    HIGH:   "bg-rose-500/15 text-rose-400 border-rose-500/20",
+    MEDIUM: "bg-amber-500/15 text-amber-400 border-amber-500/20",
+    LOW:    "bg-white/8 text-white/45 border-white/10",
 };
 
 const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-        const data = payload[0].payload;
-        let label = "Thấp";
-        if (data.type === "medium") label = "Trung bình";
-        if (data.type === "high") label = "Cần chú ý";
+    if (active && payload?.length) {
         return (
-            <div className="bg-white p-3 border border-slate-100 shadow-sm rounded-xl text-sm">
-                <p className="font-bold text-slate-800 mb-1">{label}</p>
-                <p className="text-slate-600">Chỉ số stress: <span className="font-semibold text-slate-800">{data.value}</span></p>
+            <div className="px-3 py-2 rounded-xl border border-white/15 text-sm font-bold text-white" style={{ background: "rgba(11,15,13,0.92)", backdropFilter: "blur(12px)" }}>
+                {payload[0].value} đăng ký
             </div>
         );
     }
     return null;
 };
 
+const cardCls = "rounded-[24px] border border-white/[0.09] p-6" ;
+const cardStyle = { background: "rgba(255,255,255,0.05)", backdropFilter: "blur(16px)" };
+
 export default function AdminDashboardPage() {
     return (
         <div className="w-full space-y-6">
-            {/* Page Header */}
             <div>
-                <h1 className="text-[28px] font-bold text-slate-800 tracking-tight leading-none mb-2">Tổng quan hệ thống</h1>
-                <p className="text-slate-500 font-medium">Dữ liệu cập nhật mới nhất hôm nay, 24/05/2024</p>
+                <h1 className="text-[28px] font-bold text-white tracking-tight leading-none mb-1.5">Tổng quan</h1>
+                <p className="text-white/45 font-medium text-sm">Dữ liệu cập nhật: Chủ nhật, 08/06/2026</p>
             </div>
 
             {/* Stat Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {stats.map((stat, i) => (
-                    <div key={i} className="bg-white p-6 rounded-[24px] border border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                {stats.map((s, i) => (
+                    <div key={i} className={cardCls} style={{ ...cardStyle, background: s.accent }}>
                         <div className="flex items-center justify-between mb-4">
-                            <div className={`w-12 h-12 rounded-full flex items-center justify-center ${stat.iconBg}`}>
-                                <stat.icon className={`w-6 h-6 ${stat.iconColor}`} />
+                            <div className="w-10 h-10 rounded-full bg-white/10 border border-white/15 flex items-center justify-center">
+                                <s.icon className={`w-5 h-5 ${s.iconColor}`} />
                             </div>
-                            <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${stat.bg} ${stat.iconColor}`}>
-                                {stat.percent}
+                            <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full border ${s.badgeCls}`} style={{ borderColor: "transparent" }}>
+                                {s.badge}
                             </span>
                         </div>
-                        <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">{stat.title}</h3>
-                        <p className="text-[32px] font-extrabold text-slate-800 tabular-nums tracking-tight leading-none">{stat.value}</p>
+                        <p className="text-[10px] font-bold text-white/35 uppercase tracking-widest mb-1">{s.title}</p>
+                        <p className="text-[32px] font-extrabold text-white tabular-nums tracking-tight leading-none mb-1">{s.value}</p>
+                        <p className="text-xs text-white/40 font-medium">{s.sub}</p>
                     </div>
                 ))}
             </div>
 
-            {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                {/* Left Column (Main Charts & Tables) */}
-                <div className="lg:col-span-2 space-y-6">
-                    {/* Chart Container */}
-                    <div className="bg-white p-6 rounded-[24px] border border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-                        <div className="flex items-center justify-between mb-8">
-                            <h3 className="text-lg font-bold text-slate-800">
-                                Theo dõi mức độ căng thẳng
-                                <span className="block text-sm font-medium text-slate-400 mt-1">Phân bổ chỉ số stress trong 24 giờ qua</span>
-                            </h3>
-                            <button className="text-sm font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 px-4 py-2 rounded-xl transition-colors">
-                                Hôm nay
-                            </button>
+            {/* Main Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                {/* Chart */}
+                <div className={`lg:col-span-2 ${cardCls}`} style={cardStyle}>
+                    <div className="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 className="text-base font-bold text-white">Đăng ký mới trong tuần</h3>
+                            <p className="text-xs text-white/40 font-medium mt-0.5">Gói Pro được cấp theo ngày</p>
                         </div>
+                        <span className="text-sm font-bold text-white/60 bg-white/[0.07] px-4 py-2 rounded-xl border border-white/[0.08]">Tuần này</span>
+                    </div>
+                    <div className="h-[200px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={subChartData} barGap={6}>
+                                <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255,255,255,0.04)" }} />
+                                <Bar dataKey="value" radius={[8, 8, 8, 8]} barSize={32}>
+                                    {subChartData.map((_, idx) => (
+                                        <Cell key={idx} fill={idx === 5 ? "#10b981" : "rgba(255,255,255,0.10)"} />
+                                    ))}
+                                </Bar>
+                                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: "rgba(255,255,255,0.30)", fontSize: 12, fontWeight: 600 }} dy={10} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                    <p className="text-xs text-white/30 font-medium text-center mt-4">Tổng 35 gói trong 7 ngày qua</p>
+                </div>
 
-                        <div className="h-[280px] w-full">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }} barGap={6}>
-                                    <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
-                                    <Bar dataKey="value" radius={[8, 8, 8, 8]} barSize={40}>
-                                        {chartData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={getBarColor(entry.type)} />
-                                        ))}
-                                    </Bar>
-                                    <XAxis
-                                        dataKey="name"
-                                        axisLine={false}
-                                        tickLine={false}
-                                        tick={{ fill: '#94a3b8', fontSize: 12, fontWeight: 600 }}
-                                        dy={10}
-                                    />
-                                </BarChart>
-                            </ResponsiveContainer>
-                        </div>
-
-                        {/* Chart Legend */}
-                        <div className="flex items-center justify-center gap-6 mt-8">
-                            <div className="flex items-center gap-2">
-                                <span className="w-3 h-3 rounded-full bg-green-100"></span>
-                                <span className="text-xs font-bold text-slate-500 leading-none">Thấp</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <span className="w-3 h-3 rounded-full bg-sky-100"></span>
-                                <span className="text-xs font-bold text-slate-500 leading-none">Trung bình</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <span className="w-3 h-3 rounded-full bg-pink-100"></span>
-                                <span className="text-xs font-bold text-slate-500 leading-none">Cần chú ý</span>
-                            </div>
+                {/* Sidebar Stats */}
+                <div className="space-y-4">
+                    <div className={cardCls} style={cardStyle}>
+                        <h3 className="text-sm font-bold text-white mb-4">Phân loại gói</h3>
+                        <div className="space-y-3">
+                            {[
+                                { label: "Pro 1 tháng", count: 21, color: "bg-emerald-400" },
+                                { label: "Pro 3 tháng", count: 9,  color: "bg-blue-400" },
+                                { label: "Pro 6 tháng", count: 5,  color: "bg-violet-400" },
+                            ].map((item) => (
+                                <div key={item.label} className="flex items-center gap-3">
+                                    <div className={`w-2 h-2 rounded-full shrink-0 ${item.color}`} />
+                                    <span className="text-sm font-medium text-white/60 flex-1">{item.label}</span>
+                                    <span className="text-sm font-bold text-white tabular-nums">{item.count}</span>
+                                </div>
+                            ))}
                         </div>
                     </div>
 
-                    {/* Pending Experts Table Container */}
-                    <div className="bg-white p-6 rounded-[24px] border border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-lg font-bold text-slate-800">Chuyên gia chờ duyệt</h3>
-                            <button className="text-sm font-bold text-primary hover:text-primary/80 transition-colors">
-                                Xem tất cả
-                            </button>
+                    <div className="rounded-[20px] border border-amber-500/20 p-5 flex items-center gap-4" style={{ background: "rgba(245,158,11,0.08)" }}>
+                        <div className="w-10 h-10 rounded-full bg-amber-500/15 border border-amber-500/25 flex items-center justify-center shrink-0">
+                            <Clock className="w-5 h-5 text-amber-400" />
                         </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-bold text-white">4 yêu cầu chờ duyệt</p>
+                            <p className="text-xs text-white/45 font-medium">Cần xác nhận chuyển khoản</p>
+                        </div>
+                        <Link href="/admin/subscriptions" className="text-xs font-bold text-amber-400 hover:text-amber-300 transition-colors shrink-0">
+                            Xem
+                        </Link>
+                    </div>
+                </div>
+            </div>
 
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left border-collapse">
-                                <thead>
-                                    <tr className="border-b border-slate-100">
-                                        <th className="pb-4 text-xs font-bold text-slate-400 uppercase tracking-widest pl-2">HỌ VÀ TÊN</th>
-                                        <th className="pb-4 text-xs font-bold text-slate-400 uppercase tracking-widest">CHUYÊN MÔN</th>
-                                        <th className="pb-4 text-xs font-bold text-slate-400 uppercase tracking-widest">CHỨNG CHỈ</th>
-                                        <th className="pb-4 text-xs font-bold text-slate-400 uppercase tracking-widest text-right pr-2">THAO TÁC</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {/* Mock Empty Space to match visual weight, adding a row for completeness */}
-                                    <tr className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors group">
-                                        <td className="py-4 pl-2">
-                                            <div className="flex items-center gap-3">
-                                                <img src="/images/placeholder-user.jpg" alt="" className="w-10 h-10 rounded-full border border-slate-100" />
-                                                <span className="font-bold text-sm text-slate-700">Nguyễn Văn A</span>
-                                            </div>
-                                        </td>
-                                        <td className="py-4 text-sm font-medium text-slate-600">Tâm lý học lâm sàng</td>
-                                        <td className="py-4"><span className="text-xs font-bold bg-slate-100 text-slate-500 px-2 py-1 rounded-md">Đã tải lên 2 tệp</span></td>
-                                        <td className="py-4 text-right pr-2">
-                                            <button className="text-sm font-bold text-primary hover:bg-primary/5 px-3 py-1.5 rounded-lg transition-colors">Duyệt</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+            {/* Bottom Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                {/* Pending Subs */}
+                <div className={cardCls} style={cardStyle}>
+                    <div className="flex items-center justify-between mb-5">
+                        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                            <CreditCard className="w-4 h-4 text-white/40" />
+                            Chờ cấp gói
+                        </h3>
+                        <Link href="/admin/subscriptions" className="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors">
+                            Xem tất cả <ChevronRight className="w-3 h-3" />
+                        </Link>
+                    </div>
+                    <div className="space-y-3">
+                        {pendingSubs.map((s, i) => (
+                            <div key={i} className="flex items-center gap-3 py-2.5 border-b border-white/[0.06] last:border-0">
+                                <div className="w-8 h-8 rounded-full bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
+                                    <span className="text-xs font-bold text-white/70 uppercase">{s.username[0]}</span>
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-bold text-white/85 truncate">{s.username}</p>
+                                    <p className="text-xs text-white/40 font-medium">{s.plan} · {s.date}</p>
+                                </div>
+                                <span className="text-sm font-bold text-emerald-400 shrink-0">{s.amount}</span>
+                            </div>
+                        ))}
                     </div>
                 </div>
 
-                {/* Right Column (Alerts Sidebar) */}
-                <div className="lg:col-span-1 space-y-6">
-                    <div className="bg-white p-6 rounded-[24px] border border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-                        <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-lg font-bold text-slate-800">Cảnh báo hệ thống</h3>
-                            <span className="bg-rose-50 text-rose-500 text-xs font-bold px-2 py-0.5 rounded-full">4</span>
-                        </div>
-
-                        <div className="space-y-4">
-                            {/* Urgent Alert */}
-                            <div className="bg-[#fff1f2] rounded-2xl p-5 border border-rose-100">
-                                <div className="flex items-start justify-between mb-3">
-                                    <div className="flex items-center gap-2 text-rose-600">
-                                        <TriangleAlert className="w-4 h-4" />
-                                        <span className="text-xs font-bold tracking-wide uppercase">CẢNH BÁO KHẨN CẤP (AI)</span>
-                                    </div>
-                                    <span className="text-[10px] font-bold text-rose-400">2 phút trước</span>
+                {/* Recent Errors */}
+                <div className={cardCls} style={cardStyle}>
+                    <div className="flex items-center justify-between mb-5">
+                        <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                            <Bug className="w-4 h-4 text-white/40" />
+                            Lỗi gần đây
+                        </h3>
+                        <Link href="/admin/errors" className="text-xs font-bold text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors">
+                            Xem tất cả <ChevronRight className="w-3 h-3" />
+                        </Link>
+                    </div>
+                    <div className="space-y-3">
+                        {recentErrors.map((e, i) => (
+                            <div key={i} className="flex items-center gap-3 py-2.5 border-b border-white/[0.06] last:border-0">
+                                <span className={`text-[10px] font-bold px-2 py-1 rounded-md border shrink-0 ${severityStyle[e.severity]}`}>
+                                    {e.severity}
+                                </span>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-bold text-white/85 truncate">{e.type}</p>
+                                    <p className="text-xs text-white/40 font-medium truncate">{e.route}</p>
                                 </div>
-                                <p className="text-sm font-semibold text-slate-800 mb-4 leading-relaxed">
-                                    Người dùng #USR-892 có chỉ số stress vượt ngưỡng an toàn (9.5/10).
-                                </p>
-                                <div className="flex items-center gap-2">
-                                    <button className="flex-1 bg-primary hover:bg-slate-800 text-white text-xs font-bold py-2.5 rounded-xl transition-colors">
-                                        Gán chuyên gia
-                                    </button>
-                                    <button className="flex-1 bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 text-xs font-bold py-2.5 rounded-xl transition-colors">
-                                        Bỏ qua
-                                    </button>
-                                </div>
+                                <span className="text-[11px] text-white/35 font-medium shrink-0">{e.time}</span>
                             </div>
-
-                            {/* Info Alert */}
-                            <div className="bg-slate-50 rounded-2xl p-5 border border-slate-100">
-                                <div className="flex items-start justify-between mb-3">
-                                    <div className="flex items-center gap-2 text-slate-500">
-                                        <Info className="w-4 h-4 fill-slate-200" />
-                                        <span className="text-xs font-bold tracking-wide uppercase">CAN THIỆP HỖ TRỢ</span>
-                                    </div>
-                                    <span className="text-[10px] font-bold text-slate-400">15 phút trước</span>
-                                </div>
-                                <p className="text-sm font-semibold text-slate-800 mb-4 leading-relaxed">
-                                    Phát hiện dấu hiệu lo âu kéo dài tại khu vực TP. Hồ Chí Minh.
-                                </p>
-                                <button className="w-full bg-slate-200/50 hover:bg-slate-200 text-slate-600 text-xs font-bold py-2.5 rounded-xl transition-colors">
-                                    Xem báo cáo vùng
-                                </button>
-                            </div>
-
-                            {/* Success Alert */}
-                            <div className="bg-emerald-50/50 rounded-2xl p-5 border border-emerald-100/50">
-                                <div className="flex items-start justify-between mb-3">
-                                    <div className="flex items-center gap-2 text-emerald-600">
-                                        <ShieldAlert className="w-4 h-4" />
-                                        <span className="text-xs font-bold tracking-wide uppercase">HỆ THỐNG</span>
-                                    </div>
-                                    <span className="text-[10px] font-bold text-emerald-400">1 giờ trước</span>
-                                </div>
-                                <p className="text-sm font-semibold text-slate-700 leading-relaxed">
-                                    Dữ liệu sao lưu hoàn tất. Trạng thái: An toàn.
-                                </p>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </div>
