@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Loader2, AlertTriangle } from "lucide-react";
+import { Loader2, Activity, TrendingUp, Wind } from "lucide-react";
 import { useMoodSummary, useMoodEntries } from "@/hooks/useMood";
 import { useRecommendedExercises } from "@/hooks/useExercise";
 
@@ -46,20 +45,20 @@ export function LiveInsights() {
     <div className="hidden xl:flex flex-col w-72 shrink-0 space-y-6">
       {/* Header */}
       <div className="flex items-center gap-2 text-primary font-bold text-sm">
-        <span>📊</span> Phân tích trực tiếp
+        <Activity className="w-4 h-4" strokeWidth={2} /> Phân tích trực tiếp
       </div>
 
       {/* Mood trend chart */}
-      <Card className="border-none shadow-sm rounded-2xl">
+      <Card className="card-lifted border-none rounded-2xl">
         <CardContent className="p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="font-bold text-slate-800 text-sm">Xu hướng tâm trạng</h3>
-            <span className="text-primary text-xs">📈</span>
+            <h3 className="font-bold text-foreground text-sm">Xu hướng tâm trạng</h3>
+            <TrendingUp className="w-4 h-4 text-primary" strokeWidth={2} />
           </div>
 
           {loadingMood ? (
             <div className="flex items-center justify-center h-16">
-              <Loader2 className="h-4 w-4 animate-spin text-slate-300" />
+              <Loader2 className="h-4 w-4 animate-spin text-foreground/20" strokeWidth={2} />
             </div>
           ) : (
             <div className="flex items-end gap-1.5 h-16">
@@ -67,14 +66,14 @@ export function LiveInsights() {
                 slot.score !== null ? (
                   <div
                     key={slot.date}
-                    className="flex-1 rounded-sm bg-primary/30"
+                    className="flex-1 rounded-sm bg-primary/40"
                     style={{ height: `${scoreToHeight(slot.score)}%` }}
                     title={`${slot.date}: ${slot.score}/5`}
                   />
                 ) : (
                   <div
                     key={slot.date}
-                    className="flex-1 rounded-sm bg-slate-100"
+                    className="flex-1 rounded-sm bg-border/40"
                     style={{ height: "8px" }}
                     title={slot.date}
                   />
@@ -83,7 +82,7 @@ export function LiveInsights() {
             </div>
           )}
 
-          <p className="text-[11px] text-slate-500 leading-relaxed">
+          <p className="text-[11px] text-foreground/50 leading-relaxed">
             {moodSummary && moodSummary.length > 0
               ? `${moodSummary.length} ngày gần đây có dữ liệu tâm trạng.`
               : "Chưa có dữ liệu tâm trạng. Hãy check-in hôm nay!"}
@@ -93,14 +92,14 @@ export function LiveInsights() {
 
       {/* Recommended exercises */}
       <div className="space-y-3">
-        <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Bài tập đề xuất</h3>
+        <h3 className="text-[11px] font-bold text-foreground/40 uppercase tracking-wider">Bài tập đề xuất</h3>
 
         {loadingExercises ? (
           <div className="flex items-center justify-center py-4">
-            <Loader2 className="h-4 w-4 animate-spin text-slate-300" />
+            <Loader2 className="h-4 w-4 animate-spin text-foreground/20" strokeWidth={2} />
           </div>
         ) : !recommended || recommended.length === 0 ? (
-          <p className="text-xs text-slate-400 text-center py-2">Chưa có bài tập phù hợp.</p>
+          <p className="text-xs text-foreground/40 text-center py-2">Chưa có bài tập phù hợp.</p>
         ) : (
           recommended.map((exercise) => {
             const mins = exercise.duration_minutes ?? (exercise.duration_seconds ? Math.round(exercise.duration_seconds / 60) : null);
@@ -108,15 +107,15 @@ export function LiveInsights() {
               <Link
                 key={exercise.slug}
                 href={`/services/exercises/${exercise.slug}`}
-                className="flex items-center gap-3 p-3 rounded-xl bg-white shadow-sm border border-slate-50 hover:border-primary/20 transition-colors"
+                className="card-lifted flex items-center gap-3 p-3 rounded-xl border-none hover:ring-1 hover:ring-primary/30 transition"
               >
-                <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                  <span className="text-base">🧘</span>
+                <div className="w-9 h-9 rounded-lg bg-secondary/60 flex items-center justify-center shrink-0">
+                  <Wind className="w-4 h-4 text-primary" strokeWidth={2} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-slate-800 truncate">{exercise.title}</p>
+                  <p className="text-sm font-semibold text-foreground truncate">{exercise.title}</p>
                   {mins != null && (
-                    <p className="text-[10px] text-slate-400">{mins} phút</p>
+                    <p className="text-[10px] text-foreground/40">{mins} phút</p>
                   )}
                 </div>
               </Link>
@@ -124,22 +123,6 @@ export function LiveInsights() {
           })
         )}
       </div>
-
-      {/* Crisis support — no BE endpoint, uses tel: link per spec */}
-      <Card className="border-none shadow-none rounded-2xl bg-slate-800 text-white overflow-hidden">
-        <CardContent className="p-4 text-center space-y-2">
-          <p className="text-xs text-slate-300">Cần hỗ trợ khẩn cấp?</p>
-          <Button
-            asChild
-            className="w-full bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold shadow-none"
-          >
-            <a href="tel:18006898" className="flex items-center justify-center gap-2">
-              <AlertTriangle className="w-4 h-4" />
-              Hỗ trợ khủng hoảng
-            </a>
-          </Button>
-        </CardContent>
-      </Card>
     </div>
   );
 }

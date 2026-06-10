@@ -2,7 +2,8 @@
 
 import { useRef, useEffect } from "react";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import Image from "next/image";
+import { Loader2, Clock, User } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useConversationMessages } from "@/hooks/useChat";
@@ -26,15 +27,15 @@ interface Props {
 function UserBubble({ content, timestamp }: { content: string; timestamp?: string }) {
   return (
     <div className="flex items-start gap-3 max-w-[85%] ml-auto flex-row-reverse">
-      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0 mt-1 text-sm">
-        👤
+      <div className="w-8 h-8 rounded-2xl bg-primary/15 flex items-center justify-center shrink-0 mt-1">
+        <User className="w-4 h-4 text-primary" strokeWidth={2} />
       </div>
       <div className="text-right">
-        <div className="bg-[#C9E9D2]/60 text-slate-800 px-5 py-3.5 rounded-2xl rounded-tr-md text-sm leading-relaxed text-left">
+        <div className="bg-secondary/60 text-foreground px-5 py-3.5 rounded-2xl rounded-tr-md text-sm leading-relaxed text-left">
           {content}
         </div>
         {timestamp && (
-          <span className="text-[10px] text-slate-400 mt-1 block">{timestamp}</span>
+          <span className="text-[10px] text-foreground/40 mt-1 block">{timestamp}</span>
         )}
       </div>
     </div>
@@ -44,15 +45,15 @@ function UserBubble({ content, timestamp }: { content: string; timestamp?: strin
 function AssistantBubble({ content, timestamp }: { content: string; timestamp?: string }) {
   return (
     <div className="flex items-start gap-3 max-w-[85%]">
-      <div className="w-8 h-8 rounded-full bg-[#C9E9D2] flex items-center justify-center shrink-0 mt-1 text-sm">
-        🌿
+      <div className="w-8 h-8 rounded-2xl bg-secondary/60 flex items-center justify-center shrink-0 mt-1">
+        <Image src="/images/logo.svg" alt="Vết Lành" width={16} height={16} />
       </div>
       <div>
         <div className="bg-primary text-white px-5 py-3.5 rounded-2xl rounded-tl-md text-sm leading-relaxed">
           {content}
         </div>
         {timestamp && (
-          <span className="text-[10px] text-slate-400 mt-1 block">{timestamp}</span>
+          <span className="text-[10px] text-foreground/40 mt-1 block">{timestamp}</span>
         )}
       </div>
     </div>
@@ -83,29 +84,29 @@ export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) 
     return (
       <div className="flex-1 flex flex-col items-center justify-center gap-8 px-4 pb-6">
         <div className="flex flex-col items-center gap-4 text-center">
-          <div className="w-16 h-16 rounded-full bg-[#C9E9D2] flex items-center justify-center text-3xl shadow-sm">
-            🌿
+          <div className="w-16 h-16 rounded-2xl bg-secondary/60 flex items-center justify-center">
+            <Image src="/images/logo.svg" alt="Vết Lành" width={32} height={32} />
           </div>
           <div className="space-y-1.5">
-            <h2 className="font-bold text-slate-800 text-lg">
+            <h2 className="font-bold text-foreground text-lg">
               Xin chào! Tôi là{" "}
               <span className="font-dancing font-bold text-primary text-xl">Vết Lành</span> AI
             </h2>
-            <p className="text-sm text-slate-500 max-w-xs leading-relaxed">
+            <p className="text-sm text-foreground/50 max-w-xs leading-relaxed">
               Một người bạn đồng hành sẵn sàng lắng nghe và đồng hành cùng bạn bất cứ lúc nào.
             </p>
           </div>
         </div>
 
         <div className="flex flex-col gap-2 w-full max-w-sm">
-          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider text-center">
+          <p className="text-[11px] font-semibold text-foreground/40 uppercase tracking-wider text-center">
             Bắt đầu bằng...
           </p>
           {prompts.map((prompt) => (
             <button
               key={prompt}
               onClick={() => onPromptSelect(prompt)}
-              className="text-sm text-left px-4 py-3 rounded-2xl border border-slate-200 bg-white hover:border-primary/40 hover:bg-primary/5 text-slate-600 hover:text-primary transition-all shadow-xs"
+              className="text-sm text-left px-4 py-3 rounded-2xl border border-border/40 bg-background/60 hover:border-primary/40 hover:bg-secondary/30 text-foreground/60 hover:text-primary transition-all"
             >
               {prompt}
             </button>
@@ -118,7 +119,7 @@ export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) 
   if (isLoading) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <Loader2 className="h-5 w-5 animate-spin text-slate-300" />
+        <Loader2 className="h-5 w-5 animate-spin text-foreground/20" strokeWidth={2} />
       </div>
     );
   }
@@ -146,20 +147,23 @@ export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) 
           return (
             <div key={msg.id} className="flex items-start gap-3 max-w-[85%]">
               <div className="w-8 h-8 shrink-0" />
-              <Card className="border-none shadow-sm rounded-2xl overflow-hidden flex-1">
+              <Card className="card-lifted border-none rounded-2xl overflow-hidden flex-1">
                 <CardContent className="p-4 space-y-2">
-                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                  <p className="text-xs font-semibold text-foreground/50 uppercase tracking-wide">
                     Gợi ý bài tập
                   </p>
-                  <h4 className="font-bold text-slate-800">{msg.card.title}</h4>
-                  <p className="text-xs text-slate-500 leading-relaxed">{msg.card.description}</p>
+                  <h4 className="font-bold text-foreground">{msg.card.title}</h4>
+                  <p className="text-xs text-foreground/50 leading-relaxed">{msg.card.description}</p>
                   {minutes > 0 && (
-                    <p className="text-xs text-emerald-600">⏱ {minutes} phút</p>
+                    <p className="flex items-center gap-1 text-xs text-primary">
+                      <Clock className="w-3 h-3" strokeWidth={2} />
+                      {minutes} phút
+                    </p>
                   )}
                   <Button
                     asChild
                     size="sm"
-                    className="w-full rounded-xl bg-[#C9E9D2] hover:bg-[#C9E9D2]/80 text-slate-800 shadow-none font-semibold"
+                    className="w-full rounded-xl bg-secondary hover:bg-secondary/80 text-foreground shadow-none font-semibold"
                   >
                     <Link href={`/services/exercises/${msg.card.id}`}>Bắt đầu bài tập</Link>
                   </Button>
@@ -178,8 +182,8 @@ export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) 
       {/* Streaming in-progress assistant message */}
       {isStreaming && (
         <div className="flex items-start gap-3 max-w-[85%]">
-          <div className="w-8 h-8 rounded-full bg-[#C9E9D2] flex items-center justify-center shrink-0 mt-1 text-sm">
-            🌿
+          <div className="w-8 h-8 rounded-2xl bg-secondary/60 flex items-center justify-center shrink-0 mt-1">
+            <Image src="/images/logo.svg" alt="Vết Lành" width={16} height={16} />
           </div>
           <div>
             {streamingText ? (

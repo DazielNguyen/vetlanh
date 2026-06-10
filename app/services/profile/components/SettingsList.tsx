@@ -1,9 +1,7 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { User, Bell, Shield, Palette, Globe, LogOut, ChevronRight } from "lucide-react";
-import { NotificationSettings } from "./NotificationSettings";
+import { User, Shield, Palette, Globe, LogOut, ChevronRight } from "lucide-react";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { logout } from "@/lib/redux/slices/authSlice";
 
@@ -18,7 +16,6 @@ const settingsSections = [
     {
         title: "Tùy chỉnh",
         items: [
-            { icon: Bell, label: "Thông báo", desc: "Email, push notification, nhắc lịch" },
             { icon: Palette, label: "Giao diện", desc: "Chế độ sáng/tối, màu chủ đề" },
             { icon: Globe, label: "Ngôn ngữ", desc: "Tiếng Việt" },
         ],
@@ -36,37 +33,35 @@ export function SettingsList() {
     return (
         <div className="space-y-6">
             {settingsSections.map((section) => (
-                <div key={section.title} className="space-y-3">
-                    <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider">{section.title}</h2>
-                    <Card className="border-none shadow-sm rounded-2xl overflow-hidden divide-y divide-slate-50">
-                        {section.items.map((item) => (
-                            <button key={item.label} className="w-full flex items-center gap-4 p-4 hover:bg-slate-50 transition text-left">
-                                <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center shrink-0">
-                                    <item.icon className="w-5 h-5 text-slate-500" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <h3 className="font-semibold text-slate-800 text-sm">{item.label}</h3>
-                                    <p className="text-xs text-slate-400">{item.desc}</p>
-                                </div>
-                                <ChevronRight className="w-4 h-4 text-slate-300 shrink-0" />
-                            </button>
-                        ))}
-                    </Card>
-                </div>
+                <Card key={section.title} className="card-lifted border-none rounded-3xl overflow-hidden divide-y divide-border/30">
+                    <h2 className="px-4 pt-4 pb-2 text-sm font-bold text-foreground/40 uppercase tracking-wider">{section.title}</h2>
+                    {section.items.map((item) => (
+                        <button key={item.label} className="w-full flex items-center gap-4 p-4 hover:bg-secondary/30 transition text-left">
+                            <div className="w-10 h-10 rounded-2xl bg-secondary/60 flex items-center justify-center shrink-0">
+                                <item.icon className="w-5 h-5 text-primary" strokeWidth={2} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <h3 className="font-semibold text-foreground text-sm">{item.label}</h3>
+                                <p className="text-xs text-foreground/40">{item.desc}</p>
+                            </div>
+                            <ChevronRight className="w-4 h-4 text-foreground/20 shrink-0" strokeWidth={2} />
+                        </button>
+                    ))}
+                </Card>
             ))}
 
-            {/* Notification Settings */}
-            <NotificationSettings />
-
-            {/* Logout */}
-            <Button
-                variant="outline"
-                className="w-full rounded-xl border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600 font-semibold flex items-center justify-center gap-2"
-                onClick={handleLogout}
-            >
-                <LogOut className="w-4 h-4" />
-                Đăng xuất
-            </Button>
+            {/* Logout — same compact row style as settings items, for visual consistency */}
+            <Card className="card-lifted border-none rounded-3xl overflow-hidden">
+                <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-4 p-4 hover:bg-destructive/5 transition text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/40"
+                >
+                    <div className="w-10 h-10 rounded-2xl bg-destructive/10 flex items-center justify-center shrink-0">
+                        <LogOut className="w-5 h-5 text-destructive" strokeWidth={2} />
+                    </div>
+                    <span className="font-semibold text-destructive text-sm">Đăng xuất</span>
+                </button>
+            </Card>
         </div>
     );
 }

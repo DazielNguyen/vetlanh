@@ -30,31 +30,31 @@ export function ThoughtRecordCard({ record, isSelected, onSelect, onEdit }: Prop
       onClick={onSelect}
       className={`w-full text-left px-4 py-3 rounded-2xl transition-all ${
         isSelected
-          ? "bg-primary/10 border border-primary/20"
-          : "bg-slate-50 hover:bg-slate-100"
+          ? "bg-secondary/50 border border-primary/20"
+          : "bg-background/60 hover:bg-secondary/30"
       }`}
     >
-      <p className="text-sm font-semibold text-slate-800 truncate">{record.situation}</p>
-      <p className="text-xs text-slate-500 mt-0.5 truncate italic">{record.automatic_thought}</p>
+      <p className="text-sm font-semibold text-foreground truncate">{record.situation}</p>
+      <p className="text-xs text-foreground/50 mt-0.5 truncate italic">{record.automatic_thought}</p>
       <div className="flex items-center justify-between mt-1.5">
-        <p className="text-[10px] text-slate-300">{record.created_at ? formatDate(record.created_at) : "—"}</p>
+        <p className="text-[10px] text-foreground/30">{record.created_at ? formatDate(record.created_at) : "Chưa có ngày"}</p>
         <div className="flex items-center gap-1">
           <span
             role="button"
             onClick={handleEdit}
-            className="p-1 rounded-lg text-slate-300 hover:text-primary hover:bg-primary/10 transition"
+            className="p-1 rounded-lg text-foreground/30 hover:text-primary hover:bg-primary/10 transition"
           >
-            <Pencil className="w-3 h-3" />
+            <Pencil className="w-3 h-3" strokeWidth={2} />
           </span>
           <span
             role="button"
             onClick={handleDelete}
-            className="p-1 rounded-lg text-slate-300 hover:text-red-400 hover:bg-red-50 transition"
+            className="p-1 rounded-lg text-foreground/30 hover:text-red-400 hover:bg-red-50 transition"
           >
             {isDeleting ? (
-              <Loader2 className="w-3 h-3 animate-spin" />
+              <Loader2 className="w-3 h-3 animate-spin" strokeWidth={2} />
             ) : (
-              <Trash2 className="w-3 h-3" />
+              <Trash2 className="w-3 h-3" strokeWidth={2} />
             )}
           </span>
         </div>

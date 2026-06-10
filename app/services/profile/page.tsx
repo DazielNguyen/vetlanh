@@ -1,6 +1,5 @@
 import { ProfileCard } from "./components/ProfileCard";
 import { SettingsList } from "./components/SettingsList";
-import { GoalsEditor } from "./components/GoalsEditor";
 
 export default function ProfilePage() {
     return (
@@ -11,15 +10,10 @@ export default function ProfilePage() {
                 <p className="text-muted-foreground mt-1">Quản lý tài khoản và tùy chỉnh trải nghiệm của bạn.</p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Left: Profile Card */}
+            {/* Single centered column — avoids an unbalanced 2-column split */}
+            <div className="max-w-2xl mx-auto space-y-6">
                 <ProfileCard />
-
-                {/* Right: Settings + Goals */}
-                <div className="lg:col-span-2 space-y-6">
-                    <GoalsEditor />
-                    <SettingsList />
-                </div>
+                <SettingsList />
             </div>
         </div>
     );

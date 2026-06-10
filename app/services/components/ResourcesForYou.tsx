@@ -27,23 +27,34 @@ export function ResourcesForYou() {
         <div className="h-full flex flex-col space-y-4">
             <div className="flex justify-between items-end">
                 <h2 className="text-xl font-bold text-primary">Tài nguyên cho bạn</h2>
-                <a href="/services/exercises" className="text-xs font-bold text-foreground/40 hover:text-primary transition">Xem thư viện</a>
+                <a
+                    href="/services/exercises"
+                    className="text-xs font-bold text-foreground/60 hover:text-primary transition rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                >
+                    Xem thư viện
+                </a>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 content-start">
+            <div className="grid grid-cols-1 gap-4 flex-1 content-start">
                 {(resources ?? []).map((resource) => {
                     const { src, bg } = TYPE_IMAGE[resource.type] ?? TYPE_IMAGE.article;
-                    const Wrapper = resource.url ? "a" : "div";
-                    const linkProps = resource.url
+                    const linkable = Boolean(resource.url);
+                    const Wrapper = linkable ? "a" : "div";
+                    const linkProps = linkable
                         ? { href: resource.url, target: "_blank", rel: "noopener noreferrer" }
                         : {};
+
                     return (
-                        <Wrapper key={resource.id} className="group cursor-pointer" {...linkProps}>
-                            <div className={`aspect-4/3 rounded-3xl relative overflow-hidden mb-3 border hover:shadow-md transition-shadow ${bg}`}>
+                        <Wrapper
+                            key={resource.id}
+                            {...linkProps}
+                            className={linkable ? "group rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50" : undefined}
+                        >
+                            <div className={`aspect-4/3 rounded-3xl relative overflow-hidden mb-3 border transition-shadow ${linkable ? "hover:shadow-md" : ""} ${bg}`}>
                                 <Image
                                     src={src}
                                     alt={resource.title}
                                     fill
-                                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                    className={`object-cover ${linkable ? "transition-transform duration-300 group-hover:scale-105" : ""}`}
                                     sizes="(max-width: 768px) 100vw, 25vw"
                                 />
                                 {resource.duration_label && (
@@ -52,7 +63,9 @@ export function ResourcesForYou() {
                                     </div>
                                 )}
                             </div>
-                            <h4 className="font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2">{resource.title}</h4>
+                            <h4 className={`font-bold text-foreground line-clamp-2 ${linkable ? "group-hover:text-primary transition-colors" : ""}`}>
+                                {resource.title}
+                            </h4>
                         </Wrapper>
                     );
                 })}

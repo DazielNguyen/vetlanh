@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import { ChevronDown, PlusCircle, Trash2, Loader2, Info, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -90,46 +91,46 @@ export function ChatHeader({ conversationId, onConversationChange }: Props) {
   }
 
   return (
-    <div ref={dropdownRef} className="flex items-center justify-between pb-4 border-b border-slate-100 mb-4 relative">
+    <div ref={dropdownRef} className="flex items-center justify-between pb-4 border-b border-border/40 mb-4 relative">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-[#C9E9D2] flex items-center justify-center">
-          <span className="text-lg">🌿</span>
+        <div className="w-10 h-10 rounded-2xl bg-secondary/60 flex items-center justify-center shrink-0">
+          <Image src="/images/logo.svg" alt="Vết Lành" width={20} height={20} />
         </div>
         <div>
           <button
             onClick={() => setOpen((v) => !v)}
-            className="flex items-center gap-1 font-bold text-slate-800 text-lg hover:text-primary transition"
+            className="flex items-center gap-1 font-bold text-foreground text-lg hover:text-primary transition"
           >
             <span className="font-dancing font-bold text-[1.2rem] mr-1">Vết Lành</span> AI
-            <ChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} />
+            <ChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} strokeWidth={2} />
           </button>
-          <p className="text-xs text-slate-500 truncate max-w-50">{activeTitle}</p>
+          <p className="text-xs text-foreground/50 truncate max-w-50">{activeTitle}</p>
         </div>
       </div>
 
-      <Button variant="ghost" size="icon" className="text-slate-400 hover:text-slate-600">
-        <Info className="w-5 h-5" />
+      <Button variant="ghost" size="icon" className="text-foreground/40 hover:text-foreground">
+        <Info className="w-5 h-5" strokeWidth={2} />
       </Button>
 
       {open && (
-        <div className="absolute top-full left-0 mt-1 w-72 bg-white rounded-2xl shadow-lg border border-slate-100 z-50 overflow-hidden">
+        <div className="absolute top-full left-0 mt-1 w-72 card-lifted rounded-2xl border-none z-50 overflow-hidden">
           {/* Search input */}
-          <div className="p-2 border-b border-slate-100">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 focus-within:border-primary/40 focus-within:bg-white transition-colors">
-              <Search className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+          <div className="p-2 border-b border-border/40">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-background/60 border border-border/40 focus-within:border-primary/40 transition-colors">
+              <Search className="w-3.5 h-3.5 text-foreground/40 shrink-0" strokeWidth={2} />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Tìm kiếm..."
-                className="flex-1 bg-transparent text-xs text-slate-700 placeholder:text-slate-400 outline-none"
+                className="flex-1 bg-transparent text-xs text-foreground placeholder:text-foreground/40 outline-none"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="text-slate-300 hover:text-slate-500 transition"
+                  className="text-foreground/30 hover:text-foreground/60 transition"
                 >
-                  <X className="w-3 h-3" />
+                  <X className="w-3 h-3" strokeWidth={2} />
                 </button>
               )}
             </div>
@@ -138,7 +139,7 @@ export function ChatHeader({ conversationId, onConversationChange }: Props) {
           {/* Conversation list */}
           <div className="p-2 space-y-0.5 max-h-64 overflow-y-auto">
             {(!conversations || conversations.length === 0) && (
-              <p className="text-xs text-slate-400 px-3 py-2">
+              <p className="text-xs text-foreground/40 px-3 py-2">
                 {debouncedQuery ? "Không tìm thấy kết quả." : "Chưa có cuộc hội thoại nào."}
               </p>
             )}
@@ -151,31 +152,31 @@ export function ChatHeader({ conversationId, onConversationChange }: Props) {
                 }}
                 className={`flex items-start justify-between px-3 py-2.5 rounded-xl cursor-pointer transition group ${
                   conv.id === conversationId
-                    ? "bg-primary/10 text-primary"
-                    : "hover:bg-slate-50 text-slate-700"
+                    ? "bg-secondary/50 text-primary"
+                    : "hover:bg-background/60 text-foreground/70"
                 }`}
               >
                 <div className="flex-1 min-w-0 mr-2">
-                  <p className={`truncate text-sm font-medium ${conv.id === conversationId ? "text-primary" : "text-slate-800"}`}>
+                  <p className={`truncate text-sm font-medium ${conv.id === conversationId ? "text-primary" : "text-foreground"}`}>
                     {conv.title ?? "Cuộc hội thoại mới"}
                   </p>
                   {conv.last_message_preview && (
-                    <p className="truncate text-xs text-slate-400 mt-0.5 leading-tight">
+                    <p className="truncate text-xs text-foreground/40 mt-0.5 leading-tight">
                       {conv.last_message_preview}
                     </p>
                   )}
                 </div>
                 <div className="flex flex-col items-end gap-1.5 shrink-0">
                   {conv.last_message_at && (
-                    <span className="text-[10px] text-slate-400 whitespace-nowrap">
+                    <span className="text-[10px] text-foreground/40 whitespace-nowrap">
                       {formatRelativeTime(conv.last_message_at)}
                     </span>
                   )}
                   <button
                     onClick={(e) => handleDelete(conv.id, e)}
-                    className="text-slate-300 hover:text-red-400 transition opacity-0 group-hover:opacity-100"
+                    className="text-foreground/30 hover:text-red-400 transition opacity-0 group-hover:opacity-100"
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
+                    <Trash2 className="w-3.5 h-3.5" strokeWidth={2} />
                   </button>
                 </div>
               </div>
@@ -183,16 +184,16 @@ export function ChatHeader({ conversationId, onConversationChange }: Props) {
           </div>
 
           {/* New conversation button */}
-          <div className="border-t border-slate-100 p-2">
+          <div className="border-t border-border/40 p-2">
             <button
               onClick={handleCreate}
               disabled={isCreating}
-              className="flex items-center gap-2 w-full px-3 py-2 text-sm font-semibold text-primary hover:bg-primary/5 rounded-xl transition disabled:opacity-50"
+              className="flex items-center gap-2 w-full px-3 py-2 text-sm font-semibold text-primary hover:bg-secondary/30 rounded-xl transition disabled:opacity-50"
             >
               {isCreating ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin" strokeWidth={2} />
               ) : (
-                <PlusCircle className="w-4 h-4" />
+                <PlusCircle className="w-4 h-4" strokeWidth={2} />
               )}
               Cuộc hội thoại mới
             </button>

@@ -15,7 +15,7 @@
     --primary-foreground: #ffffff;
 
     /* Secondary */
-    --secondary: #c9e9d2;
+    --secondary: #d6e8f5;
     --secondary-foreground: #789dbc;
 
     /* Accent */
@@ -24,14 +24,14 @@
 
     /* Muted */
     --muted: #fef9f2;
-    --muted-foreground: #c9e9d2;
+    --muted-foreground: #d6e8f5;
 
     /* Destructive */
     --destructive: #ef4444;
     --destructive-foreground: #ffffff;
 
     /* Border & Input */
-    --border: #c9e9d2;
+    --border: #d6e8f5;
     --input: #fef9f2;
     --ring: #ffe3e3;
 
@@ -48,26 +48,26 @@
 
     /* Chart */
     --chart-1: #789dbc;
-    --chart-2: #c9e9d2;
+    --chart-2: #d6e8f5;
     --chart-3: #ffe3e3;
     --chart-4: #5b82a3;
-    --chart-5: #a8d4b8;
+    --chart-5: #a8c4dc;
 
     /* Sidebar */
     --sidebar: #fef9f2;
     --sidebar-foreground: #789dbc;
     --sidebar-primary: #789dbc;
     --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent: #c9e9d2;
+    --sidebar-accent: #d6e8f5;
     --sidebar-accent-foreground: #789dbc;
-    --sidebar-border: #c9e9d2;
+    --sidebar-border: #d6e8f5;
     --sidebar-ring: #ffe3e3;
 
     /* Services extended tokens */
     --amber-accent: #F5C07A;
     --lavender-soft: #E8E4F4;
     --surface-2: rgba(254, 249, 242, 0.72);
-    --glass-border: rgba(201, 233, 210, 0.45);
+    --glass-border: rgba(214, 232, 245, 0.45);
   }
 
   /* Scoped token fix — services area only, does not affect landing/auth */
@@ -75,7 +75,7 @@
     --foreground: #3D3530;
     --card-foreground: #3D3530;
     --popover-foreground: #3D3530;
-    /* #c9e9d2 (mint) is near-invisible on cream background — use warm readable gray */
+    /* #d6e8f5 (light blue) is near-invisible on cream background, use warm readable gray */
     --muted-foreground: #7A736E;
     /* Sidebar — deep ocean dark theme, contrasts with warm cream dashboard */
     --sidebar: #0d1f2d;

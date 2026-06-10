@@ -1,6 +1,7 @@
 "use client";
 
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Activity } from "lucide-react";
 
 // Vietnamese short weekday names indexed by getDay() (0=Sunday)
 const VI_DAY = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"] as const;
@@ -21,8 +22,10 @@ interface StressChartProps {
 export function StressChart({ sparkline }: StressChartProps) {
     if (!sparkline || sparkline.length === 0) {
         return (
-            <div className="h-50 w-full mt-8 flex items-center justify-center text-slate-400 text-sm">
-                Chưa có dữ liệu tâm trạng
+            <div className="h-50 w-full mt-8 flex flex-col items-center justify-center gap-2 text-foreground/30">
+                <Activity className="h-8 w-8" strokeWidth={1.5} />
+                <p className="text-sm font-medium">Chưa có dữ liệu tâm trạng</p>
+                <p className="text-xs text-foreground/25">Hoàn thành bài tập đầu tiên để bắt đầu theo dõi</p>
             </div>
         );
     }
@@ -49,10 +52,10 @@ export function StressChart({ sparkline }: StressChartProps) {
                     <Line
                         type="monotone"
                         dataKey="stress"
-                        stroke="#789DBC"
+                        stroke="var(--primary)"
                         strokeWidth={3}
                         dot={false}
-                        activeDot={{ r: 6, fill: "#789DBC", stroke: "white", strokeWidth: 2 }}
+                        activeDot={{ r: 6, fill: "var(--primary)", stroke: "white", strokeWidth: 2 }}
                     />
                 </LineChart>
             </ResponsiveContainer>

@@ -22,7 +22,7 @@ export function CommunitySupport() {
     return (
         <div className="h-full flex flex-col space-y-4">
             <h2 className="text-xl font-bold text-primary">Hỗ trợ Cộng đồng</h2>
-            <Card className="border-none card-lifted rounded-3xl overflow-hidden p-6 hover:shadow-md transition-shadow cursor-pointer flex-1 flex flex-col">
+            <Card className="border-none card-lifted rounded-3xl overflow-hidden p-6 flex-1 flex flex-col">
                 {/* Avatar row */}
                 <div className="flex items-center gap-1.5 mb-4">
                     {MOCK_INITIALS.map((init, i) => {
@@ -37,19 +37,19 @@ export function CommunitySupport() {
                             </div>
                         );
                     })}
-                    <span className="text-xs text-foreground/40 font-medium ml-3">{activeCount} đang hoạt động</span>
+                    <span className="text-xs text-foreground/60 font-medium ml-3">{activeCount} đang hoạt động</span>
                 </div>
 
                 <div className="bg-background/60 p-4 rounded-2xl rounded-tl-none flex-1 flex flex-col justify-center">
                     <p className="text-sm italic text-foreground/60 leading-relaxed mb-2">
                         "{message}"
                     </p>
-                    <p className="text-xs font-bold text-foreground/40">- {author}</p>
+                    <p className="text-xs font-bold text-foreground/60">- {author}</p>
                 </div>
 
                 <div className="mt-4">
-                    <span className="text-xs font-bold text-primary hover:text-primary/80 uppercase tracking-wider">
-                        Tham gia thảo luận
+                    <span className="text-xs font-bold text-primary uppercase tracking-wider">
+                        Đang được nhiều người quan tâm
                     </span>
                 </div>
             </Card>

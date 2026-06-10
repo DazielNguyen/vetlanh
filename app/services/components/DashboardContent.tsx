@@ -4,7 +4,6 @@ import { useDashboard } from "@/hooks/useDashboard";
 import { useBadges } from "@/hooks/useBadges";
 import { WelcomeHeader } from "./WelcomeHeader";
 import { StressChart } from "./StressChart";
-import { CurrentHealingPath } from "./CurrentHealingPath";
 import { AIPromoCard } from "./AIPromoCard";
 import { DailyQuote } from "./DailyQuote";
 import { DailyWellnessChecklist } from "./DailyWellnessChecklist";
@@ -106,22 +105,17 @@ const BENTO_CELLS: Array<{
         colSpan: "col-span-12 md:col-span-5",
         render: () => <ProUpgradeCard />,
     },
-    // Row 5: CurrentHealingPath full width
+    // Row 5: 3 equal cards — DailyQuote, CommunitySupport, ResourcesForYou (4+4+4 = 12)
     {
-        colSpan: "col-span-12",
-        render: () => <CurrentHealingPath />,
-    },
-    // Row 6: DailyQuote 5 + CommunitySupport 3 + ResourcesForYou 4 = 12
-    {
-        colSpan: "col-span-12 md:col-span-5",
+        colSpan: "col-span-12 md:col-span-6 lg:col-span-4",
         render: () => <DailyQuote />,
     },
     {
-        colSpan: "col-span-12 md:col-span-3",
+        colSpan: "col-span-12 md:col-span-6 lg:col-span-4",
         render: () => <CommunitySupport />,
     },
     {
-        colSpan: "col-span-12 md:col-span-4",
+        colSpan: "col-span-12 md:col-span-12 lg:col-span-4",
         render: () => <ResourcesForYou />,
     },
 ];

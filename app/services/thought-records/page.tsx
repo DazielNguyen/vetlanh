@@ -35,7 +35,7 @@ export default function ThoughtRecordsPage() {
           Ghi chú suy nghĩ
         </h1>
         <p className="text-muted-foreground mt-1">
-          Nhận ra và thách thức những suy nghĩ tiêu cực bằng mô hình CBT 5 cột.
+          Nhận ra và thách thức những suy nghĩ tiêu cực bằng mô hình năm cột nhận thức và hành vi.
         </p>
       </div>
 
@@ -114,7 +114,7 @@ export default function ThoughtRecordsPage() {
                 <div>
                   <h2 className="text-base font-bold text-foreground mb-1">Bắt đầu ghi chú suy nghĩ</h2>
                   <p className="text-sm text-muted-foreground max-w-sm">
-                    Kỹ thuật CBT 5 cột giúp bạn phân tích tình huống, nhận ra suy nghĩ tự động
+                    Kỹ thuật năm cột nhận thức và hành vi giúp bạn phân tích tình huống, nhận ra suy nghĩ tự động
                     và tìm bằng chứng để nhìn nhận vấn đề cân bằng hơn.
                   </p>
                 </div>

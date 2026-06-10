@@ -164,14 +164,14 @@ function UpgradePageContent() {
         <button
           type="button"
           onClick={() => router.back()}
-          className="w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+          className="w-9 h-9 rounded-xl flex items-center justify-center text-foreground/60 hover:bg-secondary/40 hover:text-foreground transition-colors"
           aria-label="Quay lại"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-5 h-5" strokeWidth={2} />
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Nâng cấp lên Pro</h1>
-          <p className="text-sm text-slate-500">Chuyển khoản ngân hàng, kích hoạt trong 24 giờ</p>
+          <h1 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">Nâng cấp lên Pro</h1>
+          <p className="text-sm text-foreground/70 mt-1">Chuyển khoản ngân hàng, kích hoạt trong 24 giờ</p>
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Dumbbell, MessageSquare, PanelLeftClose, PanelLeftOpen, Settings, LogOut, Brain, Wind } from "lucide-react";
+import { Home, Dumbbell, MessageSquare, PanelLeftClose, PanelLeftOpen, Settings, LogOut, Brain } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -111,21 +111,6 @@ export function AppSidebar() {
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
-
-                {/* Meditation CTA — grouped with nav, not buried in footer */}
-                <div className="pt-4 group-data-[collapsible=icon]:pt-3 group-data-[collapsible=icon]:flex group-data-[collapsible=icon]:justify-center">
-                    <button className={[
-                        "w-full h-10 bg-linear-to-r from-primary to-[#5A8AB0] text-white rounded-xl px-4",
-                        "flex items-center gap-2.5 justify-center text-[13px] font-bold",
-                        "shadow-[0_4px_14px_rgba(120,157,188,0.22)] hover:shadow-[0_6px_18px_rgba(120,157,188,0.35)]",
-                        "transition-all duration-200 active:scale-[0.98]",
-                        "group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:rounded-full",
-                        "group-data-[collapsible=icon]:p-0 overflow-hidden",
-                    ].join(" ")}>
-                        <Wind className="w-[15px] h-[15px] shrink-0" />
-                        <span className="group-data-[collapsible=icon]:hidden truncate">Bắt đầu thiền</span>
-                    </button>
-                </div>
             </SidebarContent>
 
             {/* ── Footer — logout only ─────────────────────────── */}

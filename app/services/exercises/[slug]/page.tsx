@@ -42,7 +42,7 @@ function FeelingPicker({ feelings, onSelect, onSkip }: FeelingPickerProps) {
       exit={{ opacity: 0, y: 16 }}
       className="w-full space-y-3"
     >
-      <p className="text-sm font-semibold text-foreground/60 text-center">
+      <p className="text-sm font-semibold text-foreground/70 text-center">
         Bạn cảm thấy thế nào sau buổi tập?
       </p>
       <div className="grid grid-cols-2 gap-2">
@@ -53,13 +53,13 @@ function FeelingPicker({ feelings, onSelect, onSkip }: FeelingPickerProps) {
             className="flex flex-col items-center gap-1 px-3 py-3 rounded-2xl border border-border/40 bg-white hover:border-primary/40 hover:bg-secondary/40 transition"
           >
             <span className="text-2xl leading-none">{f.emoji}</span>
-            <span className="text-xs font-semibold text-foreground/60">{f.label}</span>
+            <span className="text-xs font-semibold text-foreground/70">{f.label}</span>
           </button>
         ))}
       </div>
       <button
         onClick={onSkip}
-        className="w-full text-xs font-semibold text-foreground/40 underline underline-offset-2 hover:text-foreground/60 transition"
+        className="w-full text-xs font-semibold text-foreground/60 underline underline-offset-2 hover:text-foreground/70 transition"
       >
         Bỏ qua
       </button>
@@ -101,7 +101,7 @@ function SessionDoneView({ isLogging, doneState, elapsed, feelings, onFeelingRes
       )}
       <p className="text-lg font-bold text-foreground">Tuyệt vời! Buổi tập hoàn thành.</p>
       {elapsed != null && (
-        <p className="text-sm text-foreground/50">Thời gian: {formatTime(elapsed)}</p>
+        <p className="text-sm text-foreground/65">Thời gian: {formatTime(elapsed)}</p>
       )}
       <AnimatePresence>
         {doneState === "done_pending" && (
@@ -180,7 +180,7 @@ function TimerSession({ feelings, onComplete, isLogging }: TimerSessionProps) {
     <>
       {state === "running" && (
         <div className="flex flex-col items-center gap-2 py-6 bg-background/60 rounded-2xl">
-          <p className="text-xs font-semibold text-foreground/40 uppercase tracking-wide">Đang chạy</p>
+          <p className="text-xs font-semibold text-foreground/60 uppercase tracking-wide">Đang chạy</p>
           <span className="text-5xl font-black text-foreground tabular-nums">{formatTime(elapsed)}</span>
         </div>
       )}
@@ -191,7 +191,7 @@ function TimerSession({ feelings, onComplete, isLogging }: TimerSessionProps) {
       )}
       {state === "running" && (
         <div className="flex gap-3">
-          <Button variant="outline" onClick={cancel} className="flex-1 h-11 rounded-2xl gap-2 text-foreground/60">
+          <Button variant="outline" onClick={cancel} className="flex-1 h-11 rounded-2xl gap-2 text-foreground/70">
             <Square className="h-4 w-4" /> Hủy
           </Button>
           {/* transitions to done_pending on click — unmounts before isLogging=true, so no disabled guard needed */}
@@ -256,12 +256,12 @@ function StepCountdown({ step, stepIndex, totalSteps, onNext, isLastStep }: Step
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2 mb-1">
-        <span className="text-xs font-bold text-foreground/40 uppercase tracking-wide">
+        <span className="text-xs font-bold text-foreground/60 uppercase tracking-wide">
           Bước {stepIndex + 1} / {totalSteps}
         </span>
       </div>
 
-      <p className="text-sm text-foreground/70 leading-relaxed">{step.instruction}</p>
+      <p className="text-sm text-foreground/75 leading-relaxed">{step.instruction}</p>
 
       {isPmr && (
         <div className="rounded-2xl bg-background/60 p-5 flex flex-col items-center gap-3">
@@ -274,14 +274,14 @@ function StepCountdown({ step, stepIndex, totalSteps, onNext, isLastStep }: Step
             <>
               <p className="text-xs font-semibold text-primary uppercase tracking-wide">Căng cơ</p>
               <span className="text-5xl font-black text-foreground tabular-nums">{countdown}s</span>
-              <p className="text-xs text-foreground/40">Giữ căng trong {step.tense_seconds} giây</p>
+              <p className="text-xs text-foreground/60">Giữ căng trong {step.tense_seconds} giây</p>
             </>
           )}
           {phase === "release" && (
             <>
               <p className="text-xs font-semibold text-primary uppercase tracking-wide">Thư giãn</p>
               <span className="text-5xl font-black text-foreground tabular-nums">{countdown}s</span>
-              <p className="text-xs text-foreground/40">Thả lỏng trong {step.release_seconds} giây</p>
+              <p className="text-xs text-foreground/60">Thả lỏng trong {step.release_seconds} giây</p>
             </>
           )}
           {phase === "done" && (
@@ -484,7 +484,7 @@ function BreathingSession({ phases, feelings, onComplete, isLogging }: Breathing
       </div>
 
       {state === "running" && (
-        <p className="text-base font-semibold text-foreground/60 tracking-wide">{breathPhaseLabel}</p>
+        <p className="text-base font-semibold text-foreground/70 tracking-wide">{breathPhaseLabel}</p>
       )}
 
       {state === "idle" && (
@@ -542,7 +542,7 @@ export default function ExerciseDetailPage({ params }: Props) {
 
   if (!exercise) {
     return (
-      <div className="text-sm text-foreground/40 py-10 text-center">
+      <div className="text-sm text-foreground/60 py-10 text-center">
         Không tìm thấy bài tập này.
       </div>
     );
@@ -555,7 +555,7 @@ export default function ExerciseDetailPage({ params }: Props) {
     <div className="w-full pb-10 max-w-2xl mx-auto space-y-6">
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-1.5 text-sm text-foreground/50 hover:text-foreground/70 transition font-medium"
+        className="flex items-center gap-1.5 text-sm text-foreground/65 hover:text-foreground/75 transition font-medium"
       >
         <ArrowLeft className="h-4 w-4" />
         Quay lại
@@ -565,7 +565,7 @@ export default function ExerciseDetailPage({ params }: Props) {
         <CardHeader>
           <CardTitle className="text-xl font-extrabold text-foreground">{exercise.title}</CardTitle>
           <div className="flex flex-wrap gap-2 mt-1">
-            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-background/60 text-foreground/60">
+            <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-background/60 text-foreground/70">
               {exercise.category}
             </span>
             {exercise.duration_seconds && (
@@ -582,7 +582,7 @@ export default function ExerciseDetailPage({ params }: Props) {
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          <p className="text-sm text-foreground/60 leading-relaxed">{exercise.description}</p>
+          <p className="text-sm text-foreground/70 leading-relaxed">{exercise.description}</p>
 
           {/* Priority: breathing → steps → timer */}
           {isBreathing ? (

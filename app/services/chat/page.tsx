@@ -57,8 +57,8 @@ export default function ChatPage() {
   );
 
   return (
-    <div className="flex h-[calc(100vh-6rem)] gap-6">
-      <div className="flex-1 flex flex-col min-w-0">
+    <div className="flex h-[calc(100vh-7rem)] gap-6">
+      <div className="card-lifted rounded-3xl p-6 flex-1 flex flex-col min-w-0">
         <ChatHeader conversationId={conversationId} onConversationChange={setConversationId} />
         <ChatMessages
           conversationId={conversationId}

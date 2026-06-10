@@ -26,7 +26,7 @@ const FIELDS: { key: keyof ThoughtRecordRequest; label: string; description: str
   {
     key: "emotion",
     label: "3. Cảm xúc",
-    description: "Bạn cảm thấy gì? (VD: lo âu, buồn, tức giận) — cường độ 0–100%",
+    description: "Bạn cảm thấy gì? Ví dụ: lo âu, buồn, tức giận, với cường độ từ 0 đến 100 phần trăm",
   },
   {
     key: "evidence_for",
@@ -101,22 +101,22 @@ export function ThoughtRecordForm({ editId, onSaved, onCancel }: Props) {
 
   if (isEditing && isLoadingExisting) {
     return (
-      <Card className="border-none shadow-sm rounded-3xl">
+      <Card className="card-lifted border-none rounded-3xl">
         <CardContent className="p-6 flex items-center justify-center h-40">
-          <Loader2 className="h-6 w-6 animate-spin text-slate-300" />
+          <Loader2 className="h-6 w-6 animate-spin text-foreground/20" strokeWidth={2} />
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className="border-none shadow-sm rounded-3xl">
+    <Card className="card-lifted border-none rounded-3xl">
       <CardHeader>
-        <CardTitle className="text-lg font-bold text-slate-800">
+        <CardTitle className="text-lg font-bold text-foreground">
           {isEditing ? "Chỉnh sửa ghi chú" : "Ghi chú suy nghĩ mới"}
         </CardTitle>
-        <p className="text-sm text-slate-500">
-          Mô hình CBT 5 cột giúp bạn nhận ra và thách thức những suy nghĩ tiêu cực.
+        <p className="text-sm text-foreground/50">
+          Mô hình năm cột nhận thức và hành vi giúp bạn nhận ra và thách thức những suy nghĩ tiêu cực.
         </p>
       </CardHeader>
       <CardContent>
@@ -125,10 +125,10 @@ export function ThoughtRecordForm({ editId, onSaved, onCancel }: Props) {
             const hint = getHint(key);
             return (
               <div key={key} className="space-y-1.5">
-                <label className="text-sm font-semibold text-slate-700">{label}</label>
-                <p className="text-xs text-slate-400">{description}</p>
+                <label className="text-sm font-semibold text-foreground/70">{label}</label>
+                <p className="text-xs text-foreground/40">{description}</p>
                 {hint && (
-                  <p className="text-xs text-primary/70 italic bg-primary/5 px-3 py-1.5 rounded-xl">
+                  <p className="text-xs text-primary/70 italic bg-secondary/30 px-3 py-1.5 rounded-xl">
                     Gợi ý: {hint}
                   </p>
                 )}
@@ -137,7 +137,7 @@ export function ThoughtRecordForm({ editId, onSaved, onCancel }: Props) {
                   value={form[key]}
                   onChange={(e) => handleChange(key, e.target.value)}
                   placeholder={description}
-                  className="w-full resize-none px-4 py-3 rounded-2xl border border-slate-200 bg-white text-sm text-slate-700 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+                  className="w-full resize-none px-4 py-3 rounded-2xl border border-border/40 bg-background/60 text-sm text-foreground placeholder:text-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
                 />
               </div>
             );

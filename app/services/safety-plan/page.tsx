@@ -73,10 +73,10 @@ export default function SafetyPlanPage() {
   return (
     <div className="w-full pb-10 space-y-6 max-w-2xl">
       <div>
-        <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight">
+        <h1 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">
           Kế hoạch an toàn
         </h1>
-        <p className="text-slate-500 mt-1">
+        <p className="text-foreground/70 mt-1">
           Kế hoạch cá nhân giúp bạn vượt qua những thời điểm khó khăn nhất.
         </p>
       </div>

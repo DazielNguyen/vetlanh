@@ -34,9 +34,8 @@ export function ProfileCard() {
 
     return (
         <div className="space-y-6">
-            <Card className="border-none shadow-sm rounded-2xl overflow-hidden">
-                <div className="h-24 bg-linear-to-br from-primary/30 to-[#C9E9D2]/50" />
-                <CardContent className="p-5 -mt-12 text-center space-y-3">
+            <Card className="card-lifted border-none rounded-3xl overflow-hidden">
+                <CardContent className="p-6 text-center space-y-3">
                     <img
                         src={avatarSrc}
                         alt="Avatar"
@@ -55,41 +54,41 @@ export function ProfileCard() {
                                         if (e.key === "Escape") cancelEdit();
                                     }}
                                 />
-                                <button onClick={saveEdit} disabled={isPending} className="text-emerald-600 hover:text-emerald-700">
-                                    <Check className="w-4 h-4" />
+                                <button onClick={saveEdit} disabled={isPending} className="text-primary hover:text-primary/80">
+                                    <Check className="w-4 h-4" strokeWidth={2} />
                                 </button>
-                                <button onClick={cancelEdit} className="text-slate-400 hover:text-slate-600">
-                                    <X className="w-4 h-4" />
+                                <button onClick={cancelEdit} className="text-foreground/30 hover:text-foreground/60">
+                                    <X className="w-4 h-4" strokeWidth={2} />
                                 </button>
                             </div>
                         ) : (
                             <div className="flex items-center justify-center gap-1">
-                                <h2 className="text-lg font-extrabold text-slate-800">
-                                    {user?.display_name ?? "—"}
+                                <h2 className="text-lg font-extrabold text-foreground">
+                                    {user?.display_name ?? "Chưa đặt tên"}
                                 </h2>
-                                <button onClick={startEdit} className="text-slate-300 hover:text-slate-500 transition ml-1">
-                                    <Pencil className="w-3.5 h-3.5" />
+                                <button onClick={startEdit} className="text-foreground/20 hover:text-primary transition ml-1">
+                                    <Pencil className="w-3.5 h-3.5" strokeWidth={2} />
                                 </button>
                             </div>
                         )}
-                        <p className="text-xs text-slate-400">{user?.email ?? "—"}</p>
+                        <p className="text-xs text-foreground/40">{user?.email ?? "Chưa có email"}</p>
                     </div>
                 </CardContent>
             </Card>
 
             {/* Quick Stats */}
-            <Card className="border-none shadow-sm rounded-2xl">
+            <Card className="card-lifted border-none rounded-3xl">
                 <CardContent className="p-5 space-y-4">
-                    <h3 className="font-bold text-slate-800">Thống kê</h3>
+                    <h3 className="font-bold text-foreground">Thống kê</h3>
                     <div className="space-y-3 text-sm">
                         <div className="flex items-center justify-between">
-                            <span className="text-slate-500">Bài tập hoàn thành</span>
-                            <span className="font-semibold text-slate-700">–</span>
+                            <span className="text-foreground/50">Bài tập hoàn thành</span>
+                            <span className="font-semibold text-foreground">Chưa có dữ liệu</span>
                         </div>
                         <div className="flex items-center justify-between">
-                            <span className="text-slate-500">Streak hiện tại</span>
-                            <span className="font-semibold text-emerald-600">
-                                {dashboard?.streak_days != null ? `${dashboard.streak_days} ngày` : "–"}
+                            <span className="text-foreground/50">Streak hiện tại</span>
+                            <span className="font-semibold text-primary">
+                                {dashboard?.streak_days != null ? `${dashboard.streak_days} ngày` : "Chưa có dữ liệu"}
                             </span>
                         </div>
                     </div>
