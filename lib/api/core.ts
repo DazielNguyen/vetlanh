@@ -89,8 +89,8 @@ class ApiService {
         // Fire-and-forget error report — severity HIGH for 5xx, MEDIUM for other 4xx.
         // Uses native fetch (not apiService) to avoid recursive interceptor calls.
         const status = error.response?.status ?? 0;
-        // Skip 401 (handled above) and 403 (permission denied — not a system error).
-        if (status >= 400 && status !== 401 && status !== 403) {
+        // Skip 401 (handled above), 403 (permission denied), and 404 (resource not found — not a system error).
+        if (status >= 400 && status !== 401 && status !== 403 && status !== 404) {
           const base = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080/").replace(/\/$/, "");
           fetch(`${base}/api/v1/errors/report`, {
             method: "POST",
@@ -114,7 +114,12 @@ class ApiService {
   }
 
   async get<T>(url: string, params?: Record<string, any>): Promise<AxiosResponse<T>> {
-    return this.request<T>({ method: "GET", url, params });
+    // Strip undefined and null values before sending — FastAPI rejects params with
+    // null/undefined values as a 422 Unprocessable Entity.
+    const cleanParams = params
+      ? Object.fromEntries(Object.entries(params).filter(([, v]) => v != null)) // loose != preserves false/0/""
+      : undefined;
+    return this.request<T>({ method: "GET", url, params: cleanParams });
   }
 
   async post<T, D = any>(url: string, data?: D): Promise<AxiosResponse<T>> {

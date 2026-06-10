@@ -58,7 +58,7 @@ export function getHubConnection(): HubConnection {
 
   connection.onreconnecting((err) => console.info("[SignalR] reconnecting...", err));
   connection.onreconnected((id) => console.info("[SignalR] reconnected:", id));
-  connection.onclose((err) => console.info("[SignalR] closed", err));
+  connection.onclose((err) => err ? console.warn("[SignalR] closed with error", err) : console.info("[SignalR] closed gracefully"));
 
   return connection;
 }

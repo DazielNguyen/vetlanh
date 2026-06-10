@@ -26,9 +26,17 @@ export const fetchServices = {
     return res.data;
   },
 
-  getHealingPath: async (): Promise<HealingPath> => {
-    const res = await apiService.get<HealingPath>("api/v1/user/healing-path");
-    return res.data;
+  getHealingPath: async (): Promise<HealingPath | null> => {
+    try {
+      const res = await apiService.get<HealingPath>("api/v1/user/healing-path");
+      return res.data;
+    } catch (err: unknown) {
+      // Endpoint may not be implemented yet on the backend (404).
+      // Return null so callers can render a placeholder instead of crashing.
+      const status = (err as { code?: number })?.code;
+      if (status === 404) return null;
+      throw err;
+    }
   },
 
   getWellnessChecklist: async (date: string): Promise<WellnessChecklist> => {
