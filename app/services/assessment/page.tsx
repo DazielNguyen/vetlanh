@@ -46,20 +46,20 @@ export default function AssessmentPage() {
 
   return (
     <div className="w-full pb-10 space-y-8">
-      <div>
-        <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight">
+      <div className="animate-in slide-in-from-bottom-4 fade-in duration-500">
+        <h1 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">
           Đánh giá sức khỏe tâm lý
         </h1>
-        <p className="text-slate-500 mt-1">
+        <p className="text-muted-foreground mt-1">
           Bảng câu hỏi PHQ-9 giúp theo dõi mức độ trầm cảm theo thời gian.
         </p>
       </div>
 
       {/* Next due banner — only when not due and has a previous result */}
       {!assessmentDue && hasPrevious && reminder?.next_due_in_days != null && (
-        <div className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4">
-          <p className="text-sm font-semibold text-slate-700">Đánh giá tiếp theo</p>
-          <p className="text-xs text-slate-500 mt-0.5">
+        <div className="w-full bg-primary/5 border border-glass-border rounded-2xl px-5 py-4">
+          <p className="text-sm font-semibold text-foreground">Đánh giá tiếp theo</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
             Còn{" "}
             <span className="font-semibold">{reminder.next_due_in_days} ngày</span>
             {" "}nữa đến lần kiểm tra tiếp theo.

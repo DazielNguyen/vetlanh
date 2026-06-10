@@ -1,7 +1,16 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { useCommunityFeatured } from "@/hooks/useServices";
+
+const AVATAR_COLORS = [
+    { bg: "bg-secondary/60", text: "text-primary" },
+    { bg: "bg-accent/60", text: "text-rose-500" },
+    { bg: "bg-[#E8E4F4]/70", text: "text-violet-500" },
+    { bg: "bg-[#FFF0D4]/80", text: "text-amber-600" },
+];
+
+const MOCK_INITIALS = ["LA", "MT", "BH", "TN"];
 
 export function CommunitySupport() {
     const { data } = useCommunityFeatured();
@@ -11,21 +20,36 @@ export function CommunitySupport() {
     const activeCount = data?.active_users_count ?? 4;
 
     return (
-        <div className="space-y-4">
-            <h2 className="text-xl font-bold text-primary flex items-center gap-2">Hỗ trợ Cộng đồng</h2>
-            <Card className="border border-slate-100 shadow-sm rounded-3xl bg-white overflow-hidden p-6 hover:shadow-md transition-shadow cursor-pointer">
-                <div className="flex gap-4">
-                    <div className="w-10 h-10 rounded-full bg-red-100 shrink-0"></div>
-                    <div className="bg-slate-50 p-4 rounded-2xl rounded-tl-none relative">
-                        <p className="text-sm italic text-slate-600 leading-relaxed mb-2">
-                            "{message}"
-                        </p>
-                        <p className="text-xs font-bold text-slate-400">- {author}</p>
-                    </div>
+        <div className="h-full flex flex-col space-y-4">
+            <h2 className="text-xl font-bold text-primary">Hỗ trợ Cộng đồng</h2>
+            <Card className="border-none card-lifted rounded-3xl overflow-hidden p-6 hover:shadow-md transition-shadow cursor-pointer flex-1 flex flex-col">
+                {/* Avatar row */}
+                <div className="flex items-center gap-1.5 mb-4">
+                    {MOCK_INITIALS.map((init, i) => {
+                        const { bg, text } = AVATAR_COLORS[i % AVATAR_COLORS.length];
+                        return (
+                            <div
+                                key={init}
+                                className={`w-8 h-8 rounded-full ${bg} ${text} flex items-center justify-center text-[10px] font-extrabold shrink-0 ring-2 ring-white`}
+                                style={{ marginLeft: i > 0 ? "-6px" : "0" }}
+                            >
+                                {init}
+                            </div>
+                        );
+                    })}
+                    <span className="text-xs text-foreground/40 font-medium ml-3">{activeCount} đang hoạt động</span>
                 </div>
-                <div className="mt-6">
+
+                <div className="bg-background/60 p-4 rounded-2xl rounded-tl-none flex-1 flex flex-col justify-center">
+                    <p className="text-sm italic text-foreground/60 leading-relaxed mb-2">
+                        "{message}"
+                    </p>
+                    <p className="text-xs font-bold text-foreground/40">- {author}</p>
+                </div>
+
+                <div className="mt-4">
                     <span className="text-xs font-bold text-primary hover:text-primary/80 uppercase tracking-wider">
-                        Tham gia thảo luận ({activeCount} người dùng đang hoạt động)
+                        Tham gia thảo luận
                     </span>
                 </div>
             </Card>

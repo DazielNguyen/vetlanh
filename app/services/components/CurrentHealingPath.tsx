@@ -13,10 +13,10 @@ function HealingTaskCard({ task }: { task: HealingTask }) {
 
     return (
         <Card
-            className={`rounded-[24px] flex flex-row items-center p-6 ${
+            className={`rounded-3xl flex flex-row items-center p-6 ${
                 isUpcoming
-                    ? "border-2 border-dashed border-slate-200 shadow-none bg-[#FCFDFD] opacity-80"
-                    : "border border-slate-100 shadow-sm bg-white"
+                    ? "border-2 border-dashed border-border/40 shadow-none bg-background/50 opacity-70"
+                    : "card-lifted border-none"
             }`}
         >
             <div className={`shrink-0 pl-2 w-10 h-10 flex items-center justify-center text-2xl ${isUpcoming ? "opacity-30" : ""}`}>
@@ -24,11 +24,11 @@ function HealingTaskCard({ task }: { task: HealingTask }) {
             </div>
             <div className="px-6 flex-1">
                 <div className="flex justify-between items-end mb-2">
-                    <h3 className={`text-[17px] font-bold tracking-tight ${isUpcoming ? "text-[#64748B]" : "text-[#1E293B]"}`}>
+                    <h3 className={`text-[17px] font-bold tracking-tight ${isUpcoming ? "text-foreground/40" : "text-foreground"}`}>
                         {task.title}
                     </h3>
                     {(isActive || task.unlock_label) && (
-                        <span className={`text-sm font-medium ${isActive ? "text-[#7C9AB3]" : "text-slate-400"}`}>
+                        <span className={`text-sm font-medium ${isActive ? "text-primary" : "text-foreground/40"}`}>
                             {isActive ? `Hoàn thành ${task.progress_pct}%` : task.unlock_label}
                         </span>
                     )}
@@ -38,26 +38,26 @@ function HealingTaskCard({ task }: { task: HealingTask }) {
                         value={task.progress_pct}
                         className={`h-2 mb-3 ${
                             isActive
-                                ? "bg-[#E1F0E3] [&>div]:bg-[#A7E2C3]"
-                                : "bg-[#F1F5F9] [&>div]:bg-[#D1E0D7]"
+                                ? "bg-primary/15 [&>div]:bg-primary"
+                                : "bg-border/40 [&>div]:bg-primary/40"
                         }`}
                     />
                 )}
-                <p className={`text-sm ${isUpcoming ? "text-[#94A3B8] mt-3" : "text-slate-500"}`}>
+                <p className={`text-sm ${isUpcoming ? "text-foreground/30 mt-3" : "text-foreground/50"}`}>
                     {task.subtitle}
                 </p>
             </div>
             {isActive ? (
-                <Button size="icon" className="w-12 h-12 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-700 shrink-0 shadow-none">
+                <Button size="icon" className="w-12 h-12 rounded-full bg-primary/10 hover:bg-primary/20 text-primary shrink-0 shadow-none border-none">
                     <Play className="w-5 h-5 fill-current" />
                 </Button>
             ) : isUpcoming ? (
                 <div className="w-12 h-12 flex items-center justify-center shrink-0">
-                    <Lock className="w-4 h-4 text-[#CBD5E1]" strokeWidth={2} />
+                    <Lock className="w-4 h-4 text-foreground/20" strokeWidth={2} />
                 </div>
             ) : (
-                <Button size="icon" variant="outline" className="w-12 h-12 rounded-full border-none bg-[#F8FAFC] text-slate-600 shrink-0 shadow-none pointer-events-none">
-                    <Lock className="w-5 h-5 fill-current text-[#475569]" />
+                <Button size="icon" variant="outline" className="w-12 h-12 rounded-full border-none bg-background text-foreground/40 shrink-0 shadow-none pointer-events-none">
+                    <Lock className="w-5 h-5 fill-current" />
                 </Button>
             )}
         </Card>
@@ -69,10 +69,10 @@ export function CurrentHealingPath() {
 
     return (
         <div>
-            <h2 className="text-xl font-bold text-[#6D8A96] mb-4">Lộ trình chữa lành</h2>
+            <h2 className="text-xl font-bold text-primary mb-4">Lộ trình chữa lành</h2>
             {isLoading ? (
                 <div className="flex items-center justify-center h-32">
-                    <Loader2 className="h-6 w-6 animate-spin text-slate-300" />
+                    <Loader2 className="h-6 w-6 animate-spin text-foreground/20" />
                 </div>
             ) : (
                 <div className="space-y-4">

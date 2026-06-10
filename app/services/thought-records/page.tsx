@@ -30,11 +30,11 @@ export default function ThoughtRecordsPage() {
 
   return (
     <div className="w-full pb-10 space-y-6">
-      <div>
-        <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight">
+      <div className="animate-in slide-in-from-bottom-4 fade-in duration-500">
+        <h1 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">
           Ghi chú suy nghĩ
         </h1>
-        <p className="text-slate-500 mt-1">
+        <p className="text-muted-foreground mt-1">
           Nhận ra và thách thức những suy nghĩ tiêu cực bằng mô hình CBT 5 cột.
         </p>
       </div>
@@ -42,10 +42,10 @@ export default function ThoughtRecordsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
         {/* Left: list */}
         <div className="lg:col-span-2">
-          <Card className="border-none shadow-sm rounded-3xl">
+          <Card className="border-none card-lifted rounded-3xl">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base font-bold text-slate-800">Ghi chú của tôi</CardTitle>
+                <CardTitle className="text-base font-bold text-foreground">Ghi chú của tôi</CardTitle>
                 <Button
                   size="sm"
                   onClick={() => setView({ mode: "create" })}
@@ -59,10 +59,10 @@ export default function ThoughtRecordsPage() {
             <CardContent className="space-y-2 pt-0">
               {isLoading ? (
                 <div className="flex items-center justify-center h-24">
-                  <Loader2 className="h-5 w-5 animate-spin text-slate-300" />
+                  <Loader2 className="h-5 w-5 animate-spin text-muted-foreground/50" />
                 </div>
               ) : !records || records.length === 0 ? (
-                <p className="text-sm text-slate-400 py-4 text-center">
+                <p className="text-sm text-muted-foreground py-4 text-center">
                   Chưa có ghi chú nào. Hãy tạo ghi chú đầu tiên!
                 </p>
               ) : (
@@ -106,14 +106,14 @@ export default function ThoughtRecordsPage() {
         {/* Right: intro or form */}
         <div className="lg:col-span-3">
           {!showForm && (
-            <Card className="border-none shadow-sm rounded-3xl">
+            <Card className="border-none card-lifted rounded-3xl">
               <CardContent className="p-8 flex flex-col items-center text-center gap-4">
                 <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
                   <Brain className="w-7 h-7 text-primary" />
                 </div>
                 <div>
-                  <h2 className="text-base font-bold text-slate-800 mb-1">Bắt đầu ghi chú suy nghĩ</h2>
-                  <p className="text-sm text-slate-500 max-w-sm">
+                  <h2 className="text-base font-bold text-foreground mb-1">Bắt đầu ghi chú suy nghĩ</h2>
+                  <p className="text-sm text-muted-foreground max-w-sm">
                     Kỹ thuật CBT 5 cột giúp bạn phân tích tình huống, nhận ra suy nghĩ tự động
                     và tìm bằng chứng để nhìn nhận vấn đề cân bằng hơn.
                   </p>

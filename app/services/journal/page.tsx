@@ -41,18 +41,18 @@ export default function JournalPage() {
 
   return (
     <div className="w-full pb-10 space-y-6">
-      <div>
-        <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 tracking-tight">
+      <div className="animate-in slide-in-from-bottom-4 fade-in duration-500">
+        <h1 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">
           Nhật ký
         </h1>
-        <p className="text-slate-500 mt-1">
+        <p className="text-muted-foreground mt-1">
           Viết lại suy nghĩ, cảm xúc và khoảnh khắc trong ngày của bạn.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
         {/* Left: list */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 card-lifted rounded-3xl p-6">
           <JournalList
             selectedId={view.mode === "view" || view.mode === "edit" ? view.id : undefined}
             onSelect={handleSelectEntry}
@@ -61,7 +61,7 @@ export default function JournalPage() {
         </div>
 
         {/* Right: prompt / entry / editor */}
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-3 card-lifted rounded-3xl p-6">
           {showPrompt && <DailyPromptCard onUsePrompt={(text) => handleNew(text)} />}
 
           {showEntry && (

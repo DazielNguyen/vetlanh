@@ -62,6 +62,28 @@
     --sidebar-accent-foreground: #789dbc;
     --sidebar-border: #c9e9d2;
     --sidebar-ring: #ffe3e3;
+
+    /* Services extended tokens */
+    --amber-accent: #F5C07A;
+    --lavender-soft: #E8E4F4;
+    --surface-2: rgba(254, 249, 242, 0.72);
+    --glass-border: rgba(201, 233, 210, 0.45);
+  }
+
+  /* Scoped token fix — services area only, does not affect landing/auth */
+  .services-area {
+    --foreground: #3D3530;
+    --card-foreground: #3D3530;
+    --popover-foreground: #3D3530;
+    /* #c9e9d2 (mint) is near-invisible on cream background — use warm readable gray */
+    --muted-foreground: #7A736E;
+    /* Sidebar — deep ocean dark theme, contrasts with warm cream dashboard */
+    --sidebar: #0d1f2d;
+    --sidebar-foreground: rgba(255, 255, 255, 0.55);
+    --sidebar-accent: rgba(120, 157, 188, 0.15);
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: rgba(255, 255, 255, 0.08);
+    --sidebar-ring: rgba(120, 157, 188, 0.4);
   }
 
   * {
@@ -154,5 +176,38 @@
   .sticky-nav {
     backdrop-filter: blur(8px);
     background-color: rgba(254, 249, 242, 0.8);
+  }
+
+  .card-lifted {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(14px) saturate(150%);
+    -webkit-backdrop-filter: blur(14px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    box-shadow:
+      0 2px 8px rgba(120, 157, 188, 0.07),
+      0 8px 28px rgba(120, 157, 188, 0.10),
+      inset 0 1px 0 rgba(255, 255, 255, 0.80);
+  }
+
+  .card-glass-warm {
+    backdrop-filter: blur(16px) saturate(160%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    background: var(--surface-2);
+    border: 1px solid var(--glass-border);
+  }
+
+  .card-tilt {
+    perspective: 800px;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .card-tilt:hover {
+    transform: perspective(800px) rotateX(1deg) rotateY(1.5deg) translateZ(4px);
+  }
+
+  @media (hover: none) {
+    .card-tilt:hover {
+      transform: none;
+    }
   }
 }

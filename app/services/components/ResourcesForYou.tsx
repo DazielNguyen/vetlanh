@@ -1,42 +1,58 @@
 "use client";
 
-import { BookOpen, Headphones, Video } from "lucide-react";
+import Image from "next/image";
 import { useRecommendedResources } from "@/hooks/useServices";
 import type { Resource } from "@/types/services";
 
-const TYPE_CONFIG: Record<Resource["type"], { icon: React.ReactNode; bg: string }> = {
-    article: { icon: <BookOpen className="w-16 h-16 opacity-50" />, bg: "bg-[#FAF5EE] border-[#F0EBE1] text-slate-300" },
-    audio:   { icon: <Headphones className="w-16 h-16 opacity-60" />, bg: "bg-[#EEF5EF] border-[#E1F0E3] text-emerald-200" },
-    video:   { icon: <Video className="w-16 h-16 opacity-50" />, bg: "bg-[#EEF0FA] border-[#E1E3F0] text-indigo-200" },
+// TODO: replace all pexels URLs with hosted assets
+const TYPE_IMAGE: Record<Resource["type"], { src: string; bg: string }> = {
+    article: {
+        src: "https://images.pexels.com/photos/3076516/pexels-photo-3076516.jpeg?auto=compress&cs=tinysrgb&w=600",
+        bg: "bg-[#FAF5EE] border-[#F0EBE1]",
+    },
+    audio: {
+        src: "https://images.pexels.com/photos/1172840/pexels-photo-1172840.jpeg?auto=compress&cs=tinysrgb&w=600",
+        bg: "bg-[#EEF5EF] border-[#E1F0E3]",
+    },
+    video: {
+        src: "https://images.pexels.com/photos/1423640/pexels-photo-1423640.jpeg?auto=compress&cs=tinysrgb&w=600",
+        bg: "bg-[#EEF0FA] border-[#E1E3F0]",
+    },
 };
 
 export function ResourcesForYou() {
     const { data: resources } = useRecommendedResources(2);
 
     return (
-        <div className="space-y-4 mt-8">
+        <div className="h-full flex flex-col space-y-4">
             <div className="flex justify-between items-end">
                 <h2 className="text-xl font-bold text-primary">Tài nguyên cho bạn</h2>
-                <a href="/services/exercises" className="text-xs font-bold text-slate-400 hover:text-primary transition">Xem thư viện</a>
+                <a href="/services/exercises" className="text-xs font-bold text-foreground/40 hover:text-primary transition">Xem thư viện</a>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1 content-start">
                 {(resources ?? []).map((resource) => {
-                    const { bg, icon } = TYPE_CONFIG[resource.type] ?? TYPE_CONFIG.article;
+                    const { src, bg } = TYPE_IMAGE[resource.type] ?? TYPE_IMAGE.article;
                     const Wrapper = resource.url ? "a" : "div";
                     const linkProps = resource.url
                         ? { href: resource.url, target: "_blank", rel: "noopener noreferrer" }
                         : {};
                     return (
                         <Wrapper key={resource.id} className="group cursor-pointer" {...linkProps}>
-                            <div className={`aspect-4/3 rounded-3xl flex flex-col justify-end p-4 relative overflow-hidden mb-3 border hover:shadow-md transition-shadow ${bg}`}>
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    {icon}
-                                </div>
-                                <div className="bg-white/90 backdrop-blur rounded-full px-3 py-1 w-fit text-xs font-bold text-slate-700 relative z-10 shadow-sm">
-                                    {resource.duration_label}
-                                </div>
+                            <div className={`aspect-4/3 rounded-3xl relative overflow-hidden mb-3 border hover:shadow-md transition-shadow ${bg}`}>
+                                <Image
+                                    src={src}
+                                    alt={resource.title}
+                                    fill
+                                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                    sizes="(max-width: 768px) 100vw, 25vw"
+                                />
+                                {resource.duration_label && (
+                                    <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur rounded-full px-3 py-1 text-xs font-bold text-foreground shadow-sm z-10">
+                                        {resource.duration_label}
+                                    </div>
+                                )}
                             </div>
-                            <h4 className="font-bold text-slate-800 group-hover:text-primary transition-colors line-clamp-2">{resource.title}</h4>
+                            <h4 className="font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2">{resource.title}</h4>
                         </Wrapper>
                     );
                 })}

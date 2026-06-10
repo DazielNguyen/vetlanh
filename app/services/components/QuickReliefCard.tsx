@@ -26,7 +26,7 @@ export function QuickReliefCard() {
   if (!isLoading && (isError || !exercises?.length)) return null;
 
   return (
-    <Card className="border-none shadow-sm rounded-3xl overflow-hidden bg-gradient-to-br from-amber-50 to-emerald-50">
+    <Card className="border-none shadow-sm rounded-3xl overflow-hidden bg-linear-to-br from-[#FEF9F2] to-[#E8F7EE] card-tilt">
       <CardHeader className="pb-2">
         <CardTitle className="flex items-center gap-2 text-base font-bold text-amber-700">
           <Zap className="h-4 w-4 fill-amber-400 text-amber-500" />
@@ -45,7 +45,7 @@ export function QuickReliefCard() {
                   <Link
                     key={exercise.slug}
                     href={`/services/exercises/${exercise.slug}`}
-                    className="flex flex-col gap-1.5 p-3 rounded-2xl bg-white border border-slate-100 hover:border-emerald-300 hover:shadow-md transition group"
+                    className="flex flex-col gap-1.5 p-3 rounded-2xl bg-white border border-border/40 hover:border-primary/40 hover:shadow-md transition group"
                   >
                     <span className="text-xl leading-none">
                       {CATEGORY_EMOJI[exercise.category] ?? "✨"}

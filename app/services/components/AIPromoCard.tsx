@@ -1,22 +1,50 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Heart } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 export function AIPromoCard() {
     return (
-        <Card className="border-none shadow-sm rounded-3xl bg-[#FCEAEA] relative overflow-hidden">
-            <div className="absolute -right-8 -bottom-8 opacity-40 text-[#F5D5D5]">
-                <Heart className="w-40 h-40 fill-current" />
+        <div className="rounded-3xl overflow-hidden relative min-h-52 group">
+            {/* Background: nature image like landing page sections */}
+            {/* TODO: replace with hosted asset */}
+            <div className="absolute inset-0">
+                <Image
+                    src="https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=1200"
+                    alt=""
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, 100vw"
+                />
+                {/* Same overlay technique as landing page FeaturesSection */}
+                <div className="absolute inset-0 bg-black/40" />
+                <div className="absolute inset-0 bg-linear-to-br from-primary/30 via-transparent to-secondary/20" />
             </div>
-            <CardContent className="p-6 relative z-10 space-y-4">
-                <h3 className="text-xl font-bold text-[#6D8A96]">Bạn đang cảm thấy quá tải?</h3>
-                <p className="text-sm text-slate-600 leading-relaxed pr-6">
-                    Trợ lý AI của chúng tôi luôn sẵn sàng 24/7 để lắng nghe và hướng dẫn bạn qua các bài tập cân bằng cảm xúc.
-                </p>
-                <Button className="bg-white hover:bg-slate-50 text-slate-800 rounded-2xl py-6 px-4 font-bold shadow-sm w-fit border-none">
-                    <span className="text-xs font-semibold text-slate-400 mr-2">chat</span> <span className="text-sm">Trò chuyện với AI</span>
-                </Button>
-            </CardContent>
-        </Card>
+
+            {/* Ambient blur orbs */}
+            <div className="absolute top-0 right-0 w-48 h-48 bg-primary/20 rounded-full blur-3xl pointer-events-none" />
+
+            {/* Content — white on dark like landing page cards */}
+            <div className="relative z-10 p-7 md:p-8 flex flex-col md:flex-row md:items-end justify-between gap-6 h-full">
+                <div className="space-y-3 max-w-lg">
+                    <h3 className="text-2xl md:text-3xl font-bold text-white leading-tight">
+                        Bạn đang cảm thấy quá tải?
+                    </h3>
+                    <p className="text-white/75 text-sm md:text-base leading-relaxed">
+                        Trợ lý AI luôn sẵn sàng 24/7 để lắng nghe và hướng dẫn bạn qua các bài tập cân bằng cảm xúc.
+                    </p>
+                </div>
+
+                {/* CTA button matching landing page style exactly */}
+                <Link
+                    href="/services/chat"
+                    className="group/btn inline-flex items-center gap-2 self-start md:self-end shrink-0 rounded-full bg-white/15 border border-white/35 backdrop-blur-sm py-2 pl-5 pr-2 text-sm font-semibold text-white transition-all hover:bg-white/25 hover:gap-3"
+                >
+                    Trò chuyện với AI
+                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 transition-transform group-hover/btn:scale-110">
+                        <ArrowRight className="h-3.5 w-3.5 text-white" />
+                    </span>
+                </Link>
+            </div>
+        </div>
     );
 }

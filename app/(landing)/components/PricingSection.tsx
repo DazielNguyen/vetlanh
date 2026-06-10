@@ -14,47 +14,12 @@ import {
 } from "@/components/ui/dialog";
 import Link from "next/link";
 import { EASING } from "@/lib/motion";
-
-interface Package {
-  key: string;
-  label: string;
-  price: string;
-  perMonth?: string;
-  badge?: { text: string; className: string };
-}
-
-const PACKAGES: Package[] = [
-  { key: "1thang", label: "1 tháng", price: "79.000 ₫" },
-  { key: "3thang", label: "3 tháng", price: "199.000 ₫", perMonth: "~66.000 ₫/tháng" },
-  { key: "6thang", label: "6 tháng", price: "349.000 ₫", perMonth: "~58.000 ₫/tháng" },
-  {
-    key: "1nam",
-    label: "1 năm",
-    price: "599.000 ₫",
-    perMonth: "~50.000 ₫/tháng",
-    badge: { text: "KHUYÊN DÙNG", className: "bg-white/20 text-white border border-white/30" },
-  },
-  {
-    key: "tronddoi",
-    label: "Trọn đời",
-    price: "999.000 ₫",
-    badge: { text: "PHỔ BIẾN NHẤT", className: "bg-amber-400/20 text-amber-200 border border-amber-300/30" },
-  },
-];
+import { PACKAGES, PRO_FEATURES, DEFAULT_PACKAGE_KEY, getPackage } from "@/lib/constants/packages";
 
 const FREE_FEATURES = [
   "Trò chuyện với Trợ lý AI (giới hạn)",
   "Tham gia cộng đồng ẩn danh",
   "Thư viện bài tập cơ bản",
-];
-
-const PRO_FEATURES = [
-  "AI chat không giới hạn",
-  "Lộ trình chữa lành cá nhân hóa",
-  "Thư viện bài tập đầy đủ",
-  "Theo dõi cảm xúc & biểu đồ nâng cao",
-  "Nhật ký & Hồ sơ tư duy",
-  "Ưu tiên hỗ trợ kỹ thuật",
 ];
 
 
@@ -63,10 +28,10 @@ export default function PricingSection() {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   const prefersReduced = useReducedMotion();
 
-  const [selectedKey, setSelectedKey] = useState("1nam");
+  const [selectedKey, setSelectedKey] = useState(DEFAULT_PACKAGE_KEY);
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  const selectedPkg = PACKAGES.find((p) => p.key === selectedKey) ?? PACKAGES[3];
+  const selectedPkg = getPackage(selectedKey);
 
   const initial = prefersReduced ? {} : { y: 30, opacity: 0 };
   const animate = prefersReduced ? {} : isInView ? { y: 0, opacity: 1 } : { y: 30, opacity: 0 };
