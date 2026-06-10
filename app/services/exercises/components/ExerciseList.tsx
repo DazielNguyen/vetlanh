@@ -47,8 +47,9 @@ export function ExerciseList() {
 
   const categoryOptions = [{ key: "", label: "Tất cả" }, ...(categoriesData ?? FALLBACK_CATEGORIES)];
   const allMoods = moodsData ?? FALLBACK_MOODS;
-  const emojiMoods = allMoods.filter((m) => EMOJI_MOOD_MAP[m.key]);
-  const extraMoods = allMoods.filter((m) => !EMOJI_MOOD_MAP[m.key]);
+  const moodEmoji = (m: { key: string; emoji?: string }) => m.emoji ?? EMOJI_MOOD_MAP[m.key];
+  const emojiMoods = allMoods.filter((m) => moodEmoji(m));
+  const extraMoods = allMoods.filter((m) => !moodEmoji(m));
 
   const params = {
     ...(mood && { mood }),
@@ -103,7 +104,7 @@ export function ExerciseList() {
                   : "bg-white border-slate-200 hover:border-emerald-300"
               }`}
             >
-              <span className="text-2xl leading-none">{EMOJI_MOOD_MAP[opt.key]}</span>
+              <span className="text-2xl leading-none">{moodEmoji(opt)}</span>
               <span className="text-[10px] font-semibold text-slate-600">{opt.label}</span>
             </button>
           ))}

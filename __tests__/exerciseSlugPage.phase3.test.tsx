@@ -137,6 +137,8 @@ jest.mock("@/components/ui/button", () => {
 jest.mock("@/hooks/useExercise", () => ({
   useExercise: jest.fn(() => ({ data: undefined, isLoading: false })),
   useLogExercise: jest.fn(() => ({ mutate: jest.fn(), isPending: false })),
+  useUpdateExerciseLogFeeling: jest.fn(() => ({ mutate: jest.fn() })),
+  useFeelingOptions: jest.fn(() => ({ data: undefined })),
 }));
 
 // ── useState / useEffect / useRef / use control ───────────────────────────────
@@ -167,7 +169,12 @@ jest.mock("react", () => {
 
 import React from "react";
 import ExerciseDetailPage from "@/app/services/exercises/[slug]/page";
-import { useExercise, useLogExercise } from "@/hooks/useExercise";
+import {
+  useExercise,
+  useLogExercise,
+  useUpdateExerciseLogFeeling,
+  useFeelingOptions,
+} from "@/hooks/useExercise";
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -308,97 +315,75 @@ beforeEach(() => {
 
 describe("resolveFeelingAndComplete (logic mirror)", () => {
   function resolveFeelingAndComplete(
-    slug: string,
     feeling: string | undefined,
     elapsed: number,
     setDone: () => void,
-    onComplete: (d: number) => void,
+    onComplete: (d: number, feeling?: string) => void,
   ) {
-    if (feeling) localStorage.setItem(`feeling_after_${slug}_${Date.now()}`, feeling);
     setDone();
-    onComplete(elapsed);
+    onComplete(elapsed, feeling);
   }
 
-  it("writes to localStorage with key feeling_after_{slug}_{timestamp} when feeling is provided", () => {
+  it("calls onComplete with the feeling when provided", () => {
     const setDone = jest.fn();
     const onComplete = jest.fn();
-    const before = Date.now();
-    resolveFeelingAndComplete("test-slug", "better", 42, setDone, onComplete);
-    const after = Date.now();
-
-    expect(localStorageMock.setItem).toHaveBeenCalledTimes(1);
-    const [key, value] = localStorageMock.setItem.mock.calls[0] as [string, string];
-    expect(key).toMatch(/^feeling_after_test-slug_\d+$/);
-    const ts = parseInt(key.split("_").pop()!, 10);
-    expect(ts).toBeGreaterThanOrEqual(before);
-    expect(ts).toBeLessThanOrEqual(after);
-    expect(value).toBe("better");
+    resolveFeelingAndComplete("better", 42, setDone, onComplete);
+    expect(onComplete).toHaveBeenCalledWith(42, "better");
   });
 
-  it("does NOT write to localStorage when feeling is undefined", () => {
-    resolveFeelingAndComplete("test-slug", undefined, 10, jest.fn(), jest.fn());
-    expect(localStorageMock.setItem).not.toHaveBeenCalled();
+  it("calls onComplete with feeling=undefined when not provided", () => {
+    const onComplete = jest.fn();
+    resolveFeelingAndComplete(undefined, 10, jest.fn(), onComplete);
+    expect(onComplete).toHaveBeenCalledWith(10, undefined);
   });
 
-  it("does NOT write to localStorage when feeling is an empty string", () => {
-    resolveFeelingAndComplete("test-slug", "", 10, jest.fn(), jest.fn());
-    expect(localStorageMock.setItem).not.toHaveBeenCalled();
+  it("calls onComplete with feeling=undefined when feeling is an empty string", () => {
+    const onComplete = jest.fn();
+    resolveFeelingAndComplete("", 10, jest.fn(), onComplete);
+    expect(onComplete).toHaveBeenCalledWith(10, "");
   });
 
   it("calls setDone() regardless of feeling", () => {
     const setDone = jest.fn();
-    resolveFeelingAndComplete("any-slug", undefined, 5, setDone, jest.fn());
+    resolveFeelingAndComplete(undefined, 5, setDone, jest.fn());
     expect(setDone).toHaveBeenCalledTimes(1);
   });
 
   it("calls onComplete with the correct elapsed value", () => {
     const onComplete = jest.fn();
-    resolveFeelingAndComplete("any-slug", "much_better", 300, jest.fn(), onComplete);
-    expect(onComplete).toHaveBeenCalledWith(300);
+    resolveFeelingAndComplete("much_better", 300, jest.fn(), onComplete);
+    expect(onComplete).toHaveBeenCalledWith(300, "much_better");
   });
 
   it("calls onComplete with elapsed=0 when duration is zero", () => {
     const onComplete = jest.fn();
-    resolveFeelingAndComplete("any-slug", "worse", 0, jest.fn(), onComplete);
-    expect(onComplete).toHaveBeenCalledWith(0);
+    resolveFeelingAndComplete("worse", 0, jest.fn(), onComplete);
+    expect(onComplete).toHaveBeenCalledWith(0, "worse");
   });
 
-  it("uses the slug verbatim in the localStorage key", () => {
-    resolveFeelingAndComplete("my-special_slug.v2", "same", 1, jest.fn(), jest.fn());
-    const [key] = localStorageMock.setItem.mock.calls[0] as [string, string];
-    expect(key).toMatch(/^feeling_after_my-special_slug\.v2_\d+$/);
+  it("does NOT write to localStorage (feature removed)", () => {
+    resolveFeelingAndComplete("better", 1, jest.fn(), jest.fn());
+    expect(localStorageMock.setItem).not.toHaveBeenCalled();
   });
 
-  it("stores the correct feeling value for each of the 4 options", () => {
+  it("passes through the correct feeling value for each of the 4 options", () => {
     const feelings = ["much_better", "better", "same", "worse"];
     feelings.forEach((feeling) => {
-      localStorageMock.setItem.mockClear();
-      resolveFeelingAndComplete("slug", feeling, 1, jest.fn(), jest.fn());
-      const [, value] = localStorageMock.setItem.mock.calls[0] as [string, string];
-      expect(value).toBe(feeling);
+      const onComplete = jest.fn();
+      resolveFeelingAndComplete(feeling, 1, jest.fn(), onComplete);
+      expect(onComplete).toHaveBeenCalledWith(1, feeling);
     });
   });
 
   it("always calls setDone before onComplete (order guarantee)", () => {
     const order: string[] = [];
     resolveFeelingAndComplete(
-      "s",
       "better",
       1,
       () => order.push("setDone"),
       () => order.push("onComplete"),
     );
     expect(order).toEqual(["setDone", "onComplete"]);
-  });
-
-  it("writes exactly one localStorage entry per call with a feeling", () => {
-    resolveFeelingAndComplete("slug", "worse", 5, jest.fn(), jest.fn());
-    expect(localStorageMock.setItem).toHaveBeenCalledTimes(1);
-  });
-
-  it("writes zero localStorage entries per call without a feeling", () => {
-    resolveFeelingAndComplete("slug", undefined, 5, jest.fn(), jest.fn());
-    expect(localStorageMock.setItem).not.toHaveBeenCalled();
   });
 });
 
@@ -766,52 +751,217 @@ describe("BreathingSession — FeelingPicker shown after breathing completes", (
 });
 
 // ═════════════════════════════════════════════════════════════════════════════
-// 6. localStorage key format — edge cases
+// 5b. BreathingSession — custom exercise.phases vs DEFAULT_BREATHING_PHASES
 // ═════════════════════════════════════════════════════════════════════════════
 
-describe("resolveFeelingAndComplete — localStorage key format edge cases", () => {
-  function resolveFeelingAndComplete(
-    slug: string,
-    feeling: string | undefined,
-    elapsed: number,
-    setDone: () => void,
-    onComplete: (d: number) => void,
-  ) {
-    if (feeling) localStorage.setItem(`feeling_after_${slug}_${Date.now()}`, feeling);
-    setDone();
-    onComplete(elapsed);
+describe("BreathingSession — phases source (custom vs default)", () => {
+  const BOX_BREATHING_PHASES = [
+    { label: "Hít vào...", seconds: 4 },
+    { label: "Giữ lại...", seconds: 4 },
+    { label: "Thở ra...", seconds: 4 },
+    { label: "Giữ (rỗng)...", seconds: 4 },
+  ];
+
+  function renderBreathRunning(phases: { label: string; seconds: number }[] | undefined, breathPhaseLabel: string) {
+    // ExerciseDetailPage: sessionDone; BreathingSession: state="running", breathPhaseLabel
+    setupState([
+      [false, jest.fn()],
+      ["running", jest.fn()],
+      [breathPhaseLabel, jest.fn()],
+    ]);
+    (useExercise as jest.Mock).mockReturnValue({
+      data: {
+        slug: "box-breathing",
+        title: "Box Breathing",
+        description: "4-4-4-4 box breathing",
+        category: "breathing",
+        mood_tags: [],
+        phases,
+      },
+      isLoading: false,
+    });
+    (useLogExercise as jest.Mock).mockReturnValue({ mutate: jest.fn(), isPending: false });
+    (useUpdateExerciseLogFeeling as jest.Mock).mockReturnValue({ mutate: jest.fn() });
+    return ExerciseDetailPage({ params: Promise.resolve({ slug: "box-breathing" }) });
   }
 
-  it("key prefix is always 'feeling_after_'", () => {
-    resolveFeelingAndComplete("my-slug", "better", 0, jest.fn(), jest.fn());
-    const [key] = localStorageMock.setItem.mock.calls[0] as [string, string];
-    expect(key.startsWith("feeling_after_")).toBe(true);
+  it("renders the custom 4th phase label ('Giữ (rỗng)...') when exercise.phases is provided", () => {
+    const el = renderBreathRunning(BOX_BREATHING_PHASES, "Giữ (rỗng)...");
+    expect(deepText(el)).toContain("Giữ (rỗng)...");
   });
 
-  it("key ends with a numeric timestamp", () => {
-    resolveFeelingAndComplete("my-slug", "same", 0, jest.fn(), jest.fn());
-    const [key] = localStorageMock.setItem.mock.calls[0] as [string, string];
-    const ts = key.split("_").pop();
-    expect(Number(ts)).not.toBeNaN();
-    expect(Number(ts)).toBeGreaterThan(0);
+  it("renders default 'Hít vào...' label when exercise.phases is undefined", () => {
+    const el = renderBreathRunning(undefined, "Hít vào...");
+    expect(deepText(el)).toContain("Hít vào...");
   });
 
-  it("two calls produce different keys (unique timestamps)", async () => {
-    resolveFeelingAndComplete("slug-a", "better", 1, jest.fn(), jest.fn());
-    await new Promise((r) => setTimeout(r, 2));
-    resolveFeelingAndComplete("slug-a", "better", 1, jest.fn(), jest.fn());
-    const calls = localStorageMock.setItem.mock.calls as [string, string][];
-    expect(calls[0][0]).not.toBe(calls[1][0]);
+  it("renders default 'Giữ lại...' label when exercise.phases is an empty array", () => {
+    const el = renderBreathRunning([], "Giữ lại...");
+    expect(deepText(el)).toContain("Giữ lại...");
   });
 
-  it("writes exactly one entry per call with a feeling", () => {
-    resolveFeelingAndComplete("slug", "worse", 5, jest.fn(), jest.fn());
-    expect(localStorageMock.setItem).toHaveBeenCalledTimes(1);
+  it("does not throw when exercise.phases is undefined (optional field access)", () => {
+    expect(() => renderBreathRunning(undefined, "Hít vào...")).not.toThrow();
+  });
+});
+
+// ═════════════════════════════════════════════════════════════════════════════
+// 5c. FeelingPicker — data from useFeelingOptions vs DEFAULT_FEELINGS fallback
+// ═════════════════════════════════════════════════════════════════════════════
+
+describe("ExerciseDetailPage — feelings source (useFeelingOptions vs DEFAULT_FEELINGS)", () => {
+  function renderTimerDonePendingWithFeelings(feelingOptionsData: unknown) {
+    setupState([
+      [false, jest.fn()],
+      ["done_pending", jest.fn()],
+      [42, jest.fn()],
+    ]);
+    (useExercise as jest.Mock).mockReturnValue({
+      data: {
+        slug: "test-ex",
+        title: "Test Exercise",
+        description: "desc",
+        category: "relaxation",
+        mood_tags: [],
+        steps: [],
+      },
+      isLoading: false,
+    });
+    (useLogExercise as jest.Mock).mockReturnValue({ mutate: jest.fn(), isPending: false });
+    (useUpdateExerciseLogFeeling as jest.Mock).mockReturnValue({ mutate: jest.fn() });
+    (useFeelingOptions as jest.Mock).mockReturnValue({ data: feelingOptionsData });
+    return ExerciseDetailPage({ params: Promise.resolve({ slug: "test-ex" }) });
+  }
+
+  it("falls back to DEFAULT_FEELINGS labels when useFeelingOptions returns undefined data", () => {
+    const el = renderTimerDonePendingWithFeelings(undefined);
+    const text = deepText(el);
+    expect(text).toContain("Rất nhẹ");
+    expect(text).toContain("Nhẹ hơn");
+    expect(text).toContain("Bình thường");
+    expect(text).toContain("Vẫn căng");
   });
 
-  it("writes zero entries per call without a feeling", () => {
-    resolveFeelingAndComplete("slug", undefined, 5, jest.fn(), jest.fn());
-    expect(localStorageMock.setItem).not.toHaveBeenCalled();
+  it("falls back to DEFAULT_FEELINGS labels when useFeelingOptions returns an empty array", () => {
+    const el = renderTimerDonePendingWithFeelings([]);
+    const text = deepText(el);
+    expect(text).toContain("Rất nhẹ");
+    expect(text).toContain("Nhẹ hơn");
+  });
+
+  it("renders custom feeling labels from useFeelingOptions data when present", () => {
+    const customFeelings = [
+      { key: "great", emoji: "🤩", label: "Tuyệt vời" },
+      { key: "okay", emoji: "🙂", label: "Ổn" },
+    ];
+    const el = renderTimerDonePendingWithFeelings(customFeelings);
+    const text = deepText(el);
+    expect(text).toContain("Tuyệt vời");
+    expect(text).toContain("Ổn");
+    expect(text).not.toContain("Rất nhẹ");
+  });
+
+  it("renders the correct number of feeling buttons for custom feeling options", () => {
+    const customFeelings = [
+      { key: "a", emoji: "🙂", label: "A" },
+      { key: "b", emoji: "🙁", label: "B" },
+      { key: "c", emoji: "😐", label: "C" },
+    ];
+    const el = renderTimerDonePendingWithFeelings(customFeelings);
+    const buttons = deepFindButtons(el);
+    // 3 feeling buttons + 1 skip button (the back/list nav buttons aren't
+    // present in done state for TimerSession's SessionDoneView subtree —
+    // verify at least the feeling + skip buttons exist).
+    const labels = ["A", "B", "C", "Bỏ qua"];
+    labels.forEach((label) => {
+      expect(buttons.some((b) => collectText(b).includes(label))).toBe(true);
+    });
+  });
+});
+
+// ═════════════════════════════════════════════════════════════════════════════
+// 6. handleComplete — logSession + updateFeeling wiring (page integration)
+// ═════════════════════════════════════════════════════════════════════════════
+
+describe("ExerciseDetailPage — handleComplete wires logSession -> updateFeeling", () => {
+  function renderTimerDonePending(feeling: string | undefined, logMutate: jest.Mock, updateMutate: jest.Mock) {
+    // ExerciseDetailPage: sessionDone; TimerSession: state, elapsed
+    setupState([
+      [false, jest.fn()],
+      ["done_pending", jest.fn()],
+      [42, jest.fn()],
+    ]);
+    (useExercise as jest.Mock).mockReturnValue({
+      data: {
+        slug: "test-ex",
+        title: "Test Exercise",
+        description: "desc",
+        category: "relaxation",
+        mood_tags: [],
+        steps: [],
+      },
+      isLoading: false,
+    });
+    (useLogExercise as jest.Mock).mockReturnValue({ mutate: logMutate, isPending: false });
+    (useUpdateExerciseLogFeeling as jest.Mock).mockReturnValue({ mutate: updateMutate });
+    (useFeelingOptions as jest.Mock).mockReturnValue({ data: undefined });
+
+    const el = ExerciseDetailPage({ params: Promise.resolve({ slug: "test-ex" }) });
+
+    // Drill into FeelingPicker and trigger onSelect/onSkip directly.
+    const buttons = deepFindButtons(el);
+    return { el, buttons };
+  }
+
+  it("calls logSession with exercise_slug and duration_seconds, and updateFeeling on success when a feeling was selected", () => {
+    const logMutate = jest.fn((_payload, opts) => {
+      opts?.onSuccess?.({ id: "log-123" });
+    });
+    const updateMutate = jest.fn();
+
+    const { buttons } = renderTimerDonePending("better", logMutate, updateMutate);
+    const feelingBtn = buttons.find((b) => collectText(b).includes("Nhẹ hơn"));
+    expect(feelingBtn).toBeDefined();
+    (feelingBtn!.props as { onClick?: () => void }).onClick?.();
+
+    // `slug` and refs are derived from mocked `use()`/`useRef()` (both return
+    // null/undefined sentinels in this test harness), so we only assert shape.
+    expect(logMutate).toHaveBeenCalledWith(
+      expect.objectContaining({ exercise_slug: undefined, duration_seconds: null }),
+      expect.objectContaining({ onSuccess: expect.any(Function), onError: expect.any(Function) }),
+    );
+    expect(updateMutate).toHaveBeenCalledWith({
+      logId: "log-123",
+      body: { post_session_feeling: "better" },
+    });
+  });
+
+  it("does NOT call updateFeeling when the user skips the feeling picker", () => {
+    const logMutate = jest.fn((_payload, opts) => {
+      opts?.onSuccess?.({ id: "log-456" });
+    });
+    const updateMutate = jest.fn();
+
+    const { buttons } = renderTimerDonePending(undefined, logMutate, updateMutate);
+    const skipBtn = buttons.find((b) => collectText(b).includes("Bỏ qua"));
+    expect(skipBtn).toBeDefined();
+    (skipBtn!.props as { onClick?: () => void }).onClick?.();
+
+    expect(logMutate).toHaveBeenCalled();
+    expect(updateMutate).not.toHaveBeenCalled();
+  });
+
+  it("does NOT call updateFeeling when logSession's onSuccess is never invoked (e.g. onError path)", () => {
+    const logMutate = jest.fn((_payload, opts) => {
+      opts?.onError?.();
+    });
+    const updateMutate = jest.fn();
+
+    const { buttons } = renderTimerDonePending("worse", logMutate, updateMutate);
+    const feelingBtn = buttons.find((b) => collectText(b).includes("Vẫn căng"));
+    (feelingBtn!.props as { onClick?: () => void }).onClick?.();
+
+    expect(updateMutate).not.toHaveBeenCalled();
   });
 });
 

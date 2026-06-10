@@ -3,7 +3,12 @@ import { toast } from "sonner";
 import { fetchExercise } from "@/lib/api/services/fetchExercise";
 import { STALE } from "@/lib/api/queryConfig";
 import { DASHBOARD_KEYS } from "@/hooks/useDashboard";
-import type { ExerciseListParams, RecommendedParams, LogExerciseRequest } from "@/types/exercise";
+import type {
+  ExerciseListParams,
+  RecommendedParams,
+  LogExerciseRequest,
+  UpdateExerciseLogFeelingRequest,
+} from "@/types/exercise";
 
 export const EXERCISE_KEYS = {
   all: ["exercise"] as const,
@@ -12,6 +17,7 @@ export const EXERCISE_KEYS = {
   recommended: (params?: RecommendedParams) => ["exercise", "recommended", params] as const,
   detail: (slug: string) => ["exercise", "detail", slug] as const,
   logs: ["exercise", "logs"] as const,
+  feelingOptions: ["exercise", "feeling-options"] as const,
 };
 
 export function useExerciseList(params?: ExerciseListParams) {
@@ -63,5 +69,23 @@ export function useLogExercise() {
     onError: () => {
       toast.error("Ghi lại buổi tập thất bại, vui lòng thử lại");
     },
+  });
+}
+
+export function useUpdateExerciseLogFeeling() {
+  return useMutation({
+    mutationFn: ({ logId, body }: { logId: string; body: UpdateExerciseLogFeelingRequest }) =>
+      fetchExercise.updateLogFeeling(logId, body),
+    onError: () => {
+      toast.error("Không thể lưu cảm nhận của bạn, vui lòng thử lại");
+    },
+  });
+}
+
+export function useFeelingOptions() {
+  return useQuery({
+    queryKey: EXERCISE_KEYS.feelingOptions,
+    queryFn: fetchExercise.getFeelingOptions,
+    staleTime: STALE.LONG,
   });
 }

@@ -6,8 +6,8 @@ import { AnimatePresence, motion, useAnimate, useReducedMotion } from "motion/re
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, ArrowLeft, Play, Square, CheckCircle, ChevronRight } from "lucide-react";
-import { useExercise, useLogExercise } from "@/hooks/useExercise";
-import type { ExerciseStep } from "@/types/exercise";
+import { useExercise, useLogExercise, useUpdateExerciseLogFeeling, useFeelingOptions } from "@/hooks/useExercise";
+import type { ExerciseStep, BreathingPhase, FeelingOption } from "@/types/exercise";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -21,19 +21,20 @@ function formatTime(seconds: number): string {
 
 // ─── Feeling picker (shared across all session types) ────────────────────────
 
-const FEELINGS = [
-  { value: "much_better", emoji: "😌", label: "Rất nhẹ" },
-  { value: "better", emoji: "😊", label: "Nhẹ hơn" },
-  { value: "same", emoji: "😐", label: "Bình thường" },
-  { value: "worse", emoji: "😣", label: "Vẫn căng" },
+const DEFAULT_FEELINGS: FeelingOption[] = [
+  { key: "much_better", emoji: "😌", label: "Rất nhẹ" },
+  { key: "better", emoji: "😊", label: "Nhẹ hơn" },
+  { key: "same", emoji: "😐", label: "Bình thường" },
+  { key: "worse", emoji: "😣", label: "Vẫn căng" },
 ];
 
 interface FeelingPickerProps {
-  onSelect: (value: string) => void;
+  feelings: FeelingOption[];
+  onSelect: (key: string) => void;
   onSkip: () => void;
 }
 
-function FeelingPicker({ onSelect, onSkip }: FeelingPickerProps) {
+function FeelingPicker({ feelings, onSelect, onSkip }: FeelingPickerProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -45,10 +46,10 @@ function FeelingPicker({ onSelect, onSkip }: FeelingPickerProps) {
         Bạn cảm thấy thế nào sau buổi tập?
       </p>
       <div className="grid grid-cols-2 gap-2">
-        {FEELINGS.map((f) => (
+        {feelings.map((f) => (
           <button
-            key={f.value}
-            onClick={() => onSelect(f.value)}
+            key={f.key}
+            onClick={() => onSelect(f.key)}
             className="flex flex-col items-center gap-1 px-3 py-3 rounded-2xl border border-slate-200 bg-white hover:border-emerald-300 hover:bg-emerald-50 transition"
           >
             <span className="text-2xl leading-none">{f.emoji}</span>
@@ -71,25 +72,24 @@ function FeelingPicker({ onSelect, onSkip }: FeelingPickerProps) {
 type DoneState = "done_pending" | "done_logged";
 
 function resolveFeelingAndComplete(
-  slug: string,
   feeling: string | undefined,
   elapsed: number,
   setDone: () => void,
-  onComplete: (d: number) => void
+  onComplete: (d: number, feeling?: string) => void
 ) {
-  if (feeling) localStorage.setItem(`feeling_after_${slug}_last`, feeling);
   setDone();
-  onComplete(elapsed);
+  onComplete(elapsed, feeling);
 }
 
 interface SessionDoneViewProps {
   isLogging: boolean;
   doneState: DoneState;
   elapsed?: number;
+  feelings: FeelingOption[];
   onFeelingResolved: (feeling?: string) => void;
 }
 
-function SessionDoneView({ isLogging, doneState, elapsed, onFeelingResolved }: SessionDoneViewProps) {
+function SessionDoneView({ isLogging, doneState, elapsed, feelings, onFeelingResolved }: SessionDoneViewProps) {
   return (
     <div className="flex flex-col items-center gap-4 text-center py-6">
       {doneState === "done_logged" && isLogging ? (
@@ -106,6 +106,7 @@ function SessionDoneView({ isLogging, doneState, elapsed, onFeelingResolved }: S
       <AnimatePresence>
         {doneState === "done_pending" && (
           <FeelingPicker
+            feelings={feelings}
             onSelect={(v) => onFeelingResolved(v)}
             onSkip={() => onFeelingResolved()}
           />
@@ -118,12 +119,12 @@ function SessionDoneView({ isLogging, doneState, elapsed, onFeelingResolved }: S
 // ─── General session timer (non-step exercises) ──────────────────────────────
 
 interface TimerSessionProps {
-  slug: string;
-  onComplete: (durationSeconds: number) => void;
+  feelings: FeelingOption[];
+  onComplete: (durationSeconds: number, feeling?: string) => void;
   isLogging: boolean;
 }
 
-function TimerSession({ slug, onComplete, isLogging }: TimerSessionProps) {
+function TimerSession({ feelings, onComplete, isLogging }: TimerSessionProps) {
   const [state, setState] = useState<"idle" | "running" | DoneState>("idle");
   const [elapsed, setElapsed] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -158,7 +159,7 @@ function TimerSession({ slug, onComplete, isLogging }: TimerSessionProps) {
   }
 
   function handleFeelingResolved(feeling?: string) {
-    resolveFeelingAndComplete(slug, feeling, doneElapsedRef.current, () => setState("done_logged"), onComplete);
+    resolveFeelingAndComplete(feeling, doneElapsedRef.current, () => setState("done_logged"), onComplete);
   }
 
   useEffect(() => () => stop(), []);
@@ -169,6 +170,7 @@ function TimerSession({ slug, onComplete, isLogging }: TimerSessionProps) {
         isLogging={isLogging}
         doneState={state}
         elapsed={doneElapsedRef.current}
+        feelings={feelings}
         onFeelingResolved={handleFeelingResolved}
       />
     );
@@ -308,13 +310,13 @@ function StepCountdown({ step, stepIndex, totalSteps, onNext, isLastStep }: Step
 // ─── Step-based session ───────────────────────────────────────────────────────
 
 interface StepSessionProps {
-  slug: string;
   steps: ExerciseStep[];
-  onComplete: (durationSeconds: number) => void;
+  feelings: FeelingOption[];
+  onComplete: (durationSeconds: number, feeling?: string) => void;
   isLogging: boolean;
 }
 
-function StepSession({ slug, steps, onComplete, isLogging }: StepSessionProps) {
+function StepSession({ steps, feelings, onComplete, isLogging }: StepSessionProps) {
   const [state, setState] = useState<"idle" | "running" | DoneState>("idle");
   const [currentStep, setCurrentStep] = useState(0);
   const startTimeRef = useRef<number>(0);
@@ -335,7 +337,7 @@ function StepSession({ slug, steps, onComplete, isLogging }: StepSessionProps) {
   }
 
   function handleFeelingResolved(feeling?: string) {
-    resolveFeelingAndComplete(slug, feeling, elapsedRef.current, () => setState("done_logged"), onComplete);
+    resolveFeelingAndComplete(feeling, elapsedRef.current, () => setState("done_logged"), onComplete);
   }
 
   if (state === "idle") {
@@ -352,6 +354,7 @@ function StepSession({ slug, steps, onComplete, isLogging }: StepSessionProps) {
         isLogging={isLogging}
         doneState={state}
         elapsed={elapsedRef.current}
+        feelings={feelings}
         onFeelingResolved={handleFeelingResolved}
       />
     );
@@ -382,27 +385,32 @@ function StepSession({ slug, steps, onComplete, isLogging }: StepSessionProps) {
   );
 }
 
-// ─── 4-7-8 Breathing session ──────────────────────────────────────────────────
-// tense_seconds / release_seconds are PMR-only fields; breathing exercises always use hardcoded 4-7-8.
+// ─── Breathing session ─────────────────────────────────────────────────────────
+// tense_seconds / release_seconds are PMR-only fields; breathing exercises drive
+// timing from `exercise.phases` (fallback to the classic 4-7-8 pattern below).
 
-const BREATH_INHALE = 4;
-const BREATH_HOLD = 7;
-const BREATH_EXHALE = 8;
-const PHASE_LABEL: Record<"inhale" | "hold" | "exhale", string> = {
-  inhale: "Hít vào...",
-  hold: "Giữ lại...",
-  exhale: "Thở ra...",
-};
+const DEFAULT_BREATHING_PHASES: BreathingPhase[] = [
+  { label: "Hít vào...", seconds: 4 },
+  { label: "Giữ lại...", seconds: 7 },
+  { label: "Thở ra...", seconds: 8 },
+];
+
+function targetScaleForPhase(label: string, currentScale: number, expandScale: number): number {
+  if (label.startsWith("Hít vào")) return expandScale;
+  if (label.startsWith("Thở ra")) return 1;
+  return currentScale; // hold phase — maintain current scale
+}
 
 interface BreathingSessionProps {
-  slug: string;
-  onComplete: (durationSeconds: number) => void;
+  phases: BreathingPhase[];
+  feelings: FeelingOption[];
+  onComplete: (durationSeconds: number, feeling?: string) => void;
   isLogging: boolean;
 }
 
-function BreathingSession({ slug, onComplete, isLogging }: BreathingSessionProps) {
+function BreathingSession({ phases, feelings, onComplete, isLogging }: BreathingSessionProps) {
   const [state, setState] = useState<"idle" | "running" | DoneState>("idle");
-  const [breathPhase, setBreathPhase] = useState<"inhale" | "hold" | "exhale">("inhale");
+  const [breathPhaseLabel, setBreathPhaseLabel] = useState(phases[0]?.label ?? "");
   const prefersReducedMotion = useReducedMotion();
   const prefersReducedMotionRef = useRef(!!prefersReducedMotion);
   const [scope, animate] = useAnimate();
@@ -415,25 +423,24 @@ function BreathingSession({ slug, onComplete, isLogging }: BreathingSessionProps
     if (state !== "running") return;
 
     let cancelled = false;
+    const activePhases = phases.length ? phases : DEFAULT_BREATHING_PHASES;
 
     async function runLoop() {
+      let currentScale = 1;
       while (!cancelled) {
-        if (!scope.current) return;
-        const reduced = prefersReducedMotionRef.current;
-        const dur = (s: number) => (reduced ? 0.01 : s);
-        const expandScale = reduced ? 1 : 1.6;
+        for (const phase of activePhases) {
+          if (!scope.current) return;
+          const reduced = prefersReducedMotionRef.current;
+          const dur = (s: number) => (reduced ? 0.01 : s);
+          const expandScale = reduced ? 1 : 1.6;
 
-        setBreathPhase("inhale");
-        await animate(scope.current, { scale: expandScale }, { duration: dur(BREATH_INHALE), ease: "easeInOut" });
-        if (cancelled || !scope.current) return;
-
-        setBreathPhase("hold");
-        await animate(scope.current, { scale: expandScale }, { duration: dur(BREATH_HOLD), ease: "linear" });
-        if (cancelled || !scope.current) return;
-
-        setBreathPhase("exhale");
-        await animate(scope.current, { scale: 1 }, { duration: dur(BREATH_EXHALE), ease: "easeInOut" });
-        if (cancelled || !scope.current) return;
+          setBreathPhaseLabel(phase.label);
+          const targetScale = targetScaleForPhase(phase.label, currentScale, expandScale);
+          const ease = phase.label.startsWith("Giữ") ? "linear" : "easeInOut";
+          await animate(scope.current, { scale: targetScale }, { duration: dur(phase.seconds), ease });
+          currentScale = targetScale;
+          if (cancelled || !scope.current) return;
+        }
       }
     }
 
@@ -443,7 +450,7 @@ function BreathingSession({ slug, onComplete, isLogging }: BreathingSessionProps
     return () => { cancelled = true; };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   // animate is stable; prefersReducedMotion is read via ref so OS toggle takes effect next cycle
-  }, [state]);
+  }, [state, phases]);
 
   function start() {
     setState("running");
@@ -455,7 +462,7 @@ function BreathingSession({ slug, onComplete, isLogging }: BreathingSessionProps
   }
 
   function handleFeelingResolved(feeling?: string) {
-    resolveFeelingAndComplete(slug, feeling, elapsedRef.current, () => setState("done_logged"), onComplete);
+    resolveFeelingAndComplete(feeling, elapsedRef.current, () => setState("done_logged"), onComplete);
   }
 
   if (state === "done_pending" || state === "done_logged") {
@@ -464,6 +471,7 @@ function BreathingSession({ slug, onComplete, isLogging }: BreathingSessionProps
         isLogging={isLogging}
         doneState={state}
         elapsed={elapsedRef.current}
+        feelings={feelings}
         onFeelingResolved={handleFeelingResolved}
       />
     );
@@ -476,7 +484,7 @@ function BreathingSession({ slug, onComplete, isLogging }: BreathingSessionProps
       </div>
 
       {state === "running" && (
-        <p className="text-base font-semibold text-slate-600 tracking-wide">{PHASE_LABEL[breathPhase]}</p>
+        <p className="text-base font-semibold text-slate-600 tracking-wide">{breathPhaseLabel}</p>
       )}
 
       {state === "idle" && (
@@ -505,13 +513,22 @@ export default function ExerciseDetailPage({ params }: Props) {
 
   const { data: exercise, isLoading } = useExercise(slug);
   const { mutate: logSession, isPending: isLogging } = useLogExercise();
+  const { mutate: updateFeeling } = useUpdateExerciseLogFeeling();
+  const { data: feelingOptionsData } = useFeelingOptions();
   const [sessionDone, setSessionDone] = useState(false);
 
-  function handleComplete(durationSeconds: number) {
+  const feelings = feelingOptionsData?.length ? feelingOptionsData : DEFAULT_FEELINGS;
+
+  function handleComplete(durationSeconds: number, feeling?: string) {
     setSessionDone(true);
     logSession(
       { exercise_slug: slug, duration_seconds: durationSeconds },
-      { onError: () => setSessionDone(false) }
+      {
+        onSuccess: (log) => {
+          if (feeling) updateFeeling({ logId: log.id, body: { post_session_feeling: feeling } });
+        },
+        onError: () => setSessionDone(false),
+      }
     );
   }
 
@@ -568,11 +585,16 @@ export default function ExerciseDetailPage({ params }: Props) {
 
           {/* Priority: breathing → steps → timer */}
           {isBreathing ? (
-            <BreathingSession slug={slug} onComplete={handleComplete} isLogging={isLogging} />
+            <BreathingSession
+              phases={exercise.phases?.length ? exercise.phases : DEFAULT_BREATHING_PHASES}
+              feelings={feelings}
+              onComplete={handleComplete}
+              isLogging={isLogging}
+            />
           ) : hasSteps ? (
-            <StepSession slug={slug} steps={exercise.steps!} onComplete={handleComplete} isLogging={isLogging} />
+            <StepSession steps={exercise.steps!} feelings={feelings} onComplete={handleComplete} isLogging={isLogging} />
           ) : (
-            <TimerSession slug={slug} onComplete={handleComplete} isLogging={isLogging} />
+            <TimerSession feelings={feelings} onComplete={handleComplete} isLogging={isLogging} />
           )}
 
           {!isLogging && !sessionDone && (

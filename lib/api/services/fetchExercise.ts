@@ -5,6 +5,8 @@ import type {
   ExerciseListParams,
   RecommendedParams,
   LogExerciseRequest,
+  UpdateExerciseLogFeelingRequest,
+  FeelingOption,
 } from "@/types/exercise";
 
 export const fetchExercise = {
@@ -30,6 +32,16 @@ export const fetchExercise = {
 
   getLogHistory: async (): Promise<ExerciseLog[]> => {
     const response = await apiService.get<ExerciseLog[]>("api/v1/exercises/logs/history");
+    return response.data;
+  },
+
+  updateLogFeeling: async (logId: string, body: UpdateExerciseLogFeelingRequest): Promise<ExerciseLog> => {
+    const response = await apiService.patch<ExerciseLog>(`api/v1/exercises/logs/${logId}`, body);
+    return response.data;
+  },
+
+  getFeelingOptions: async (): Promise<FeelingOption[]> => {
+    const response = await apiService.get<FeelingOption[]>("api/v1/exercises/feeling-options");
     return response.data;
   },
 };

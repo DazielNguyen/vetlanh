@@ -54,4 +54,5 @@ export interface QuickPrompt {
 export interface FilterOption {
   key: string;
   label: string;
+  emoji?: string;
 }

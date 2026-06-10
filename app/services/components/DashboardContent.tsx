@@ -14,6 +14,13 @@ import { WeeklyOverview } from "./WeeklyOverview";
 import { CommunitySupport } from "./CommunitySupport";
 import { Phq9ReminderBanner } from "./Phq9ReminderBanner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { DashboardData } from "@/types/dashboard";
+
+const STRESS_LEVEL_LABEL: Record<NonNullable<DashboardData["stress_level"]>, string> = {
+  low: "Thấp",
+  medium: "Trung bình",
+  high: "Cao",
+};
 
 export function DashboardContent() {
     const { data: dashboard } = useDashboard();
@@ -34,8 +41,12 @@ export function DashboardContent() {
                                 <div>
                                     <CardTitle className="text-xl text-primary font-bold">Mức độ căng thẳng</CardTitle>
                                     <div className="flex items-baseline gap-2 mt-2">
-                                        <span className="text-4xl font-extrabold text-slate-800">Thấp</span>
-                                        <span className="text-sm text-emerald-500 font-medium">~15% tuần này</span>
+                                        <span className="text-4xl font-extrabold text-slate-800">
+                                            {dashboard?.stress_level ? STRESS_LEVEL_LABEL[dashboard.stress_level] : "Thấp"}
+                                        </span>
+                                        <span className="text-sm text-emerald-500 font-medium">
+                                            {dashboard?.stress_trend_text ?? "~15% tuần này"}
+                                        </span>
                                     </div>
                                 </div>
                                 <span className="text-xs text-slate-400 font-medium bg-slate-50 px-3 py-1 rounded-full">7 ngày qua</span>

@@ -6,6 +6,11 @@ export interface ExerciseStep {
   release_seconds: number | null; // PMR only; null for all other exercises
 }
 
+export interface BreathingPhase {
+  label: string;
+  seconds: number;
+}
+
 export interface Exercise {
   slug: string;
   title: string;
@@ -15,6 +20,7 @@ export interface Exercise {
   duration_seconds?: number;
   duration_minutes?: number; // returned by /recommended endpoint
   steps?: ExerciseStep[];
+  phases?: BreathingPhase[]; // breathing exercises only
 }
 
 export interface ExerciseLog {
@@ -37,4 +43,14 @@ export interface RecommendedParams {
 export interface LogExerciseRequest {
   exercise_slug: string;
   duration_seconds: number;
+}
+
+export interface UpdateExerciseLogFeelingRequest {
+  post_session_feeling: string;
+}
+
+export interface FeelingOption {
+  key: string;
+  label: string;
+  emoji: string;
 }

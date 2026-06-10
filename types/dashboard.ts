@@ -21,6 +21,8 @@ export interface DashboardData {
   today_checked_in: boolean;
   last_mood: number | null;
   sparkline: number[];
+  stress_level?: "low" | "medium" | "high";
+  stress_trend_text?: string;
   recommended_exercises: RecommendedExercise[];
   phq9_reminder: Phq9Reminder;
 }
