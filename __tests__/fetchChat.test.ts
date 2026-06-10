@@ -126,7 +126,7 @@ describe("fetchChat.createConversation", () => {
     await fetchChat.createConversation();
 
     expect(mockPost).toHaveBeenCalledTimes(1);
-    expect(mockPost).toHaveBeenCalledWith("api/v1/chat/conversations");
+    expect(mockPost).toHaveBeenCalledWith("api/v1/chat/conversations", { title: null });
   });
 
   it("returns response.data directly", async () => {
@@ -152,7 +152,7 @@ describe("fetchChat.listConversations", () => {
 
     await fetchChat.listConversations();
 
-    expect(mockGet).toHaveBeenCalledWith("api/v1/chat/conversations");
+    expect(mockGet).toHaveBeenCalledWith("api/v1/chat/conversations", undefined);
   });
 
   it("returns an array of conversations", async () => {
@@ -415,7 +415,7 @@ describe("fetchChat.streamChatMessage — SSE parsing", () => {
     const callArgs = (global.fetch as jest.Mock).mock.calls[0];
     const options = callArgs[1] as RequestInit;
     expect(options.method).toBe("POST");
-    expect(JSON.parse(options.body as string)).toEqual({ message: "my message" });
+    expect(JSON.parse(options.body as string)).toEqual({ content: "my message" });
   });
 
   it("passes the AbortSignal to fetch", async () => {
