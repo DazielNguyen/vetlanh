@@ -3,7 +3,25 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, PlayCircle, Dumbbell } from "lucide-react";
+import {
+  Loader2,
+  PlayCircle,
+  Bell,
+  Sparkles,
+  Wind,
+  Brain,
+  Anchor,
+  NotebookPen,
+  Waves,
+  CloudRain,
+  CloudDrizzle,
+  Moon,
+  Zap,
+  Flame,
+  X,
+  Clock,
+  type LucideIcon,
+} from "lucide-react";
 import { useExerciseList } from "@/hooks/useExercise";
 import { useExerciseReminder } from "@/hooks/useNotifications";
 import { useExerciseCategories, useExerciseMoodFilters } from "@/hooks/useServices";
@@ -24,12 +42,21 @@ const FALLBACK_MOODS = [
   { key: "angry", label: "Tức giận" },
 ];
 
-const EMOJI_MOOD_MAP: Record<string, string> = {
-  anxious: "😰",
-  sad: "😢",
-  cant_sleep: "🌙",
-  need_energy: "⚡",
-  angry: "😤",
+// All filter chips share one icon family (lucide, strokeWidth 2) for a consistent look
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  breathing: Wind,
+  meditation: Brain,
+  grounding: Anchor,
+  cbt: NotebookPen,
+  relaxation: Waves,
+};
+
+const MOOD_ICONS: Record<string, LucideIcon> = {
+  anxious: CloudRain,
+  sad: CloudDrizzle,
+  cant_sleep: Moon,
+  need_energy: Zap,
+  angry: Flame,
 };
 
 function formatDuration(seconds?: number): string {
@@ -47,9 +74,6 @@ export function ExerciseList() {
 
   const categoryOptions = [{ key: "", label: "Tất cả" }, ...(categoriesData ?? FALLBACK_CATEGORIES)];
   const allMoods = moodsData ?? FALLBACK_MOODS;
-  const moodEmoji = (m: { key: string; emoji?: string }) => m.emoji ?? EMOJI_MOOD_MAP[m.key];
-  const emojiMoods = allMoods.filter((m) => moodEmoji(m));
-  const extraMoods = allMoods.filter((m) => !moodEmoji(m));
 
   const params = {
     ...(mood && { mood }),
@@ -60,133 +84,91 @@ export function ExerciseList() {
     mood || category ? params : undefined
   );
 
+  const chipClass = (active: boolean) =>
+    `flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-2xl border transition ${
+      active
+        ? "bg-primary text-white border-primary shadow-sm"
+        : "bg-background/60 text-foreground/60 border-border/40 hover:border-primary/40 hover:text-foreground"
+    }`;
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-bold text-slate-800">Lựa chọn bài tập hôm nay</h2>
+        <h2 className="text-xl font-bold text-primary">Lựa chọn bài tập hôm nay</h2>
       </div>
 
       {/* Exercise reminder banner */}
       {reminder?.should_notify && (
-        <div className="flex items-start gap-3 px-4 py-3 rounded-2xl bg-emerald-50 border border-emerald-200">
-          <Dumbbell className="h-4 w-4 text-emerald-600 mt-0.5 shrink-0" />
-          <p className="text-sm font-semibold text-emerald-800">
+        <div className="flex items-start gap-3 px-4 py-3 rounded-2xl bg-secondary/40 border border-secondary">
+          <Bell className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+          <p className="text-sm font-semibold text-foreground/80">
             Đã đến giờ tập hôm nay! Chọn một bài tập bên dưới để bắt đầu.
           </p>
         </div>
       )}
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        <div className="flex gap-1.5 flex-wrap">
-          {categoryOptions.map((opt) => (
-            <button
-              key={opt.key}
-              onClick={() => setCategory(opt.key)}
-              className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition ${
-                category === opt.key
-                  ? "bg-primary text-white border-primary"
-                  : "bg-white text-slate-600 border-slate-200 hover:border-primary/50"
-              }`}
-            >
+      {/* Filters - one chip style across categories and moods, single scrollable row */}
+      <div className="flex gap-1.5 overflow-x-auto pb-2 mb-4 -mx-1 px-1">
+        {categoryOptions.map((opt) => {
+          const Icon = opt.key === "" ? Sparkles : CATEGORY_ICONS[opt.key] ?? Sparkles;
+          return (
+            <button key={`cat-${opt.key}`} onClick={() => setCategory(opt.key)} className={`${chipClass(category === opt.key)} shrink-0`}>
+              <Icon className="w-3.5 h-3.5" strokeWidth={2} />
               {opt.label}
             </button>
-          ))}
-        </div>
-        <div className="flex gap-2 flex-wrap">
-          {emojiMoods.map((opt) => (
-            <button
-              key={opt.key}
-              onClick={() => setMood(opt.key)}
-              className={`flex flex-col items-center gap-0.5 px-3 py-2 rounded-2xl border transition ${
-                mood === opt.key
-                  ? "bg-emerald-50 border-emerald-400 ring-2 ring-emerald-400"
-                  : "bg-white border-slate-200 hover:border-emerald-300"
-              }`}
-            >
-              <span className="text-2xl leading-none">{moodEmoji(opt)}</span>
-              <span className="text-[10px] font-semibold text-slate-600">{opt.label}</span>
+          );
+        })}
+        <div className="w-px bg-border/40 shrink-0 my-1" />
+        {allMoods.map((opt) => {
+          const Icon = MOOD_ICONS[opt.key] ?? Sparkles;
+          return (
+            <button key={`mood-${opt.key}`} onClick={() => setMood(opt.key)} className={`${chipClass(mood === opt.key)} shrink-0`}>
+              <Icon className="w-3.5 h-3.5" strokeWidth={2} />
+              {opt.label}
             </button>
-          ))}
-        </div>
-        {extraMoods.length > 0 && (
-          <div className="flex gap-1.5 flex-wrap mt-1">
-            {extraMoods.map((opt) => (
-              <button
-                key={opt.key}
-                onClick={() => setMood(opt.key)}
-                className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition ${
-                  mood === opt.key
-                    ? "bg-emerald-600 text-white border-emerald-600"
-                    : "bg-white text-slate-600 border-slate-200 hover:border-emerald-300"
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        )}
+          );
+        })}
         {mood && (
-          <button
-            onClick={() => setMood("")}
-            className="text-xs font-semibold text-emerald-600 underline underline-offset-2 hover:text-emerald-700 transition"
-          >
-            Xem tất cả
+          <button onClick={() => setMood("")} className={`${chipClass(false)} shrink-0`}>
+            <X className="w-3.5 h-3.5" strokeWidth={2} />
+            Bỏ lọc
           </button>
         )}
       </div>
 
       {isLoading ? (
         <div className="flex items-center justify-center h-32">
-          <Loader2 className="h-6 w-6 animate-spin text-slate-300" />
+          <Loader2 className="h-6 w-6 animate-spin text-foreground/20" />
         </div>
       ) : !exercises || exercises.length === 0 ? (
-        <p className="text-sm text-slate-400 text-center py-8">
+        <p className="text-sm text-foreground/40 text-center py-8">
           Không có bài tập nào phù hợp với lựa chọn hiện tại.
         </p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           {exercises.map((exercise) => (
             <Card
               key={exercise.slug}
-              className="border-slate-100 shadow-sm hover:shadow-md transition-shadow rounded-3xl overflow-hidden group bg-white"
+              className="card-lifted border-none rounded-2xl overflow-hidden group"
             >
-              <CardContent className="p-6">
-                <div className="flex-1">
-                  <h3 className="font-bold text-slate-800 text-lg group-hover:text-emerald-600 transition-colors">
+              <CardContent className="p-4 flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <h3 className="font-bold text-foreground text-sm truncate group-hover:text-primary transition-colors">
                     {exercise.title}
                   </h3>
-                  <p className="text-sm text-slate-500 mt-1 line-clamp-2 leading-relaxed">
-                    {exercise.description}
-                  </p>
-
-                  {exercise.mood_tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {exercise.mood_tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
+                  {exercise.duration_seconds && (
+                    <p className="flex items-center gap-1 text-xs text-foreground/40 mt-1">
+                      <Clock className="w-3 h-3" strokeWidth={2} />
+                      {formatDuration(exercise.duration_seconds)}
+                    </p>
                   )}
-
-                  <div className="mt-4 flex items-center justify-between">
-                    {exercise.duration_seconds && (
-                      <span className="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-50 text-slate-600 border border-slate-100">
-                        ⏱ {formatDuration(exercise.duration_seconds)}
-                      </span>
-                    )}
-                    <Link
-                      href={`/services/exercises/${exercise.slug}`}
-                      className="flex items-center gap-1.5 text-sm font-bold text-white bg-primary px-4 py-2 rounded-xl hover:bg-primary/90 transition ml-auto"
-                    >
-                      <PlayCircle className="w-4 h-4" /> Bắt đầu
-                    </Link>
-                  </div>
                 </div>
+                <Link
+                  href={`/services/exercises/${exercise.slug}`}
+                  className="flex items-center justify-center w-9 h-9 rounded-full bg-primary text-white hover:bg-primary/90 transition shrink-0"
+                >
+                  <PlayCircle className="w-4 h-4" />
+                </Link>
               </CardContent>
             </Card>
           ))}

@@ -1,7 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, TrendingUp, CalendarCheck, Trophy } from "lucide-react";
+import { Loader2, Sparkles, Clock, Flame } from "lucide-react";
 import { useExerciseLogs } from "@/hooks/useExercise";
 import { formatDate } from "@/lib/utils/formatDate";
 
@@ -12,6 +11,11 @@ function getTodayLabel(dateStr: string): string {
   if (diff === 0) return "Hôm nay";
   if (diff === 1) return "Hôm qua";
   return formatDate(dateStr);
+}
+
+function humanizeSlug(slug: string): string {
+  const words = slug.split("-");
+  return words.map((w, i) => (i === 0 ? w.charAt(0).toUpperCase() + w.slice(1) : w)).join(" ");
 }
 
 function totalMinutes(logs: { duration_seconds: number }[]): number {
@@ -47,83 +51,72 @@ export function ProgressTracker() {
 
   if (isLoading) {
     return (
-      <Card className="rounded-[32px] border-slate-100 shadow-sm overflow-hidden sticky top-6 bg-white">
-        <div className="h-2 bg-linear-to-r from-emerald-400 to-[#6D8A96]" />
-        <CardContent className="p-6 flex items-center justify-center h-40">
-          <Loader2 className="h-5 w-5 animate-spin text-slate-300" />
-        </CardContent>
-      </Card>
+      <div className="flex items-center justify-center h-24">
+        <Loader2 className="h-5 w-5 animate-spin text-foreground/20" />
+      </div>
     );
   }
 
   const safeLogs = logs ?? [];
   const mins = totalMinutes(safeLogs);
   const streak = currentStreak(safeLogs);
-  const recentLogs = safeLogs.slice(0, 5);
+  const recentLogs = safeLogs.filter((log) => log.duration_seconds > 0).slice(0, 5);
 
   return (
-    <Card className="rounded-[32px] border-slate-100 shadow-sm overflow-hidden sticky top-6 bg-white">
-      <div className="h-2 bg-linear-to-r from-emerald-400 to-[#6D8A96]" />
-      <CardHeader className="pb-4 border-b border-slate-50">
-        <CardTitle className="text-lg font-bold text-slate-800 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-emerald-600" />
-          Tiến trình của bạn
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="p-6 space-y-6">
-        {/* Stats */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-[#FAFDFB] border border-slate-100 rounded-2xl p-4 text-center">
-            <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-3">
-              <CalendarCheck className="w-5 h-5" />
+    <div className="flex flex-col lg:flex-row lg:items-center gap-6">
+      {/* Title + stats */}
+      <div className="flex items-center gap-6 shrink-0">
+        <h2 className="text-lg font-bold text-primary flex items-center gap-2 shrink-0">
+          <Sparkles className="w-5 h-5" strokeWidth={2} />
+          Tiến trình
+        </h2>
+
+        <div className="flex items-center gap-5 pl-6 border-l border-border/40">
+          <div className="flex items-center gap-2">
+            <div className="w-9 h-9 rounded-full bg-secondary/60 text-primary flex items-center justify-center shrink-0">
+              <Clock className="w-4 h-4" strokeWidth={2} />
             </div>
-            <p className="text-lg font-bold text-slate-800">
-              {mins}
-              <span className="text-sm font-medium text-slate-500 ml-1">phút</span>
-            </p>
-            <p className="text-xs text-slate-500 mt-1">Đã tập luyện</p>
+            <div>
+              <p className="text-base font-bold text-foreground leading-none">
+                {mins}<span className="text-xs font-medium text-foreground/50 ml-1">phút</span>
+              </p>
+              <p className="text-xs text-foreground/50 mt-1">Đã tập luyện</p>
+            </div>
           </div>
 
-          <div className="bg-[#FAFDFB] border border-slate-100 rounded-2xl p-4 text-center">
-            <div className="w-10 h-10 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center mx-auto mb-3">
-              <Trophy className="w-5 h-5" />
+          <div className="flex items-center gap-2">
+            <div className="w-9 h-9 rounded-full bg-secondary/60 text-primary flex items-center justify-center shrink-0">
+              <Flame className="w-4 h-4" strokeWidth={2} />
             </div>
-            <p className="text-lg font-bold text-slate-800">
-              {streak}
-              <span className="text-sm font-medium text-slate-500 ml-1">ngày</span>
-            </p>
-            <p className="text-xs text-slate-500 mt-1">Chuỗi liên tiếp</p>
+            <div>
+              <p className="text-base font-bold text-foreground leading-none">
+                {streak}<span className="text-xs font-medium text-foreground/50 ml-1">ngày</span>
+              </p>
+              <p className="text-xs text-foreground/50 mt-1">Chuỗi liên tiếp</p>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Recent activity */}
-        <div>
-          <p className="text-sm font-bold text-slate-700 mb-3">Hoạt động gần đây</p>
-          {recentLogs.length === 0 ? (
-            <p className="text-xs text-slate-400">Chưa có buổi tập nào. Hãy bắt đầu ngay!</p>
-          ) : (
-            <div className="space-y-2">
-              {recentLogs.map((log) => (
-                <div
-                  key={log.id}
-                  className="flex items-center justify-between text-xs text-slate-600 bg-slate-50 px-3 py-2 rounded-xl"
-                >
-                  <span className="font-semibold">{log.exercise_slug}</span>
-                  <div className="flex items-center gap-2 text-slate-400">
-                    <span>{Math.round(log.duration_seconds / 60)} phút</span>
-                    <span>·</span>
-                    <span>{log.completed_at ? getTodayLabel(log.completed_at) : "—"}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <p className="text-xs text-slate-400 text-center">
-          Tổng: {safeLogs.length} buổi tập hoàn thành
-        </p>
-      </CardContent>
-    </Card>
+      {/* Recent activity - horizontal scroll */}
+      <div className="flex-1 min-w-0 lg:pl-6 lg:border-l border-border/40">
+        {recentLogs.length === 0 ? (
+          <p className="text-xs text-foreground/40">Chưa có buổi tập nào. Hãy bắt đầu ngay!</p>
+        ) : (
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {recentLogs.map((log) => (
+              <div
+                key={log.id}
+                className="flex items-center gap-2 text-xs text-foreground/60 bg-background/60 px-3 py-2 rounded-xl shrink-0"
+              >
+                <span className="font-semibold text-foreground">{humanizeSlug(log.exercise_slug)}</span>
+                <span className="text-foreground/40">{Math.round(log.duration_seconds / 60)} phút</span>
+                {log.completed_at && <span className="text-foreground/40">{getTodayLabel(log.completed_at)}</span>}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

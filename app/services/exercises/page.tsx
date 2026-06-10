@@ -10,15 +10,15 @@ export default function ExercisesPage() {
                 <p className="text-muted-foreground mt-1 text-lg">Dành ra vài phút mỗi ngày tĩnh tâm để xoa dịu tâm trí và phục hồi năng lượng.</p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Left: Exercise Categories */}
-                <div className="lg:col-span-2 card-lifted rounded-3xl p-6">
-                    <ExerciseList />
+            <div className="space-y-8">
+                {/* Progress & Stats - horizontal band */}
+                <div className="card-lifted rounded-3xl p-6">
+                    <ProgressTracker />
                 </div>
 
-                {/* Right: Progress & Stats */}
-                <div className="space-y-6 card-lifted rounded-3xl p-6">
-                    <ProgressTracker />
+                {/* Exercise Categories */}
+                <div className="card-lifted rounded-3xl p-6">
+                    <ExerciseList />
                 </div>
             </div>
         </div>
