@@ -39,6 +39,56 @@ function slugify(title: string) {
         .replace(/\s+/g, "-");
 }
 
+// ── Direct Cloudinary upload helpers ──────────────────────────────────────────
+
+type CloudinaryParams = {
+    upload_url: string;
+    api_key: string;
+    timestamp: number;
+    signature: string;
+    folder: string;
+};
+
+function xhrUpload(
+    url: string,
+    fd: FormData,
+    onProgress: (p: number) => void
+): Promise<{ secure_url: string; public_id: string }> {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", url);
+        xhr.upload.addEventListener("progress", e => {
+            if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100));
+        });
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                resolve(JSON.parse(xhr.responseText));
+            } else {
+                reject(new Error(JSON.parse(xhr.responseText)?.error?.message ?? "Cloudinary upload thất bại"));
+            }
+        };
+        xhr.onerror = () => reject(new Error("Network error"));
+        xhr.send(fd);
+    });
+}
+
+async function uploadSoundFile(soundId: string, file: File, onProgress: (p: number) => void): Promise<Sound> {
+    const paramsRes = await apiService.post<CloudinaryParams>(`api/v1/sounds/${soundId}/upload-url`);
+    const p = paramsRes.data;
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("api_key", p.api_key);
+    fd.append("timestamp", String(p.timestamp));
+    fd.append("signature", p.signature);
+    fd.append("folder", p.folder);
+    const cloud = await xhrUpload(p.upload_url, fd, onProgress);
+    const patchRes = await apiService.patch<Sound>(`api/v1/sounds/${soundId}`, {
+        audio_url: cloud.secure_url,
+        cloudinary_public_id: cloud.public_id,
+    });
+    return patchRes.data;
+}
+
 // ── Shared ────────────────────────────────────────────────────────────────────
 
 function CloseBtn({ onClick }: { onClick: () => void }) {
@@ -90,15 +140,13 @@ function AddSoundModal({ onClose, onAdded }: { onClose: () => void; onAdded: (s:
             return;
         }
 
-        // Step 2 — upload file → Cloudinary URL auto-saved to DB
+        // Step 2 — upload directly to Cloudinary, then PATCH BE with result
         setStep("uploading");
         try {
-            const fd = new FormData();
-            fd.append("file", file);
-            const res = await apiService.upload<Sound>(`api/v1/sounds/${sound.id}/upload`, fd, setProgress);
-            onAdded(res.data);
+            const updated = await uploadSoundFile(sound.id, file, setProgress);
+            onAdded(updated);
         } catch (e) {
-            setError(apiDetail(e, "Upload thất bại — record đã tạo, thử upload lại từ danh sách."));
+            setError((e as Error).message || "Upload thất bại — record đã tạo, thử upload lại từ danh sách.");
             setStep("idle");
         }
     };
@@ -202,13 +250,11 @@ function ReuploadModal({ sound, onClose, onUploaded }: { sound: Sound; onClose: 
     const upload = async () => {
         if (!file) return;
         setUploading(true); setError("");
-        const fd = new FormData();
-        fd.append("file", file);
         try {
-            const res = await apiService.upload<Sound>(`api/v1/sounds/${sound.id}/upload`, fd, setProgress);
-            onUploaded(res.data);
+            const updated = await uploadSoundFile(sound.id, file, setProgress);
+            onUploaded(updated);
         } catch (e) {
-            setError(apiDetail(e, "Upload thất bại."));
+            setError((e as Error).message || "Upload thất bại.");
         } finally { setUploading(false); }
     };
 
