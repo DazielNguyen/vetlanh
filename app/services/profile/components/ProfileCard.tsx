@@ -3,12 +3,10 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Pencil, Check, X, MailWarning, Loader2 } from "lucide-react";
+import { Pencil, Check, X } from "lucide-react";
 import { useCurrentUser, useUpdateProfile } from "@/hooks/useUser";
 import { useDashboard } from "@/hooks/useDashboard";
 import { formatImageUrl } from "@/lib/utils/formatImageUrl";
-import { fetchAuth } from "@/lib/api/services/fetchAuth";
-import { toast } from "sonner";
 
 export function ProfileCard() {
     const { data: user } = useCurrentUser();
@@ -33,21 +31,6 @@ export function ProfileCard() {
 
     const { data: dashboard } = useDashboard();
     const avatarSrc = formatImageUrl(user?.avatar_url) ?? "/images/placeholder-user.jpg";
-
-    const [sendingVerify, setSendingVerify] = useState(false);
-
-    async function handleResendVerification() {
-        if (!user?.email || sendingVerify) return;
-        setSendingVerify(true);
-        try {
-            await fetchAuth.resendVerification(user.email);
-            toast.success("Email xác minh đã được gửi!", { description: "Kiểm tra hộp thư của bạn." });
-        } catch {
-            toast.error("Không thể gửi email. Vui lòng thử lại sau.");
-        } finally {
-            setSendingVerify(false);
-        }
-    }
 
     return (
         <div className="space-y-6">
@@ -90,26 +73,6 @@ export function ProfileCard() {
                         )}
                         <p className="text-xs text-foreground/40">{user?.email ?? "Chưa có email"}</p>
                     </div>
-
-                    {user && !user.is_verified && (
-                        <div className="flex items-start gap-3 rounded-2xl bg-amber-50/80 border border-amber-200/60 px-4 py-3 text-left">
-                            <MailWarning className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                            <div className="flex-1 min-w-0">
-                                <p className="text-xs font-semibold text-amber-700">Email chưa xác minh</p>
-                                <p className="text-xs text-amber-600/80 mt-0.5">Xác minh để bảo vệ tài khoản của bạn.</p>
-                            </div>
-                            <button
-                                onClick={handleResendVerification}
-                                disabled={sendingVerify}
-                                className="shrink-0 text-xs font-semibold text-amber-700 hover:text-amber-900 underline underline-offset-2 transition-colors disabled:opacity-50 flex items-center gap-1"
-                            >
-                                {sendingVerify
-                                    ? <Loader2 className="w-3 h-3 animate-spin" />
-                                    : "Gửi lại"
-                                }
-                            </button>
-                        </div>
-                    )}
                 </CardContent>
             </Card>
 

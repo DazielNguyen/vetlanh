@@ -1,18 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { User, Shield, Palette, Globe, LogOut, ChevronRight } from "lucide-react";
+import { User, Shield, Palette, Globe, LogOut, ChevronRight, MailCheck, Loader2 } from "lucide-react";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { logout } from "@/lib/redux/slices/authSlice";
+import { useCurrentUser } from "@/hooks/useUser";
+import { fetchAuth } from "@/lib/api/services/fetchAuth";
+import { toast } from "sonner";
 
-const settingsSections = [
-    {
-        title: "Tài khoản",
-        items: [
-            { icon: User, label: "Thông tin cá nhân", desc: "Tên, email, số điện thoại" },
-            { icon: Shield, label: "Bảo mật", desc: "Mật khẩu, xác thực 2 lớp" },
-        ],
-    },
+const appearanceSections = [
     {
         title: "Tùy chỉnh",
         items: [
@@ -24,15 +21,87 @@ const settingsSections = [
 
 export function SettingsList() {
     const dispatch = useAppDispatch();
+    const { data: user } = useCurrentUser();
+    const [sendingVerify, setSendingVerify] = useState(false);
 
     function handleLogout() {
         dispatch(logout());
         window.location.replace("/login");
     }
 
+    async function handleResendVerification() {
+        if (!user?.email || sendingVerify) return;
+        setSendingVerify(true);
+        try {
+            await fetchAuth.resendVerification(user.email);
+            toast.success("Email xác minh đã được gửi!", { description: "Kiểm tra hộp thư của bạn." });
+        } catch {
+            toast.error("Không thể gửi email. Vui lòng thử lại sau.");
+        } finally {
+            setSendingVerify(false);
+        }
+    }
+
     return (
         <div className="space-y-6">
-            {settingsSections.map((section) => (
+            {/* Tài khoản — includes dynamic email verification row */}
+            <Card className="card-lifted border-none rounded-3xl overflow-hidden divide-y divide-border/30">
+                <h2 className="px-4 pt-4 pb-2 text-sm font-bold text-foreground/40 uppercase tracking-wider">Tài khoản</h2>
+
+                <button className="w-full flex items-center gap-4 p-4 hover:bg-secondary/30 transition text-left">
+                    <div className="w-10 h-10 rounded-2xl bg-secondary/60 flex items-center justify-center shrink-0">
+                        <User className="w-5 h-5 text-primary" strokeWidth={2} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-foreground text-sm">Thông tin cá nhân</h3>
+                        <p className="text-xs text-foreground/40">Tên, email, số điện thoại</p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-foreground/20 shrink-0" strokeWidth={2} />
+                </button>
+
+                <button className="w-full flex items-center gap-4 p-4 hover:bg-secondary/30 transition text-left">
+                    <div className="w-10 h-10 rounded-2xl bg-secondary/60 flex items-center justify-center shrink-0">
+                        <Shield className="w-5 h-5 text-primary" strokeWidth={2} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-foreground text-sm">Bảo mật</h3>
+                        <p className="text-xs text-foreground/40">Mật khẩu, xác thực 2 lớp</p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-foreground/20 shrink-0" strokeWidth={2} />
+                </button>
+
+                {/* Email verification row — always visible */}
+                <button
+                    onClick={!user?.is_verified ? handleResendVerification : undefined}
+                    disabled={sendingVerify || user?.is_verified}
+                    className="w-full flex items-center gap-4 p-4 hover:bg-secondary/30 transition text-left disabled:cursor-default disabled:hover:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                >
+                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${user?.is_verified ? "bg-emerald-100/80" : "bg-amber-100/80"}`}>
+                        {sendingVerify
+                            ? <Loader2 className="w-5 h-5 text-amber-500 animate-spin" strokeWidth={2} />
+                            : <MailCheck className={`w-5 h-5 ${user?.is_verified ? "text-emerald-500" : "text-amber-500"}`} strokeWidth={2} />
+                        }
+                    </div>
+                    <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-foreground text-sm">Xác minh email</h3>
+                        <p className="text-xs text-foreground/40">
+                            {user?.is_verified ? "Email đã được xác minh" : "Nhấn để gửi lại email xác minh"}
+                        </p>
+                    </div>
+                    {user?.is_verified ? (
+                        <span className="text-xs font-semibold text-emerald-600 bg-emerald-100/80 px-2 py-0.5 rounded-full shrink-0">
+                            Đã xác minh
+                        </span>
+                    ) : (
+                        <span className="text-xs font-semibold text-amber-600 bg-amber-100/80 px-2 py-0.5 rounded-full shrink-0">
+                            Chưa xác minh
+                        </span>
+                    )}
+                </button>
+            </Card>
+
+            {/* Appearance sections */}
+            {appearanceSections.map((section) => (
                 <Card key={section.title} className="card-lifted border-none rounded-3xl overflow-hidden divide-y divide-border/30">
                     <h2 className="px-4 pt-4 pb-2 text-sm font-bold text-foreground/40 uppercase tracking-wider">{section.title}</h2>
                     {section.items.map((item) => (
@@ -50,7 +119,7 @@ export function SettingsList() {
                 </Card>
             ))}
 
-            {/* Logout — same compact row style as settings items, for visual consistency */}
+            {/* Logout */}
             <Card className="card-lifted border-none rounded-3xl overflow-hidden">
                 <button
                     onClick={handleLogout}
