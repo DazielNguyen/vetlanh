@@ -17,9 +17,9 @@ const Toaster = ({ ...props }: ToasterProps) => {
           toast: [
             "group/toast",
             "!rounded-2xl",
-            "!bg-[var(--surface-2)] !backdrop-blur-md",
-            "!border !border-[var(--glass-border)]",
-            "!shadow-[0_4px_20px_rgba(120,157,188,0.12)]",
+            "!bg-white/90 !backdrop-blur-md",
+            "!border !border-white/60",
+            "!shadow-[0_8px_32px_rgba(0,0,0,0.10)]",
             "!text-[#3D3530]",
             "!px-4 !py-3.5",
             "!gap-3",
@@ -31,14 +31,17 @@ const Toaster = ({ ...props }: ToasterProps) => {
           warning: "!border-l-2 !border-l-yellow-400 [&>[data-icon]]:!text-yellow-500",
           info: "!border-l-2 !border-l-[#789dbc] [&>[data-icon]]:!text-[#789dbc]",
           closeButton: [
+            "!static !translate-x-0 !translate-y-0",
+            "!relative",
             "!rounded-lg",
-            "!bg-[var(--surface-2)] !border-[var(--glass-border)]",
+            "!bg-black/5 !border-black/10",
             "!text-[#789dbc]",
-            "hover:!bg-[var(--secondary)]",
+            "hover:!bg-black/10",
             "!transition-colors",
+            "!w-6 !h-6",
           ].join(" "),
           actionButton: "!rounded-xl !bg-[#789dbc] !text-white hover:!bg-[#5b82a3] !text-xs !font-semibold !transition-colors",
-          cancelButton: "!rounded-xl !bg-[var(--surface-2)] !text-[#789dbc] hover:!bg-[var(--secondary)] !text-xs !font-semibold !transition-colors",
+          cancelButton: "!rounded-xl !bg-black/5 !text-[#789dbc] hover:!bg-black/10 !text-xs !font-semibold !transition-colors",
         },
       }}
       {...props}
