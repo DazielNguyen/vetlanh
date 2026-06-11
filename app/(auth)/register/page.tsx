@@ -194,7 +194,6 @@ export default function RegisterPage() {
                         <div className="space-y-2.5">
                             <Label htmlFor="username" className="text-white/80 font-semibold ml-1">Tên đăng nhập</Label>
                             <IconInput icon={User} id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="User" required minLength={3} maxLength={50} />
-                            <p className="text-xs text-white/40 ml-1">Chữ cái, số, dấu - và _. Từ 3 đến 50 ký tự.</p>
                         </div>
                         <div className="space-y-2.5">
                             <Label htmlFor="username-password" className="text-white/80 font-semibold ml-1">Mật khẩu</Label>
