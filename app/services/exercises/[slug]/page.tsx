@@ -19,7 +19,7 @@ function formatTime(seconds: number): string {
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
-// ─── Feeling picker (shared across all session types) ────────────────────────
+// ─── Feeling picker ────────────────────────────────────────────────────────────
 
 const DEFAULT_FEELINGS: FeelingOption[] = [
   { key: "much_better", emoji: "😌", label: "Rất nhẹ" },
@@ -50,7 +50,7 @@ function FeelingPicker({ feelings, onSelect, onSkip }: FeelingPickerProps) {
           <button
             key={f.key}
             onClick={() => onSelect(f.key)}
-            className="flex flex-col items-center gap-1 px-3 py-3 rounded-2xl border border-border/40 bg-white hover:border-primary/40 hover:bg-secondary/40 transition"
+            className="flex flex-col items-center gap-1 px-3 py-3 rounded-2xl border border-border/40 bg-white hover:border-primary/40 hover:bg-secondary/40 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
           >
             <span className="text-2xl leading-none">{f.emoji}</span>
             <span className="text-xs font-semibold text-foreground/70">{f.label}</span>
@@ -94,10 +94,19 @@ function SessionDoneView({ isLogging, doneState, elapsed, feelings, onFeelingRes
     <div className="flex flex-col items-center gap-4 text-center py-6">
       {doneState === "done_logged" && isLogging ? (
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      ) : doneState === "done_pending" ? (
-        <CheckCircle className="h-10 w-10 text-primary/30" />
       ) : (
-        <CheckCircle className="h-12 w-12 text-primary" />
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 220, damping: 14 }}
+          className="relative"
+        >
+          {/* celebratory pulse ring */}
+          <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping" />
+          <CheckCircle
+            className={`h-14 w-14 relative z-10 ${doneState === "done_pending" ? "text-primary/50" : "text-primary"}`}
+          />
+        </motion.div>
       )}
       <p className="text-lg font-bold text-foreground">Tuyệt vời! Buổi tập hoàn thành.</p>
       {elapsed != null && (
@@ -116,7 +125,7 @@ function SessionDoneView({ isLogging, doneState, elapsed, feelings, onFeelingRes
   );
 }
 
-// ─── General session timer (non-step exercises) ──────────────────────────────
+// ─── General session timer ────────────────────────────────────────────────────
 
 interface TimerSessionProps {
   feelings: FeelingOption[];
@@ -147,7 +156,7 @@ function TimerSession({ feelings, onComplete, isLogging }: TimerSessionProps) {
 
   function complete() {
     stop();
-    doneElapsedRef.current = elapsedRef.current; // capture before any queued interval tick
+    doneElapsedRef.current = elapsedRef.current;
     setState("done_pending");
   }
 
@@ -194,7 +203,6 @@ function TimerSession({ feelings, onComplete, isLogging }: TimerSessionProps) {
           <Button variant="outline" onClick={cancel} className="flex-1 h-11 rounded-2xl gap-2 text-foreground/70">
             <Square className="h-4 w-4" /> Hủy
           </Button>
-          {/* transitions to done_pending on click — unmounts before isLogging=true, so no disabled guard needed */}
           <Button
             onClick={complete}
             className="flex-1 h-11 rounded-2xl font-bold gap-2 bg-primary hover:bg-primary/90"
@@ -233,11 +241,7 @@ function StepCountdown({ step, stepIndex, totalSteps, onNext, isLastStep }: Step
     setCountdown(duration);
     timerRef.current = setInterval(() => {
       setCountdown((c) => {
-        if (c <= 1) {
-          clearTimer();
-          next();
-          return 0;
-        }
+        if (c <= 1) { clearTimer(); next(); return 0; }
         return c - 1;
       });
     }, 1000);
@@ -264,32 +268,45 @@ function StepCountdown({ step, stepIndex, totalSteps, onNext, isLastStep }: Step
       <p className="text-sm text-foreground/75 leading-relaxed">{step.instruction}</p>
 
       {isPmr && (
-        <div className="rounded-2xl bg-background/60 p-5 flex flex-col items-center gap-3">
+        <AnimatePresence mode="wait">
           {phase === "idle" && (
-            <Button onClick={startTense} className="w-full h-10 rounded-xl font-bold gap-2">
-              <Play className="h-4 w-4" /> Bắt đầu bước này
-            </Button>
+            <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="rounded-2xl bg-background/60 p-5 flex flex-col items-center gap-3">
+              <Button onClick={startTense} className="w-full h-10 rounded-xl font-bold gap-2">
+                <Play className="h-4 w-4" /> Bắt đầu bước này
+              </Button>
+            </motion.div>
           )}
           {phase === "tense" && (
-            <>
-              <p className="text-xs font-semibold text-primary uppercase tracking-wide">Căng cơ</p>
-              <span className="text-5xl font-black text-foreground tabular-nums">{countdown}s</span>
-              <p className="text-xs text-foreground/60">Giữ căng trong {step.tense_seconds} giây</p>
-            </>
+            <motion.div key="tense"
+              initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.96 }}
+              className="rounded-2xl bg-red-50/70 border border-red-200/60 p-5 flex flex-col items-center gap-3"
+            >
+              <p className="text-xs font-bold text-red-500 uppercase tracking-wide">Căng cơ</p>
+              <span className="text-5xl font-black text-red-600 tabular-nums">{countdown}s</span>
+              <p className="text-xs text-red-400/80">Giữ căng trong {step.tense_seconds} giây</p>
+            </motion.div>
           )}
           {phase === "release" && (
-            <>
-              <p className="text-xs font-semibold text-primary uppercase tracking-wide">Thư giãn</p>
-              <span className="text-5xl font-black text-foreground tabular-nums">{countdown}s</span>
-              <p className="text-xs text-foreground/60">Thả lỏng trong {step.release_seconds} giây</p>
-            </>
+            <motion.div key="release"
+              initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.96 }}
+              className="rounded-2xl bg-primary/5 border border-primary/20 p-5 flex flex-col items-center gap-3"
+            >
+              <p className="text-xs font-bold text-primary uppercase tracking-wide">Thư giãn</p>
+              <span className="text-5xl font-black text-primary tabular-nums">{countdown}s</span>
+              <p className="text-xs text-primary/60">Thả lỏng trong {step.release_seconds} giây</p>
+            </motion.div>
           )}
           {phase === "done" && (
-            <p className="text-sm font-semibold text-primary flex items-center gap-1.5">
-              <CheckCircle className="h-4 w-4" /> Bước này hoàn thành
-            </p>
+            <motion.div key="done"
+              initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
+              className="rounded-2xl bg-primary/5 p-4 flex justify-center">
+              <p className="text-sm font-semibold text-primary flex items-center gap-1.5">
+                <CheckCircle className="h-4 w-4" /> Bước này hoàn thành
+              </p>
+            </motion.div>
           )}
-        </div>
+        </AnimatePresence>
       )}
 
       <Button
@@ -360,7 +377,6 @@ function StepSession({ steps, feelings, onComplete, isLogging }: StepSessionProp
     );
   }
 
-  // Step progress dots
   return (
     <div className="space-y-4">
       <div className="flex gap-1.5 justify-center">
@@ -385,9 +401,26 @@ function StepSession({ steps, feelings, onComplete, isLogging }: StepSessionProp
   );
 }
 
-// ─── Breathing session ─────────────────────────────────────────────────────────
-// tense_seconds / release_seconds are PMR-only fields; breathing exercises drive
-// timing from `exercise.phases` (fallback to the classic 4-7-8 pattern below).
+// ─── Breathing session ────────────────────────────────────────────────────────
+// r=88 in a 200×200 viewBox; circumference drives the SVG countdown ring
+const BREATHING_CIRCUMFERENCE = 2 * Math.PI * 88;
+
+// Colors per phase — hex values required for SVG stroke attribute and box-shadow
+const PHASE_COLORS = {
+  inhale: { orbBg: "bg-primary/20", border: "border-primary/50", glow: "rgba(120,157,188,0.28)", ring: "#789dbc" },
+  hold:   { orbBg: "bg-[#F5C07A]/20", border: "border-[#F5C07A]/50", glow: "rgba(245,192,122,0.32)", ring: "#F5C07A" },
+  exhale: { orbBg: "bg-secondary/40", border: "border-border/40", glow: "rgba(120,157,188,0.07)", ring: "#d6e8f5" },
+  idle:   { orbBg: "bg-secondary/60", border: "border-border/30", glow: "rgba(120,157,188,0.04)", ring: "#d6e8f5" },
+} as const;
+
+type PhaseKey = keyof typeof PHASE_COLORS;
+
+function classifyPhase(label: string): PhaseKey {
+  if (label.startsWith("Hít")) return "inhale";
+  if (label.startsWith("Giữ")) return "hold";
+  if (label.startsWith("Thở")) return "exhale";
+  return "inhale";
+}
 
 const DEFAULT_BREATHING_PHASES: BreathingPhase[] = [
   { label: "Hít vào...", seconds: 4 },
@@ -396,9 +429,9 @@ const DEFAULT_BREATHING_PHASES: BreathingPhase[] = [
 ];
 
 function targetScaleForPhase(label: string, currentScale: number, expandScale: number): number {
-  if (label.startsWith("Hít vào")) return expandScale;
-  if (label.startsWith("Thở ra")) return 1;
-  return currentScale; // hold phase — maintain current scale
+  if (label.startsWith("Hít")) return expandScale;
+  if (label.startsWith("Thở")) return 1;
+  return currentScale;
 }
 
 interface BreathingSessionProps {
@@ -410,10 +443,11 @@ interface BreathingSessionProps {
 
 function BreathingSession({ phases, feelings, onComplete, isLogging }: BreathingSessionProps) {
   const [state, setState] = useState<"idle" | "running" | DoneState>("idle");
-  const [breathPhaseLabel, setBreathPhaseLabel] = useState(phases[0]?.label ?? "");
+  const [currentPhaseLabel, setCurrentPhaseLabel] = useState(phases[0]?.label ?? "");
   const prefersReducedMotion = useReducedMotion();
   const prefersReducedMotionRef = useRef(!!prefersReducedMotion);
-  const [scope, animate] = useAnimate();
+  const [scopeOrb, animateOrb] = useAnimate();
+  const [scopeRing, animateRing] = useAnimate();
   const startTimeRef = useRef<number>(0);
   const elapsedRef = useRef<number>(0);
 
@@ -429,32 +463,35 @@ function BreathingSession({ phases, feelings, onComplete, isLogging }: Breathing
       let currentScale = 1;
       while (!cancelled) {
         for (const phase of activePhases) {
-          if (!scope.current) return;
+          if (!scopeOrb.current || !scopeRing.current || cancelled) return;
           const reduced = prefersReducedMotionRef.current;
           const dur = (s: number) => (reduced ? 0.01 : s);
-          const expandScale = reduced ? 1 : 1.6;
+          const expandScale = reduced ? 1 : 1.55;
 
-          setBreathPhaseLabel(phase.label);
+          setCurrentPhaseLabel(phase.label);
           const targetScale = targetScaleForPhase(phase.label, currentScale, expandScale);
           const ease = phase.label.startsWith("Giữ") ? "linear" : "easeInOut";
-          await animate(scope.current, { scale: targetScale }, { duration: dur(phase.seconds), ease });
+
+          // Reset ring to full before each phase, then deplete in sync with orb
+          await animateRing(scopeRing.current, { strokeDashoffset: 0 }, { duration: 0 });
+          await Promise.all([
+            animateOrb(scopeOrb.current, { scale: targetScale }, { duration: dur(phase.seconds), ease }),
+            animateRing(scopeRing.current, { strokeDashoffset: BREATHING_CIRCUMFERENCE }, { duration: dur(phase.seconds), ease: "linear" }),
+          ]);
+
           currentScale = targetScale;
-          if (cancelled || !scope.current) return;
+          if (cancelled) return;
         }
       }
     }
 
     startTimeRef.current = Date.now();
     runLoop();
-
     return () => { cancelled = true; };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  // animate is stable; prefersReducedMotion is read via ref so OS toggle takes effect next cycle
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, phases]);
 
-  function start() {
-    setState("running");
-  }
+  function start() { setState("running"); }
 
   function finish() {
     elapsedRef.current = Math.round((Date.now() - startTimeRef.current) / 1000);
@@ -477,22 +514,83 @@ function BreathingSession({ phases, feelings, onComplete, isLogging }: Breathing
     );
   }
 
+  const phaseKey: PhaseKey = state === "running" ? classifyPhase(currentPhaseLabel) : "idle";
+  const colors = PHASE_COLORS[phaseKey];
+
   return (
     <div className="flex flex-col items-center gap-6 py-4">
-      <div ref={scope} className="w-36 h-36 rounded-full bg-secondary/60 border-4 border-primary flex items-center justify-center">
-        <div className="w-16 h-16 rounded-full bg-primary opacity-60" />
+      {/* Orb + SVG countdown ring */}
+      <div className="relative flex items-center justify-center w-48 h-48">
+        {/* Countdown ring — rotated so it starts at 12 o'clock */}
+        <svg
+          className="absolute inset-0 w-full h-full"
+          viewBox="0 0 200 200"
+          style={{ transform: "rotate(-90deg)" }}
+          aria-hidden="true"
+        >
+          {/* Track circle */}
+          <circle cx="100" cy="100" r="88" fill="none" stroke="#d6e8f5" strokeWidth="3" />
+          {/* Progress circle — depletes from full to empty over the phase duration */}
+          <circle
+            ref={scopeRing}
+            cx="100" cy="100" r="88"
+            fill="none"
+            stroke={colors.ring}
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeDasharray={BREATHING_CIRCUMFERENCE}
+            strokeDashoffset={0}
+            style={{ transition: "stroke 700ms ease" }}
+          />
+        </svg>
+
+        {/* Breathing orb with ambient glow */}
+        <div
+          className={`w-32 h-32 rounded-full border-2 flex items-center justify-center transition-colors duration-700 ${colors.border}`}
+          style={{
+            boxShadow: `0 0 36px 10px ${colors.glow}`,
+            transition: "box-shadow 700ms ease, border-color 700ms ease",
+          }}
+        >
+          <div
+            ref={scopeOrb}
+            className={`w-20 h-20 rounded-full transition-colors duration-700 ${colors.orbBg}`}
+          />
+        </div>
       </div>
 
-      {state === "running" && (
-        <p className="text-base font-semibold text-foreground/70 tracking-wide">{breathPhaseLabel}</p>
-      )}
+      {/* Phase label — fades in/out on change */}
+      <div className="min-h-7 flex items-center justify-center">
+        <AnimatePresence mode="wait">
+          {state === "running" ? (
+            <motion.p
+              key={currentPhaseLabel}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.3 }}
+              className="text-base font-semibold text-foreground/75 tracking-wide"
+            >
+              {currentPhaseLabel}
+            </motion.p>
+          ) : (
+            <motion.p
+              key="idle-hint"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-sm text-foreground/45 text-center"
+            >
+              Tìm tư thế thoải mái và bắt đầu khi bạn sẵn sàng
+            </motion.p>
+          )}
+        </AnimatePresence>
+      </div>
 
       {state === "idle" && (
         <Button onClick={start} className="w-full h-12 rounded-2xl font-bold text-base gap-2">
           <Play className="h-5 w-5" /> Bắt đầu buổi thở
         </Button>
       )}
-
       {state === "running" && (
         <Button
           onClick={finish}
@@ -555,7 +653,7 @@ export default function ExerciseDetailPage({ params }: Props) {
     <div className="w-full pb-10 max-w-2xl mx-auto space-y-6">
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-1.5 text-sm text-foreground/65 hover:text-foreground/75 transition font-medium"
+        className="flex items-center gap-1.5 text-sm text-foreground/65 hover:text-foreground/75 transition font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-sm"
       >
         <ArrowLeft className="h-4 w-4" />
         Quay lại
@@ -584,7 +682,6 @@ export default function ExerciseDetailPage({ params }: Props) {
         <CardContent className="space-y-6">
           <p className="text-sm text-foreground/70 leading-relaxed">{exercise.description}</p>
 
-          {/* Priority: breathing → steps → timer */}
           {isBreathing ? (
             <BreathingSession
               phases={exercise.phases?.length ? exercise.phases : DEFAULT_BREATHING_PHASES}

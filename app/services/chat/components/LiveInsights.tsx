@@ -2,43 +2,52 @@
 
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, Activity, TrendingUp, Wind } from "lucide-react";
-import { useMoodSummary, useMoodEntries } from "@/hooks/useMood";
+import { Loader2, Activity, Wind } from "lucide-react";
+import { useMoodEntries } from "@/hooks/useMood";
 import { useRecommendedExercises } from "@/hooks/useExercise";
+import type { StreamChatState } from "@/hooks/useStreamChat";
+import type { Emotion } from "@/types/chat";
 
-// sentiment_score 1 → 20%, 5 → 100%
-function scoreToHeight(score: number): number {
-  return (score / 5) * 100;
+const EMOTION_CONFIG: Record<string, { icon: string; label: string; bg: string; text: string }> = {
+  sad:       { icon: "😔", label: "Buồn",     bg: "bg-blue-100/70",   text: "text-blue-600" },
+  anxious:   { icon: "😰", label: "Lo lắng",  bg: "bg-amber-100/70",  text: "text-amber-600" },
+  angry:     { icon: "😤", label: "Tức giận", bg: "bg-red-100/70",    text: "text-red-500" },
+  tired:     { icon: "😩", label: "Mệt mỏi",  bg: "bg-violet-100/70", text: "text-violet-600" },
+  happy:     { icon: "😊", label: "Vui vẻ",   bg: "bg-green-100/70",  text: "text-green-600" },
+  disgusted: { icon: "😞", label: "Chán nản", bg: "bg-gray-100/70",   text: "text-gray-500" },
+};
+
+function emotionToMoodFilter(emotion: Emotion): string {
+  if (emotion === "sad" || emotion === "disgusted") return "sad";
+  if (emotion === "anxious") return "anxious";
+  if (emotion === "angry") return "angry";
+  if (emotion === "tired") return "need_energy";
+  return "anxious";
 }
 
-// score 1–2 → sad, 3 → anxious (neutral fallback), 4–5 → need_energy
+// score 1–2 → sad, 3 → anxious, 4–5 → need_energy
 function scoreToMoodFilter(score: number): string {
   if (score <= 2) return "sad";
   if (score >= 4) return "need_energy";
   return "anxious";
 }
 
-// Build 7 fixed slots so missing check-in days show as visual gaps
-function buildChartSlots(
-  entries: { date: string; sentiment_score: number }[],
-  days = 7
-): { date: string; score: number | null }[] {
-  const byDate = Object.fromEntries(entries.map((e) => [e.date, e.sentiment_score]));
-  const today = new Date();
-  return Array.from({ length: days }, (_, i) => {
-    const d = new Date(today);
-    d.setDate(today.getDate() - (days - 1 - i));
-    const pad = (n: number) => String(n).padStart(2, "0");
-    const dateStr = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-    return { date: dateStr, score: byDate[dateStr] ?? null };
-  });
+interface Props {
+  stream: StreamChatState;
 }
 
-export function LiveInsights() {
-  const { data: moodSummary, isLoading: loadingMood } = useMoodSummary(7);
+export function LiveInsights({ stream }: Props) {
+  const { lastEmotion, emotionHistory } = stream;
+
   const { data: latestEntries } = useMoodEntries({ limit: 1 });
   const latestScore = latestEntries?.[0]?.mood;
-  const derivedMood = latestScore !== undefined ? scoreToMoodFilter(latestScore) : "anxious";
+
+  const derivedMood = lastEmotion
+    ? emotionToMoodFilter(lastEmotion.emotion)
+    : latestScore !== undefined
+    ? scoreToMoodFilter(latestScore)
+    : "anxious";
+
   const { data: recommended, isLoading: loadingExercises } = useRecommendedExercises({ mood: derivedMood, limit: 3 });
 
   return (
@@ -48,45 +57,41 @@ export function LiveInsights() {
         <Activity className="w-4 h-4" strokeWidth={2} /> Phân tích trực tiếp
       </div>
 
-      {/* Mood trend chart */}
+      {/* Chat emotion tracker */}
       <Card className="card-lifted border-none rounded-2xl">
         <CardContent className="p-4 space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="font-bold text-foreground text-sm">Xu hướng tâm trạng</h3>
-            <TrendingUp className="w-4 h-4 text-primary" strokeWidth={2} />
-          </div>
+          <h3 className="font-bold text-foreground text-sm">Cảm xúc phiên này</h3>
 
-          {loadingMood ? (
-            <div className="flex items-center justify-center h-16">
-              <Loader2 className="h-4 w-4 animate-spin text-foreground/20" strokeWidth={2} />
-            </div>
+          {emotionHistory.length === 0 ? (
+            <p className="text-xs text-foreground/40 leading-relaxed">
+              AI sẽ nhận diện cảm xúc của bạn qua từng tin nhắn và hiển thị tại đây.
+            </p>
           ) : (
-            <div className="flex items-end gap-1.5 h-16">
-              {buildChartSlots(moodSummary ?? []).map((slot) => (
-                slot.score !== null ? (
-                  <div
-                    key={slot.date}
-                    className="flex-1 rounded-sm bg-primary/40"
-                    style={{ height: `${scoreToHeight(slot.score)}%` }}
-                    title={`${slot.date}: ${slot.score}/5`}
-                  />
-                ) : (
-                  <div
-                    key={slot.date}
-                    className="flex-1 rounded-sm bg-border/40"
-                    style={{ height: "8px" }}
-                    title={slot.date}
-                  />
-                )
-              ))}
+            <div className="flex flex-wrap gap-1.5">
+              {emotionHistory.map((e, i) => {
+                const cfg = EMOTION_CONFIG[e.emotion];
+                const isLatest = i === emotionHistory.length - 1;
+                return cfg ? (
+                  <span
+                    key={i}
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${cfg.bg} ${cfg.text} ${isLatest ? "ring-1 ring-current/30" : "opacity-70"}`}
+                  >
+                    {cfg.icon} {cfg.label}
+                  </span>
+                ) : null;
+              })}
             </div>
           )}
 
-          <p className="text-[11px] text-foreground/50 leading-relaxed">
-            {moodSummary && moodSummary.length > 0
-              ? `${moodSummary.length} ngày gần đây có dữ liệu tâm trạng.`
-              : "Chưa có dữ liệu tâm trạng. Hãy check-in hôm nay!"}
-          </p>
+          {lastEmotion && EMOTION_CONFIG[lastEmotion.emotion] && (
+            <p className="text-[11px] text-foreground/45 leading-relaxed">
+              Gần nhất:{" "}
+              <span className="font-semibold">
+                {EMOTION_CONFIG[lastEmotion.emotion].icon} {EMOTION_CONFIG[lastEmotion.emotion].label}
+              </span>{" "}
+              · Độ tin cậy {Math.round(lastEmotion.confidence * 100)}%
+            </p>
+          )}
         </CardContent>
       </Card>
 

@@ -196,6 +196,16 @@
     border: 1px solid var(--glass-border);
   }
 
+  @keyframes waveform-bar {
+    0%, 100% { transform: scaleY(0.3); }
+    50% { transform: scaleY(1); }
+  }
+
+  .animate-waveform {
+    animation: waveform-bar 0.75s ease-in-out infinite;
+    transform-origin: bottom;
+  }
+
   .card-tilt {
     perspective: 800px;
     transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);

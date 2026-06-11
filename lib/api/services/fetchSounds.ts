@@ -10,6 +10,7 @@ export interface Sound {
   duration_seconds: number | null;
   sort_order: number;
   audio_url: string;
+  is_published: boolean;
 }
 
 export const fetchSounds = {

@@ -68,7 +68,7 @@ export default function ChatPage() {
         <ChatInput stream={patchedStream} />
       </div>
 
-      <LiveInsights />
+      <LiveInsights stream={patchedStream} />
     </div>
   );
 }

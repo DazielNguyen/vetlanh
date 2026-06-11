@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Send, Sparkles } from "lucide-react";
+import { Send, Sparkles, HeartHandshake, X } from "lucide-react";
 import type { StreamChatState } from "@/hooks/useStreamChat";
 
 interface Props {
@@ -12,7 +12,10 @@ interface Props {
 
 export function ChatInput({ stream }: Props) {
   const [text, setText] = useState("");
-  const { isStreaming, suggestCheckin, sendMessage } = stream;
+  const [expertDismissed, setExpertDismissed] = useState(false);
+  const { isStreaming, suggestCheckin, depressionRisk, sendMessage } = stream;
+  const showExpertBanner =
+    !expertDismissed && (depressionRisk === "moderate" || depressionRisk === "severe");
 
   function handleSend() {
     const trimmed = text.trim();
@@ -30,6 +33,31 @@ export function ChatInput({ stream }: Props) {
 
   return (
     <div className="pt-4 border-t border-border/40 mt-4 space-y-2">
+      {showExpertBanner && (
+        <div className="flex items-center justify-between bg-[#F5C07A]/10 border border-[#F5C07A]/40 rounded-xl px-4 py-2.5">
+          <span className="flex items-center gap-1.5 text-sm text-foreground/70 font-medium">
+            <HeartHandshake className="w-3.5 h-3.5 text-[#F5C07A] shrink-0" strokeWidth={2} />
+            Bạn có muốn nói chuyện với chuyên gia không?
+          </span>
+          <div className="flex items-center gap-2 shrink-0 ml-3">
+            <Button
+              asChild
+              size="sm"
+              variant="outline"
+              className="text-foreground/70 border-[#F5C07A]/50 hover:bg-[#F5C07A]/10 rounded-lg text-xs"
+            >
+              <Link href="/services/safety-plan">Xem hỗ trợ</Link>
+            </Button>
+            <button
+              onClick={() => setExpertDismissed(true)}
+              className="text-foreground/30 hover:text-foreground/60 transition"
+              aria-label="Đóng"
+            >
+              <X className="w-3.5 h-3.5" strokeWidth={2} />
+            </button>
+          </div>
+        </div>
+      )}
       {suggestCheckin && (
         <div className="flex items-center justify-between bg-secondary/40 border border-secondary rounded-xl px-4 py-2.5">
           <span className="flex items-center gap-1.5 text-sm text-foreground/70 font-medium">

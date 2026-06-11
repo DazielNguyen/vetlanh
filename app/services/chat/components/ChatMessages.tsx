@@ -12,11 +12,30 @@ import { formatDate } from "@/lib/utils/formatDate";
 import type { StreamChatState } from "@/hooks/useStreamChat";
 
 const FALLBACK_PROMPTS = [
-  "Hôm nay tôi đang cảm thấy lo lắng...",
-  "Tôi cần ai đó lắng nghe",
-  "Giúp tôi giảm căng thẳng",
-  "Tôi muốn chia sẻ cảm xúc của mình",
+  "Tôi đang cảm thấy lo lắng và không biết phải làm gì",
+  "Hôm nay tôi rất buồn và trống rỗng, bạn có thể lắng nghe không?",
+  "Tôi đang tức giận và cần giải tỏa",
+  "Tôi bị mất ngủ, giúp tôi thư giãn trước khi ngủ",
+  "Đầu óc tôi đang rất bận rộn, tôi muốn tập chánh niệm",
 ];
+
+const EMOTION_ICONS: Record<string, string> = {
+  sad: "😔",
+  anxious: "😰",
+  angry: "😤",
+  tired: "😩",
+  happy: "😊",
+  disgusted: "😞",
+};
+
+const EMOTION_LABELS: Record<string, string> = {
+  sad: "Buồn",
+  anxious: "Lo lắng",
+  angry: "Tức giận",
+  tired: "Mệt mỏi",
+  happy: "Vui vẻ",
+  disgusted: "Chán nản",
+};
 
 interface Props {
   conversationId: number | undefined;
@@ -24,7 +43,15 @@ interface Props {
   onPromptSelect: (text: string) => void;
 }
 
-function UserBubble({ content, timestamp }: { content: string; timestamp?: string }) {
+function UserBubble({
+  content,
+  timestamp,
+  emotionTag,
+}: {
+  content: string;
+  timestamp?: string;
+  emotionTag?: { emotion: string; confidence: number } | null;
+}) {
   return (
     <div className="flex items-start gap-3 max-w-[85%] ml-auto flex-row-reverse">
       <div className="w-8 h-8 rounded-2xl bg-primary/15 flex items-center justify-center shrink-0 mt-1">
@@ -34,6 +61,12 @@ function UserBubble({ content, timestamp }: { content: string; timestamp?: strin
         <div className="bg-secondary/60 text-foreground px-5 py-3.5 rounded-2xl rounded-tr-md text-sm leading-relaxed text-left">
           {content}
         </div>
+        {emotionTag && (
+          <span className="inline-flex items-center gap-1 text-[11px] text-foreground/45 mt-1">
+            {EMOTION_ICONS[emotionTag.emotion] ?? "🙂"}{" "}
+            {EMOTION_LABELS[emotionTag.emotion] ?? emotionTag.emotion}
+          </span>
+        )}
         {timestamp && (
           <span className="text-[10px] text-foreground/40 mt-1 block">{timestamp}</span>
         )}
@@ -63,7 +96,7 @@ function AssistantBubble({ content, timestamp }: { content: string; timestamp?: 
 export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) {
   const { data: serverMessages, isLoading } = useConversationMessages(conversationId);
   const { data: promptsData } = useQuickPrompts();
-  const quickPrompts = (promptsData ?? []).slice(0, 4).map((p) => p.text);
+  const quickPrompts = (promptsData ?? []).slice(0, 5).map((p) => p.text);
   const prompts = quickPrompts.length > 0 ? quickPrompts : FALLBACK_PROMPTS;
   const bottomRef = useRef<HTMLDivElement>(null);
   const { localMessages, streamingText, isStreaming, error } = stream;
@@ -125,16 +158,30 @@ export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) 
   }
 
   const serverIds = new Set((serverMessages ?? []).map((m) => m.id));
-  // Local text messages may be superseded once server messages reload; exercise cards always show
+  // Local text messages may be superseded once server messages reload; cards always show
   const pendingLocal = localMessages.filter(
-    (m) => m.kind === "exercise" || !serverIds.has(Number(m.id))
+    (m) => m.kind === "exercise" || m.kind === "crisis" || !serverIds.has(Number(m.id))
   );
+
+  // ID of the last user message across server + pending — emotion tag is only shown there
+  const lastServerUserMsgId = [...(serverMessages ?? [])].reverse().find((m) => m.role === "user")?.id;
+  const lastLocalUserMsg = [...pendingLocal].reverse().find((m) => m.kind === "text" && m.role === "user");
+  const lastUserMsgId: string = lastLocalUserMsg
+    ? lastLocalUserMsg.id
+    : lastServerUserMsgId !== undefined
+    ? String(lastServerUserMsgId)
+    : "";
 
   return (
     <div className="flex-1 overflow-y-auto space-y-6 pr-2">
       {(serverMessages ?? []).map((msg) =>
         msg.role === "user" ? (
-          <UserBubble key={msg.id} content={msg.content} timestamp={formatDate(msg.created_at)} />
+          <UserBubble
+            key={msg.id}
+            content={msg.content}
+            timestamp={formatDate(msg.created_at)}
+            emotionTag={String(msg.id) === lastUserMsgId ? stream.lastEmotion : null}
+          />
         ) : (
           <AssistantBubble key={msg.id} content={msg.content} timestamp={formatDate(msg.created_at)} />
         )
@@ -142,7 +189,7 @@ export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) 
 
       {pendingLocal.map((msg) => {
         if (msg.kind === "exercise") {
-          const totalSeconds = msg.card.steps.reduce((sum, s) => sum + s.duration_seconds, 0);
+          const totalSeconds = msg.card.steps.reduce((sum, s) => sum + (s.duration_seconds ?? 0), 0);
           const minutes = Math.ceil(totalSeconds / 60);
           return (
             <div key={msg.id} className="flex items-start gap-3 max-w-[85%]">
@@ -172,8 +219,27 @@ export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) 
             </div>
           );
         }
+        if (msg.kind === "crisis") {
+          return (
+            <div key={msg.id} className="flex items-start gap-3 max-w-[85%]">
+              <div className="w-8 h-8 shrink-0" />
+              <Card className="card-lifted border-none rounded-2xl overflow-hidden flex-1">
+                <CardContent className="p-4 space-y-2">
+                  <p className="text-xs font-semibold text-red-500/80 uppercase tracking-wide">Hỗ trợ khẩn cấp</p>
+                  <p className="text-sm text-foreground/80 leading-relaxed">
+                    Mình đang ở đây cùng bạn. Nếu bạn cần hỗ trợ ngay, hãy tìm đến người thân hoặc chuyên gia tâm lý gần nhất.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          );
+        }
         return msg.role === "user" ? (
-          <UserBubble key={msg.id} content={msg.content} />
+          <UserBubble
+            key={msg.id}
+            content={msg.content}
+            emotionTag={msg.id === lastUserMsgId ? stream.lastEmotion : null}
+          />
         ) : (
           <AssistantBubble key={msg.id} content={msg.content} />
         );

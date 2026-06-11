@@ -2,11 +2,12 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { fetchChat } from "@/lib/api/services/fetchChat";
 import { CHAT_KEYS } from "@/hooks/useChat";
-import type { ExerciseCard } from "@/types/chat";
+import type { ExerciseCard, Emotion, DepressionRisk } from "@/types/chat";
 
 export type LocalMessage =
   | { kind: "text"; role: "user" | "assistant"; content: string; id: string }
-  | { kind: "exercise"; card: ExerciseCard; id: string };
+  | { kind: "exercise"; card: ExerciseCard; id: string }
+  | { kind: "crisis"; id: string };
 
 export interface StreamChatState {
   localMessages: LocalMessage[];
@@ -14,6 +15,10 @@ export interface StreamChatState {
   isStreaming: boolean;
   error: string | null;
   suggestCheckin: boolean;
+  lastEmotion: { emotion: Emotion; confidence: number } | null;
+  emotionHistory: { emotion: Emotion; confidence: number }[];
+  depressionRisk: DepressionRisk | null;
+  crisisLevel: number;
   sendMessage: (text: string) => Promise<void>;
 }
 
@@ -29,6 +34,10 @@ export function useStreamChat(conversationId: number | undefined): StreamChatSta
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [suggestCheckin, setSuggestCheckin] = useState(false);
+  const [lastEmotion, setLastEmotion] = useState<{ emotion: Emotion; confidence: number } | null>(null);
+  const [emotionHistory, setEmotionHistory] = useState<{ emotion: Emotion; confidence: number }[]>([]);
+  const [depressionRisk, setDepressionRisk] = useState<DepressionRisk | null>(null);
+  const [crisisLevel, setCrisisLevel] = useState(0);
 
   function setStreamingState(val: boolean) {
     isStreamingRef.current = val;
@@ -46,6 +55,10 @@ export function useStreamChat(conversationId: number | undefined): StreamChatSta
     setStreamingState(false);
     setError(null);
     setSuggestCheckin(false);
+    setLastEmotion(null);
+    setEmotionHistory([]);
+    setDepressionRisk(null);
+    setCrisisLevel(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversationId]);
 
@@ -63,15 +76,12 @@ export function useStreamChat(conversationId: number | undefined): StreamChatSta
 
       setError(null);
       setSuggestCheckin(false);
+      setLastEmotion(null);
+      setCrisisLevel(0);
 
       setLocalMessages((prev) => [
         ...prev,
-        {
-          kind: "text",
-          role: "user",
-          content: text,
-          id: crypto.randomUUID(),
-        },
+        { kind: "text", role: "user", content: text, id: crypto.randomUUID() },
       ]);
 
       const controller = new AbortController();
@@ -98,18 +108,35 @@ export function useStreamChat(conversationId: number | undefined): StreamChatSta
               setStreamingText(assistantText);
             }
           } else if (chunk.type === "done") {
-            // exercise_card and suggest_checkin come in the done event, not chunk
             if (chunk.exercise_card) {
               setLocalMessages((prev) => [
                 ...prev,
-                {
-                  kind: "exercise",
-                  card: chunk.exercise_card!,
-                  id: crypto.randomUUID(),
-                },
+                { kind: "exercise", card: chunk.exercise_card!, id: crypto.randomUUID() },
               ]);
             }
             if (chunk.suggest_checkin) setSuggestCheckin(true);
+
+            // Emotion — only surface if confident enough and not neutral
+            const emotion = chunk.emotion;
+            const confidence = chunk.emotion_confidence ?? 0;
+            if (emotion && emotion !== "neutral" && confidence >= 0.55) {
+              setLastEmotion({ emotion, confidence });
+              setEmotionHistory((prev) => [...prev, { emotion, confidence }]);
+            }
+
+            if (chunk.depression_risk && chunk.depression_risk !== "none") {
+              setDepressionRisk(chunk.depression_risk);
+            }
+
+            // Crisis level 3: stream had no AI text — show hotline card instead
+            if (chunk.crisis_level && chunk.crisis_level >= 3) {
+              setCrisisLevel(chunk.crisis_level);
+              setLocalMessages((prev) => [
+                ...prev,
+                { kind: "crisis", id: crypto.randomUUID() },
+              ]);
+            }
+
             break;
           } else if (chunk.type === "error") {
             throw new Error(chunk.detail || "Stream error");
@@ -119,12 +146,7 @@ export function useStreamChat(conversationId: number | undefined): StreamChatSta
         if (assistantText) {
           setLocalMessages((prev) => [
             ...prev,
-            {
-              kind: "text",
-              role: "assistant",
-              content: assistantText,
-              id: crypto.randomUUID(),
-            },
+            { kind: "text", role: "assistant", content: assistantText, id: crypto.randomUUID() },
           ]);
         }
         setStreamingText("");
@@ -132,8 +154,8 @@ export function useStreamChat(conversationId: number | undefined): StreamChatSta
         // refetchQueries resolves only after the network response — guarantees server data is in
         // cache before we clear optimistic messages, preventing a brief double-render.
         await queryClient.refetchQueries({ queryKey: CHAT_KEYS.messages(conversationId) });
-        // Keep exercise cards visible after server data loads; clear only text messages
-        setLocalMessages((prev) => prev.filter((m) => m.kind === "exercise"));
+        // Keep non-text cards visible after server data loads
+        setLocalMessages((prev) => prev.filter((m) => m.kind === "exercise" || m.kind === "crisis"));
       } catch (err: unknown) {
         // AbortError = either timeout abort (error already set) or navigation abort (silent)
         if ((err as Error).name === "AbortError") {
@@ -159,5 +181,5 @@ export function useStreamChat(conversationId: number | undefined): StreamChatSta
     [conversationId, queryClient]
   );
 
-  return { localMessages, streamingText, isStreaming, error, suggestCheckin, sendMessage };
+  return { localMessages, streamingText, isStreaming, error, suggestCheckin, lastEmotion, emotionHistory, depressionRisk, crisisLevel, sendMessage };
 }

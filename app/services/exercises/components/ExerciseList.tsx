@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Loader2,
-  PlayCircle,
   Bell,
   Sparkles,
   Wind,
@@ -20,6 +19,7 @@ import {
   Flame,
   X,
   Clock,
+  ChevronRight,
   type LucideIcon,
 } from "lucide-react";
 import { useExerciseList } from "@/hooks/useExercise";
@@ -49,6 +49,15 @@ const CATEGORY_ICONS: Record<string, LucideIcon> = {
   grounding: Anchor,
   cbt: NotebookPen,
   relaxation: Waves,
+};
+
+// Visual identity per category — subtle colored icon bubble for pre-attentive recognition
+const CATEGORY_CARD_STYLE: Record<string, { bg: string; iconColor: string }> = {
+  breathing:  { bg: "bg-blue-100/70",   iconColor: "text-blue-500" },
+  meditation: { bg: "bg-violet-100/70", iconColor: "text-violet-500" },
+  grounding:  { bg: "bg-amber-100/70",  iconColor: "text-amber-600" },
+  cbt:        { bg: "bg-teal-100/70",   iconColor: "text-teal-600" },
+  relaxation: { bg: "bg-rose-100/70",   iconColor: "text-rose-400" },
 };
 
 const MOOD_ICONS: Record<string, LucideIcon> = {
@@ -146,32 +155,33 @@ export function ExerciseList() {
         </p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {exercises.map((exercise) => (
-            <Card
-              key={exercise.slug}
-              className="card-lifted border-none rounded-2xl overflow-hidden group"
-            >
-              <CardContent className="p-4 flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <h3 className="font-bold text-foreground text-sm truncate group-hover:text-primary transition-colors">
-                    {exercise.title}
-                  </h3>
-                  {exercise.duration_seconds && (
-                    <p className="flex items-center gap-1 text-xs text-foreground/40 mt-1">
-                      <Clock className="w-3 h-3" strokeWidth={2} />
-                      {formatDuration(exercise.duration_seconds)}
-                    </p>
-                  )}
-                </div>
-                <Link
-                  href={`/services/exercises/${exercise.slug}`}
-                  className="flex items-center justify-center w-9 h-9 rounded-full bg-primary text-white hover:bg-primary/90 transition shrink-0"
-                >
-                  <PlayCircle className="w-4 h-4" />
-                </Link>
-              </CardContent>
-            </Card>
-          ))}
+          {exercises.map((exercise) => {
+            const cardStyle = CATEGORY_CARD_STYLE[exercise.category] ?? { bg: "bg-secondary/60", iconColor: "text-primary" };
+            const CategoryIcon = CATEGORY_ICONS[exercise.category] ?? Sparkles;
+            return (
+              <Link key={exercise.slug} href={`/services/exercises/${exercise.slug}`}>
+                <Card className="card-lifted border-none rounded-2xl overflow-hidden group hover:scale-[1.01] transition-transform">
+                  <CardContent className="p-4 flex items-center gap-4">
+                    <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 ${cardStyle.bg}`}>
+                      <CategoryIcon className={`w-5 h-5 ${cardStyle.iconColor}`} strokeWidth={2} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="font-bold text-foreground text-sm group-hover:text-primary transition-colors">
+                        {exercise.title}
+                      </h3>
+                      {exercise.duration_seconds && (
+                        <p className="flex items-center gap-1 text-xs text-foreground/40 mt-0.5">
+                          <Clock className="w-3 h-3" strokeWidth={2} />
+                          {formatDuration(exercise.duration_seconds)}
+                        </p>
+                      )}
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-foreground/20 group-hover:text-primary transition-colors shrink-0" strokeWidth={2} />
+                  </CardContent>
+                </Card>
+              </Link>
+            );
+          })}
         </div>
       )}
     </div>

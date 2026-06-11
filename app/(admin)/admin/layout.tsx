@@ -11,13 +11,15 @@ import {
     Settings,
     Search,
     Bell,
-    ShieldPlus
+    ShieldPlus,
+    Music2,
 } from "lucide-react";
 
 const sidebarNav = [
     { title: "Bảng điều khiển", href: "/admin/dashboard", icon: LayoutDashboard },
     { title: "Người dùng", href: "/admin/users", icon: Users },
     { title: "Đăng ký gói", href: "/admin/subscriptions", icon: CreditCard },
+    { title: "Âm thanh", href: "/admin/sounds", icon: Music2 },
     { title: "Báo lỗi hệ thống", href: "/admin/errors", icon: Bug },
     { title: "Cài đặt", href: "#", icon: Settings },
 ];

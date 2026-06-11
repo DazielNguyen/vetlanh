@@ -16,10 +16,13 @@ export interface ChatMessage {
   created_at: string;
 }
 
+export type Emotion = "neutral" | "happy" | "sad" | "angry" | "anxious" | "tired" | "disgusted";
+export type DepressionRisk = "none" | "mild" | "moderate" | "severe";
+
 export interface ExerciseCardStep {
   order: number;
   instruction: string;
-  duration_seconds: number;
+  duration_seconds: number | null;
 }
 
 export interface ExerciseCard {
@@ -31,13 +34,18 @@ export interface ExerciseCard {
 
 export interface StreamChunk {
   type: "chunk" | "done" | "error";
-  // chunk: AI token stream
+  // chunk
   content?: string;
-  // done: final payload
+  // done
   message_id?: number;
   exercise_card?: ExerciseCard | null;
   sentiment?: "positive" | "neutral" | "negative";
   suggest_checkin?: boolean;
-  // error: reason
+  crisis_level?: number;
+  emotion?: Emotion;
+  emotion_confidence?: number;
+  depression_risk?: DepressionRisk;
+  phq_estimate?: number;
+  // error
   detail?: string;
 }
