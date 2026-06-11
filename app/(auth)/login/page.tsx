@@ -219,7 +219,7 @@ export default function LoginPage() {
 
                         <div className="space-y-2.5">
                             <Label htmlFor="username" className="text-white/80 font-semibold ml-1">Tên đăng nhập</Label>
-                            <IconInput icon={User} id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="vd: User" required />
+                            <IconInput icon={User} id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="User" required />
                         </div>
 
                         <div className="space-y-2.5">
