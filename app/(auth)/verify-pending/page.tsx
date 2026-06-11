@@ -3,19 +3,18 @@
 import Link from "next/link";
 import { Mail, ArrowLeft, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AuthCard, AuthIconCircle } from "@/components/auth/auth-card";
 
 export default function VerifyPendingPage() {
   return (
     <div className="w-full max-w-md">
-      <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-[28px] shadow-[0_8px_40px_rgba(0,0,0,0.3)] px-8 py-10">
-        {/* Icon */}
+      <AuthCard>
         <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 rounded-full bg-white/15 border border-white/25 flex items-center justify-center animate-pulse">
+          <AuthIconCircle className="animate-pulse">
             <Mail className="w-8 h-8 text-white" />
-          </div>
+          </AuthIconCircle>
         </div>
 
-        {/* Heading */}
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">
             Kiểm tra email của bạn
@@ -25,7 +24,6 @@ export default function VerifyPendingPage() {
           </p>
         </div>
 
-        {/* Tips */}
         <div className="bg-white/10 border border-white/20 rounded-2xl p-4 mb-6">
           <p className="text-white/90 text-sm font-semibold mb-2 flex items-center gap-2">
             <Lightbulb className="w-4 h-4 text-yellow-300 shrink-0" />
@@ -37,7 +35,6 @@ export default function VerifyPendingPage() {
           </ul>
         </div>
 
-        {/* Back button */}
         <Link href="/login">
           <Button
             variant="outline"
@@ -48,11 +45,10 @@ export default function VerifyPendingPage() {
           </Button>
         </Link>
 
-        {/* Expiry */}
         <p className="mt-5 text-center text-xs text-white/40">
           Liên kết xác minh sẽ hết hạn trong 24 giờ
         </p>
-      </div>
+      </AuthCard>
     </div>
   );
 }

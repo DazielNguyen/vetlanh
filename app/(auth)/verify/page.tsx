@@ -7,6 +7,7 @@ import { ArrowRight, CheckCircle, AlertCircle, Loader2, ArrowLeft } from "lucide
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { fetchAuth } from "@/lib/api/services/fetchAuth";
+import { AuthCard, AuthIconCircle } from "@/components/auth/auth-card";
 
 type Status = "loading" | "success" | "error" | "idle";
 
@@ -51,18 +52,18 @@ export default function VerifyPage() {
     };
 
     verify();
-  }, [token, router]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   return (
     <div className="w-full max-w-md">
-      <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-[28px] shadow-[0_8px_40px_rgba(0,0,0,0.3)] px-8 py-10 text-center">
-
+      <AuthCard className="text-center">
         {status === "loading" && (
           <>
             <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 rounded-full bg-white/15 border border-white/25 flex items-center justify-center">
+              <AuthIconCircle>
                 <Loader2 className="w-8 h-8 text-white animate-spin" />
-              </div>
+              </AuthIconCircle>
             </div>
             <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">Đang xác minh email...</h2>
             <p className="text-white/65 text-sm">Vui lòng chờ trong giây lát.</p>
@@ -72,9 +73,9 @@ export default function VerifyPage() {
         {status === "success" && (
           <>
             <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 rounded-full bg-white/15 border border-white/25 flex items-center justify-center">
+              <AuthIconCircle>
                 <CheckCircle className="w-8 h-8 text-emerald-300" />
-              </div>
+              </AuthIconCircle>
             </div>
             <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">Xác minh thành công!</h2>
             <p className="text-white/65 text-sm mb-8">Bạn có thể đăng nhập ngay bây giờ.</p>
@@ -91,9 +92,9 @@ export default function VerifyPage() {
         {status === "error" && (
           <>
             <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 rounded-full bg-white/15 border border-white/25 flex items-center justify-center">
+              <AuthIconCircle>
                 <AlertCircle className="w-8 h-8 text-red-300" />
-              </div>
+              </AuthIconCircle>
             </div>
             <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">Xác minh thất bại</h2>
             <p className="text-white/65 text-sm mb-8">{errorMsg}</p>
@@ -114,8 +115,7 @@ export default function VerifyPage() {
             </div>
           </>
         )}
-
-      </div>
+      </AuthCard>
     </div>
   );
 }
