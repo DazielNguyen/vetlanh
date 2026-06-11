@@ -55,63 +55,67 @@ export default function VerifyPage() {
 
   return (
     <div className="w-full max-w-md">
-      {status === "loading" && (
-        <div className="text-center">
-          <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center">
-              <Loader2 className="w-8 h-8 text-primary animate-spin" />
+      <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-[28px] shadow-[0_8px_40px_rgba(0,0,0,0.3)] px-8 py-10 text-center">
+
+        {status === "loading" && (
+          <>
+            <div className="flex justify-center mb-6">
+              <div className="w-16 h-16 rounded-full bg-white/15 border border-white/25 flex items-center justify-center">
+                <Loader2 className="w-8 h-8 text-white animate-spin" />
+              </div>
             </div>
-          </div>
-          <h2 className="text-3xl font-bold text-slate-800 mb-3">Đang xác minh email...</h2>
-          <p className="text-slate-500 text-base">Vui lòng chờ trong giây lát.</p>
-        </div>
-      )}
+            <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">Đang xác minh email...</h2>
+            <p className="text-white/65 text-sm">Vui lòng chờ trong giây lát.</p>
+          </>
+        )}
 
-      {status === "success" && (
-        <div className="text-center">
-          <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center">
-              <CheckCircle className="w-8 h-8 text-primary" />
+        {status === "success" && (
+          <>
+            <div className="flex justify-center mb-6">
+              <div className="w-16 h-16 rounded-full bg-white/15 border border-white/25 flex items-center justify-center">
+                <CheckCircle className="w-8 h-8 text-emerald-300" />
+              </div>
             </div>
-          </div>
-          <h2 className="text-3xl font-bold text-slate-800 mb-3 tracking-tight">Email xác minh thành công!</h2>
-          <p className="text-slate-500 text-base mb-8">Bạn có thể đăng nhập ngay bây giờ.</p>
-
-          <Link href="/login">
-            <Button className="w-full h-12 text-base font-bold rounded-2xl bg-primary hover:bg-slate-800 text-white shadow-md active:scale-[0.98] transition-all group">
-              <span>Đăng nhập ngay</span>
-              <ArrowRight className="ml-2 h-4 w-4 opacity-70 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </Link>
-        </div>
-      )}
-
-      {status === "error" && (
-        <div className="text-center">
-          <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
-              <AlertCircle className="w-8 h-8 text-red-600" />
-            </div>
-          </div>
-          <h2 className="text-3xl font-bold text-slate-800 mb-3 tracking-tight">Xác minh email thất bại</h2>
-          <p className="text-slate-500 text-base mb-8">{errorMsg}</p>
-
-          <div className="space-y-3">
-            <Link href="/resend-verification">
-              <Button className="w-full h-12 text-base font-bold rounded-2xl bg-primary hover:bg-slate-800 text-white shadow-md active:scale-[0.98] transition-all">
-                Gửi lại email xác minh
-              </Button>
-            </Link>
+            <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">Xác minh thành công!</h2>
+            <p className="text-white/65 text-sm mb-8">Bạn có thể đăng nhập ngay bây giờ.</p>
 
             <Link href="/login">
-              <Button variant="outline" className="w-full h-12 rounded-2xl border-slate-200 bg-white hover:bg-slate-50 text-slate-600 font-semibold shadow-sm">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Quay lại đăng nhập
+              <Button className="w-full h-12 text-base font-bold rounded-2xl bg-white/20 hover:bg-white/30 text-white border border-white/25 shadow-md active:scale-[0.98] transition-all group focus-visible:ring-2 focus-visible:ring-white/50">
+                <span>Đăng nhập ngay</span>
+                <ArrowRight className="ml-2 h-4 w-4 opacity-70 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-          </div>
-        </div>
-      )}
+          </>
+        )}
+
+        {status === "error" && (
+          <>
+            <div className="flex justify-center mb-6">
+              <div className="w-16 h-16 rounded-full bg-white/15 border border-white/25 flex items-center justify-center">
+                <AlertCircle className="w-8 h-8 text-red-300" />
+              </div>
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-2 tracking-tight">Xác minh thất bại</h2>
+            <p className="text-white/65 text-sm mb-8">{errorMsg}</p>
+
+            <div className="space-y-3">
+              <Link href="/resend-verification">
+                <Button className="w-full h-12 text-base font-bold rounded-2xl bg-white/20 hover:bg-white/30 text-white border border-white/25 shadow-md active:scale-[0.98] transition-all focus-visible:ring-2 focus-visible:ring-white/50">
+                  Gửi lại email xác minh
+                </Button>
+              </Link>
+
+              <Link href="/login">
+                <Button variant="outline" className="w-full h-12 rounded-2xl bg-white/10 border-white/25 text-white hover:bg-white/20 hover:text-white font-semibold transition-colors focus-visible:ring-2 focus-visible:ring-white/50">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Quay lại đăng nhập
+                </Button>
+              </Link>
+            </div>
+          </>
+        )}
+
+      </div>
     </div>
   );
 }
