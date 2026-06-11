@@ -50,7 +50,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <ClientErrorReporter />
           <TooltipProvider>
             {children}
-            <Toaster position="bottom-center" richColors closeButton />
+            <Toaster position="top-right" closeButton />
           </TooltipProvider>
         </Providers>
       </body>
