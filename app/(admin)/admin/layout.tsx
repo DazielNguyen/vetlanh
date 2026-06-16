@@ -13,6 +13,7 @@ import {
     Bell,
     ShieldPlus,
     Music2,
+    BookOpen,
 } from "lucide-react";
 
 const sidebarNav = [
@@ -20,6 +21,7 @@ const sidebarNav = [
     { title: "Người dùng", href: "/admin/users", icon: Users },
     { title: "Đăng ký gói", href: "/admin/subscriptions", icon: CreditCard },
     { title: "Âm thanh", href: "/admin/sounds", icon: Music2 },
+    { title: "Thư viện", href: "/admin/library", icon: BookOpen },
     { title: "Báo lỗi hệ thống", href: "/admin/errors", icon: Bug },
     { title: "Cài đặt", href: "#", icon: Settings },
 ];
