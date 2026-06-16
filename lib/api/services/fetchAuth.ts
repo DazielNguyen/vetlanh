@@ -64,11 +64,6 @@ export const fetchAuth = {
     return response.data;
   },
 
-  googleLogin: async (): Promise<{ authorization_url: string }> => {
-    const response = await apiService.get<{ authorization_url: string }>("api/v1/auth/google");
-    return response.data;
-  },
-
   registerWithUsername: async (data: UsernameRegisterRequest): Promise<LoginResponse> => {
     const response = await apiService.post<LoginResponse>("api/v1/auth/register-username", data);
     return response.data;

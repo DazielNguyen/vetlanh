@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,17 +16,6 @@ import { fetchAuth } from "@/lib/api/services/fetchAuth";
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
-function toViOAuthError(msg: string): string {
-    const lower = msg.toLowerCase();
-    if (lower.includes("already_exists") || lower.includes("already exists"))
-        return "Email này đã được đăng ký bằng mật khẩu. Vui lòng đăng nhập bằng email và mật khẩu.";
-    if (lower.includes("not_verified") || lower.includes("not verified"))
-        return "Tài khoản chưa xác minh. Vui lòng kiểm tra hộp thư của bạn.";
-    if (lower.includes("bad_credentials") || lower.includes("unauthorized"))
-        return "Đăng nhập Google thất bại. Vui lòng thử lại.";
-    return "Đăng nhập Google thất bại. Vui lòng thử lại.";
-}
-
 function isUnverifiedError(msg: string): boolean {
     const lower = msg.toLowerCase();
     return lower.includes("verify your email") || lower.includes("not verified") || lower.includes("unverified");
@@ -35,7 +24,7 @@ function isUnverifiedError(msg: string): boolean {
 function mapEmailLoginError(msg: string): string {
     const lower = msg.toLowerCase();
     if (lower.includes("already exists"))
-        return "Tài khoản này sử dụng đăng nhập Google. Vui lòng dùng nút Google bên dưới.";
+        return "Email này đã được đăng ký. Vui lòng đăng nhập bằng email và mật khẩu.";
     if (lower.includes("incorrect") || lower.includes("invalid credentials") || lower.includes("wrong password") || lower.includes("not found"))
         return "Email hoặc mật khẩu không đúng. Vui lòng kiểm tra lại.";
     if (isUnverifiedError(msg))
@@ -77,7 +66,6 @@ type Tab = "email" | "username";
 export default function LoginPage() {
     const { login, isLoading: emailLoading, error: emailError } = useAuth();
     const dispatch = useAppDispatch();
-    const searchParams = useSearchParams();
     const router = useRouter();
 
     const [tab, setTab] = useState<Tab>("email");
@@ -92,10 +80,6 @@ export default function LoginPage() {
 
     useEffect(() => {
         dispatch(clearError());
-        const oauthError = searchParams.get("error");
-        if (!oauthError) return;
-        toast.error(toViOAuthError(oauthError), { duration: 8000 });
-        window.history.replaceState({}, "", "/login");
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     const handleEmailLogin = async (e: React.FormEvent) => {
@@ -122,29 +106,6 @@ export default function LoginPage() {
             setUsernameError(mapUsernameLoginError(msg));
         } finally {
             setUsernameLoading(false);
-        }
-    };
-
-    const handleGoogleLogin = async () => {
-        try {
-            const { authorization_url } = await fetchAuth.googleLogin();
-            try {
-                const parsed = new URL(authorization_url);
-                if (parsed.hostname !== "accounts.google.com") {
-                    console.error("[Google OAuth] Unexpected redirect host:", parsed.hostname);
-                    toast.error("Không thể kết nối Google. Thử lại sau.");
-                    return;
-                }
-            } catch {
-                console.error("[Google OAuth] Invalid authorization_url:", authorization_url);
-                toast.error("Không thể kết nối Google. Thử lại sau.");
-                return;
-            }
-            window.location.href = authorization_url;
-        } catch (err: unknown) {
-            const msg = typeof err === "string" ? err : (err as { message?: string })?.message ?? "Không thể kết nối Google. Thử lại sau.";
-            console.error("[Google OAuth] Failed to get authorization URL:", msg);
-            toast.error(toViOAuthError(msg));
         }
     };
 
@@ -233,23 +194,6 @@ export default function LoginPage() {
                         </Button>
                     </form>
                 )}
-
-                <div className="mt-8 flex items-center before:flex-1 before:border-t before:border-white/15 after:flex-1 after:border-t after:border-white/15">
-                    <p className="mx-4 text-center text-xs font-medium text-white/40 uppercase tracking-widest">Hoặc</p>
-                </div>
-
-                <div className="mt-6">
-                    <button
-                        type="button"
-                        onClick={handleGoogleLogin}
-                        className="h-12 w-full rounded-2xl border border-white/20 bg-white/10 backdrop-blur-sm hover:bg-white/20 text-white font-semibold flex items-center justify-center gap-2.5 transition-all active:scale-[0.98]"
-                    >
-                        <svg className="w-5 h-5" aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
-                            <path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" />
-                        </svg>
-                        Đăng nhập với Google
-                    </button>
-                </div>
             </div>
 
             <p className="mt-8 text-center text-sm text-white/60 font-medium">
