@@ -12,10 +12,11 @@ import { cn } from "@/lib/utils";
 import { PACKAGES, getPackage, DEFAULT_PACKAGE_KEY, type Package } from "@/lib/constants/packages";
 import { fetchSubscription } from "@/lib/api/services/fetchSubscription";
 import type { ApiError } from "@/lib/api/core";
+import { env } from "@/lib/env";
 
-const BANK_ID = process.env.NEXT_PUBLIC_BANK_ID ?? "MB";
-const BANK_ACCOUNT = process.env.NEXT_PUBLIC_BANK_ACCOUNT ?? "1234567890";
-const BANK_NAME = process.env.NEXT_PUBLIC_BANK_NAME ?? "CONG TY TNHH VET LANH";
+const BANK_ID = env.bankId;
+const BANK_ACCOUNT = env.bankAccount;
+const BANK_NAME = env.bankName;
 
 const MAX_BILL_SIZE = 10 * 1024 * 1024; // 10 MB
 

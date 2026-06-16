@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import ClientErrorReporter from "@/components/ClientErrorReporter";
+import { env } from "@/lib/env";
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -20,7 +21,7 @@ const dancingScript = Dancing_Script({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:5173"),
+  metadataBase: new URL(env.appUrl),
   title: {
     template: "%s | Vết Lành",
     default: "Vết Lành - Nền tảng chăm sóc sức khoẻ tinh thần",

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { getCookie } from "cookies-next";
+import { env } from "@/lib/env";
 
 // Lazy accessor — resolves the store only when a response interceptor fires,
 // not at module-evaluation time. This breaks the circular dependency:
@@ -91,7 +92,7 @@ class ApiService {
         const status = error.response?.status ?? 0;
         // Skip 401 (handled above), 403 (permission denied), and 404 (resource not found — not a system error).
         if (status >= 400 && status !== 401 && status !== 403 && status !== 404) {
-          const base = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080/").replace(/\/$/, "");
+          const base = env.apiUrl.replace(/\/$/, "");
           fetch(`${base}/api/v1/errors/report`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -156,6 +157,6 @@ class ApiService {
   }
 }
 
-const apiService = new ApiService(process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/");
+const apiService = new ApiService(env.apiUrl);
 
 export default apiService;
