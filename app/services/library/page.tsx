@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Clock, BookOpen, TrendingUp, Sparkles, Brain, Leaf, Loader2, type LucideIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLibrary, type ArticleCategory } from "@/hooks/useLibrary";
@@ -33,6 +34,7 @@ function formatDate(iso: string): string {
 // ── Component ────────────────────────────────────────────────────────────────
 
 export default function LibraryPage() {
+  const router = useRouter();
   const [activeCategory, setActiveCategory] = useState<ArticleCategory | undefined>();
   const { data: articles, isLoading } = useLibrary(activeCategory);
 
@@ -97,6 +99,7 @@ export default function LibraryPage() {
             return (
               <Card
                 key={article.id}
+                onClick={() => router.push(`/services/library/${article.id}`)}
                 className="card-lifted border-none rounded-3xl overflow-hidden group hover:scale-[1.01] transition-transform cursor-pointer"
               >
                 {/* Cover */}

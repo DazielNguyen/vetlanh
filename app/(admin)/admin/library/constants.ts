@@ -19,7 +19,7 @@ export const TABLE_HEADERS = ["Bài viết", "Danh mục", "Phút đọc", "Ản
 export const hasCover = (a: Article) => !!a.cover_url;
 
 export const apiDetail = (e: unknown, fallback: string) =>
-    (e as { response?: { data?: { detail?: string } } })?.response?.data?.detail ?? fallback;
+    (e as { message?: string })?.message ?? fallback;
 
 export async function uploadCoverImage(articleId: string, file: File, onProgress: (p: number) => void): Promise<Article> {
     const paramsRes = await apiService.post<CloudinaryParams>(`api/v1/articles/${articleId}/upload-url`);
