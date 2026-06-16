@@ -8,8 +8,10 @@ import { env } from "@/lib/env";
 
 type Tab = "pending" | "active";
 
-const fmtDate = (iso: string) => {
+const fmtDate = (iso: string | null | undefined) => {
+    if (!iso) return "—";
     const d = new Date(iso);
+    if (isNaN(d.getTime())) return "—";
     return [d.getDate(), d.getMonth() + 1, d.getFullYear()].map(n => String(n).padStart(2, "0")).join("/");
 };
 

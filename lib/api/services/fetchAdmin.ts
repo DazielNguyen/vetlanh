@@ -33,7 +33,7 @@ export type PendingSubscription = {
   duration: number;
   amount: string;
   amount_vnd: number;
-  transferDate: string;
+  transferDate: string | null;
   note: string;
   bill_image_url?: string | null;
 };
