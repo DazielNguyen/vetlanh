@@ -141,9 +141,10 @@ export default function LoginPage() {
                 return;
             }
             window.location.href = authorization_url;
-        } catch (err) {
-            console.error("[Google OAuth] Failed to get authorization URL:", err);
-            toast.error("Không thể kết nối Google. Thử lại sau.");
+        } catch (err: unknown) {
+            const msg = typeof err === "string" ? err : (err as { message?: string })?.message ?? "Không thể kết nối Google. Thử lại sau.";
+            console.error("[Google OAuth] Failed to get authorization URL:", msg);
+            toast.error(toViOAuthError(msg));
         }
     };
 
