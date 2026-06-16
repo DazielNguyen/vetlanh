@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { CheckCircle2, X, ShieldCheck, ImageOff } from "lucide-react";
 import { toast } from "sonner";
 import { fetchAdmin, type PendingSubscription, type ActiveSubscription } from "@/lib/api/services/fetchAdmin";
+import { env } from "@/lib/env";
 
 type Tab = "pending" | "active";
 
@@ -11,6 +12,11 @@ const fmtDate = (iso: string) => {
     const d = new Date(iso);
     return [d.getDate(), d.getMonth() + 1, d.getFullYear()].map(n => String(n).padStart(2, "0")).join("/");
 };
+
+// BE may return a relative path (e.g. "/uploads/bill_x.jpg") instead of a full URL —
+// resolve it against the API origin so <img> doesn't request it from the FE's own domain.
+const resolveImageUrl = (url: string) =>
+    /^https?:\/\//.test(url) ? url : `${env.apiUrl.replace(/\/$/, "")}/${url.replace(/^\//, "")}`;
 
 const cardStyle = { background: "rgba(255,255,255,0.04)", backdropFilter: "blur(16px)" };
 
@@ -38,7 +44,7 @@ export default function AdminSubscriptionsPage() {
     const handleGrant = async (item: PendingSubscription) => {
         setActing(true);
         try {
-            const granted = await fetchAdmin.grantSubscription(item.id);
+            const granted = await fetchAdmin.grantSubscription(item.id, item.duration);
             setActive(prev => [granted, ...prev]);
             setPending(prev => prev.filter(x => x.id !== item.id));
             setConfirmId(null);
@@ -141,10 +147,10 @@ export default function AdminSubscriptionsPage() {
                                         </td>
                                         <td className="px-4 py-4">
                                             {item.bill_image_url ? (
-                                                <a href={item.bill_image_url} target="_blank" rel="noopener noreferrer">
+                                                <a href={resolveImageUrl(item.bill_image_url)} target="_blank" rel="noopener noreferrer">
                                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                                     <img
-                                                        src={item.bill_image_url}
+                                                        src={resolveImageUrl(item.bill_image_url)}
                                                         alt="Bill CK"
                                                         className="w-12 h-12 rounded-lg object-cover border border-white/10 hover:opacity-80 transition-opacity cursor-zoom-in"
                                                     />
@@ -260,10 +266,10 @@ export default function AdminSubscriptionsPage() {
                         {confirmItem.bill_image_url && (
                             <div className="mb-6">
                                 <p className="text-xs font-semibold text-white/35 mb-2">Ảnh bill chuyển khoản</p>
-                                <a href={confirmItem.bill_image_url} target="_blank" rel="noopener noreferrer">
+                                <a href={resolveImageUrl(confirmItem.bill_image_url)} target="_blank" rel="noopener noreferrer">
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
-                                        src={confirmItem.bill_image_url}
+                                        src={resolveImageUrl(confirmItem.bill_image_url)}
                                         alt="Bill chuyển khoản"
                                         className="w-full max-h-52 object-contain rounded-xl border border-white/10 hover:opacity-90 transition-opacity cursor-zoom-in"
                                     />

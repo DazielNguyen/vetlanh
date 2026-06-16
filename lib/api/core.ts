@@ -75,11 +75,19 @@ class ApiService {
           } as ApiError);
         }
 
-        // FastAPI uses "detail" for error messages; fall back to "message" then generic.
+        // FastAPI uses "detail" for error messages; on 422 it's an array of
+        // { type, loc, msg, input } validation issues instead of a string.
+        const detail = error.response?.data?.detail;
+        const detailMessage = Array.isArray(detail)
+          ? detail.map((d: { msg?: string }) => d?.msg).filter(Boolean).join("; ")
+          : typeof detail === "string"
+          ? detail
+          : undefined;
+
         const apiError: ApiError = {
           code: error.response?.status,
           message:
-            error.response?.data?.detail ||
+            detailMessage ||
             error.response?.data?.message ||
             error.message ||
             "Có lỗi xảy ra",
