@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { CheckCircle2, X, ShieldCheck } from "lucide-react";
+import { CheckCircle2, X, ShieldCheck, ImageOff } from "lucide-react";
+import { toast } from "sonner";
 import { fetchAdmin, type PendingSubscription, type ActiveSubscription } from "@/lib/api/services/fetchAdmin";
 
 type Tab = "pending" | "active";
@@ -41,7 +42,9 @@ export default function AdminSubscriptionsPage() {
             setActive(prev => [granted, ...prev]);
             setPending(prev => prev.filter(x => x.id !== item.id));
             setConfirmId(null);
-        } catch {
+            toast.success(`Đã cấp gói ${item.plan} cho @${item.username}`);
+        } catch (err) {
+            toast.error((err as { message?: string })?.message ?? "Cấp gói thất bại. Vui lòng thử lại.");
         } finally {
             setActing(false);
         }
@@ -52,7 +55,9 @@ export default function AdminSubscriptionsPage() {
         try {
             await fetchAdmin.rejectSubscription(id);
             setPending(prev => prev.filter(x => x.id !== id));
-        } catch {
+            toast.success("Đã từ chối yêu cầu");
+        } catch (err) {
+            toast.error((err as { message?: string })?.message ?? "Từ chối thất bại. Vui lòng thử lại.");
         } finally {
             setActing(false);
         }
@@ -102,8 +107,8 @@ export default function AdminSubscriptionsPage() {
                         <table className="w-full text-left">
                             <thead>
                                 <tr className="border-b border-white/[0.07]">
-                                    {["Người dùng", "Gói", "Số tiền", "Ngày chuyển", "Nội dung CK", "Thao tác"].map((h, i) => (
-                                        <th key={i} className={`${i === 0 ? "px-6" : "px-4"} py-3.5 text-[10px] font-bold text-white/30 uppercase tracking-widest${i === 5 ? " text-right pr-6" : ""}`}>{h}</th>
+                                    {["Người dùng", "Gói", "Số tiền", "Ngày chuyển", "Nội dung CK", "Ảnh bill", "Thao tác"].map((h, i) => (
+                                        <th key={i} className={`${i === 0 ? "px-6" : "px-4"} py-3.5 text-[10px] font-bold text-white/30 uppercase tracking-widest${i === 6 ? " text-right pr-6" : ""}`}>{h}</th>
                                     ))}
                                 </tr>
                             </thead>
@@ -133,6 +138,22 @@ export default function AdminSubscriptionsPage() {
                                         <td className="px-4 py-4 text-sm font-medium text-white/50">{fmtDate(item.transferDate)}</td>
                                         <td className="px-4 py-4 max-w-50">
                                             <p className="text-xs font-medium text-white/40 truncate" title={item.note}>{item.note}</p>
+                                        </td>
+                                        <td className="px-4 py-4">
+                                            {item.bill_image_url ? (
+                                                <a href={item.bill_image_url} target="_blank" rel="noopener noreferrer">
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                    <img
+                                                        src={item.bill_image_url}
+                                                        alt="Bill CK"
+                                                        className="w-12 h-12 rounded-lg object-cover border border-white/10 hover:opacity-80 transition-opacity cursor-zoom-in"
+                                                    />
+                                                </a>
+                                            ) : (
+                                                <div className="w-12 h-12 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center">
+                                                    <ImageOff className="w-4 h-4 text-white/20" />
+                                                </div>
+                                            )}
                                         </td>
                                         <td className="px-4 py-4 text-right pr-6">
                                             <div className="flex items-center justify-end gap-2">
@@ -228,7 +249,7 @@ export default function AdminSubscriptionsPage() {
                         <p className="text-sm text-white/50 text-center font-medium mb-6">
                             Cấp <span className="font-bold text-white">{confirmItem.plan}</span> cho <span className="font-bold text-white">@{confirmItem.username}</span>?
                         </p>
-                        <div className="rounded-2xl p-4 mb-6 space-y-2 text-sm border border-white/8" style={{ background: "rgba(255,255,255,0.05)" }}>
+                        <div className="rounded-2xl p-4 mb-4 space-y-2 text-sm border border-white/8" style={{ background: "rgba(255,255,255,0.05)" }}>
                             {[["Số tiền", confirmItem.amount], ["Ngày chuyển", fmtDate(confirmItem.transferDate)], ["Nội dung CK", confirmItem.note]].map(([k, v]) => (
                                 <div key={k} className="flex justify-between gap-4">
                                     <span className="text-white/45 font-medium shrink-0">{k}</span>
@@ -236,6 +257,19 @@ export default function AdminSubscriptionsPage() {
                                 </div>
                             ))}
                         </div>
+                        {confirmItem.bill_image_url && (
+                            <div className="mb-6">
+                                <p className="text-xs font-semibold text-white/35 mb-2">Ảnh bill chuyển khoản</p>
+                                <a href={confirmItem.bill_image_url} target="_blank" rel="noopener noreferrer">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                        src={confirmItem.bill_image_url}
+                                        alt="Bill chuyển khoản"
+                                        className="w-full max-h-52 object-contain rounded-xl border border-white/10 hover:opacity-90 transition-opacity cursor-zoom-in"
+                                    />
+                                </a>
+                            </div>
+                        )}
                         <div className="flex gap-3">
                             <button onClick={() => setConfirmId(null)} className="flex-1 h-11 rounded-2xl border border-white/15 text-white/60 text-sm font-bold hover:bg-white/6 transition-colors">
                                 Hủy
