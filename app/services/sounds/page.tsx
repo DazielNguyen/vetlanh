@@ -7,6 +7,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { toast } from "sonner";
 import { useSounds, type Sound, type SoundCategory } from "@/hooks/useSounds";
 
 // ── Design system mapping ────────────────────────────────────────────────────
@@ -96,9 +97,15 @@ export default function SoundsPage() {
 
     const audio = new Audio(sound.audio_url);
     audio.loop = sound.duration_seconds === null;
-    audio.play().catch(() => {
-      // Autoplay blocked or network error — reset state silently
+    audio.onerror = () => {
       setPlayingId(null);
+      audioRef.current = null;
+      toast.error("Không thể phát âm thanh này. File có thể chưa được upload.");
+    };
+    audio.play().catch(() => {
+      setPlayingId(null);
+      audioRef.current = null;
+      toast.error("Không thể phát âm thanh này. Vui lòng thử lại.");
     });
     audio.onended = () => setPlayingId(null);
     audioRef.current = audio;
