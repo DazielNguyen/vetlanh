@@ -81,7 +81,7 @@ export const fetchAdmin = {
   grantSubscription: async (id: string, duration_months?: number): Promise<ActiveSubscription> => {
     const res = await apiService.post<ActiveSubscription>(
       `api/v1/admin/subscriptions/${id}/grant`,
-      duration_months ? { duration_months } : undefined
+      duration_months != null ? { duration_months } : undefined
     );
     return res.data;
   },

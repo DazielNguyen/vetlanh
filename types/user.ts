@@ -7,6 +7,9 @@ export interface UserProfile {
   avatar_url: string | null;
   timezone: string | null;
   goals: string[] | null;
+  subscription_status: "pro" | "expired" | "none";
+  subscription_plan: string | null;
+  subscription_expires_at: string | null;
 }
 
 export interface UpdateProfileRequest {

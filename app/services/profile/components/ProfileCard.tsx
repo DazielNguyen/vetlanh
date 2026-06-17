@@ -66,6 +66,11 @@ export function ProfileCard() {
                                 <h2 className="text-lg font-extrabold text-foreground">
                                     {user?.display_name ?? "Chưa đặt tên"}
                                 </h2>
+                                {user?.subscription_status === "pro" && (
+                                    <span className="text-[10px] font-bold tracking-widest uppercase bg-[#6D8A96] text-white px-2 py-0.5 rounded-full ml-1">
+                                        Pro
+                                    </span>
+                                )}
                                 <button onClick={startEdit} className="text-foreground/20 hover:text-primary transition ml-1">
                                     <Pencil className="w-3.5 h-3.5" strokeWidth={2} />
                                 </button>

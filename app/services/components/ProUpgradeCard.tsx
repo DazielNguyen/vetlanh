@@ -1,12 +1,48 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Check, Sparkles } from "lucide-react";
+import { Check, Sparkles, Crown } from "lucide-react";
 import Link from "next/link";
 import { PACKAGES, PRO_FEATURES, DEFAULT_PACKAGE_KEY } from "@/lib/constants/packages";
+import { useCurrentUser } from "@/hooks/useUser";
 
 const HIGHLIGHTS = PRO_FEATURES.slice(0, 3);
 
+function formatExpiry(iso: string): string {
+  return new Date(iso).toLocaleDateString("vi-VN", { day: "numeric", month: "long", year: "numeric" });
+}
+
 export function ProUpgradeCard() {
+  const { data: user } = useCurrentUser();
+
+  if (user?.subscription_status === "pro") {
+    return (
+      <Card className="border-none card-lifted rounded-3xl bg-linear-to-br from-[#E8F2F6] to-[#C8DFE9] relative overflow-hidden h-full flex flex-col">
+        <div className="absolute -right-6 -bottom-6 opacity-20 text-[#6D8A96]">
+          <Crown className="w-32 h-32" />
+        </div>
+
+        <CardContent className="p-6 relative z-10 flex flex-col gap-4 h-full justify-center">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-bold tracking-widest uppercase bg-[#6D8A96] text-white px-2.5 py-0.5 rounded-full">
+              PRO
+            </span>
+          </div>
+
+          <div>
+            <h3 className="text-lg font-bold text-slate-800 leading-snug">
+              Bạn đang là thành viên Pro
+            </h3>
+            {user.subscription_expires_at && (
+              <p className="text-xs text-slate-500 mt-1">
+                Hết hạn: <span className="font-semibold text-[#6D8A96]">{formatExpiry(user.subscription_expires_at)}</span>
+              </p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="border-none card-lifted rounded-3xl bg-linear-to-br from-[#E8F2F6] to-[#C8DFE9] relative overflow-hidden h-full flex flex-col">
       <div className="absolute -right-6 -bottom-6 opacity-20 text-[#6D8A96]">
