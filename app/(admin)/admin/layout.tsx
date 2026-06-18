@@ -30,7 +30,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const pathname = usePathname();
 
     return (
-        <div className="flex min-h-[100dvh] text-white relative" style={{ background: "#0b0f0d" }}>
+        <div className="flex w-full min-h-dvh text-white relative">
+            {/* Full-viewport dark background — fixed so it always covers the entire screen
+                regardless of container width, same pattern as services layout uses for its background */}
+            <div className="fixed inset-0 -z-10 pointer-events-none" style={{ background: "#0b0f0d" }} />
             {/* Ambient gradient blobs */}
             <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
                 <div
