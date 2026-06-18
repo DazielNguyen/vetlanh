@@ -100,7 +100,7 @@ export default function AdminErrorsPage() {
             </div>
 
             {/* Error List */}
-            <div className="rounded-[24px] border border-white/9 divide-y divide-white/6" style={cardStyle}>
+            <div className="rounded-[24px] border border-white/9 divide-y divide-white/6 overflow-hidden" style={cardStyle}>
                 {loading && (
                     <div className="py-12 flex items-center justify-center">
                         <p className="text-sm text-white/30 font-medium">Đang tải...</p>
@@ -122,16 +122,16 @@ export default function AdminErrorsPage() {
                                 {e.severity}
                             </span>
                             <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                    <p className="text-sm font-bold text-white/90">{e.type}</p>
-                                    <code className="text-[11px] font-mono bg-white/8 text-white/40 px-1.5 py-0.5 rounded-md border border-white/10">{e.route}</code>
+                                <div className="flex items-center gap-2 mb-1 flex-wrap min-w-0">
+                                    <p className="text-sm font-bold text-white/90 shrink-0">{e.type}</p>
+                                    <code className="text-[11px] font-mono bg-white/8 text-white/40 px-1.5 py-0.5 rounded-md border border-white/10 max-w-full truncate block">{e.route}</code>
                                     {e.status === "resolved" && (
                                         <span className="text-[10px] font-bold bg-emerald-500/15 text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-500/20">Đã xử lý</span>
                                     )}
                                 </div>
                                 <p className="text-xs text-white/35 font-medium mb-2">{fmtDateTime(e.timestamp)}</p>
                                 {expandedId === e.id ? (
-                                    <p className="text-sm text-white/60 font-medium leading-relaxed rounded-xl p-3 border border-white/[0.07]" style={{ background: "rgba(255,255,255,0.04)" }}>
+                                    <p className="text-sm text-white/60 font-medium leading-relaxed rounded-xl p-3 border border-white/[0.07] wrap-break-word" style={{ background: "rgba(255,255,255,0.04)" }}>
                                         {e.description}
                                     </p>
                                 ) : (
