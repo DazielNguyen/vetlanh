@@ -25,10 +25,9 @@ export default function AdminErrorsPage() {
     const [errors, setErrors]         = useState<AdminError[]>([]);
     const [filter, setFilter]         = useState<FilterTab>("all");
     const [loading, setLoading]       = useState(false);
-    const [copiedId, setCopiedId]         = useState<string | null>(null);
-    const [expandedId, setExpandedId]     = useState<string | null>(null);
+    const [copiedId, setCopiedId]               = useState<string | null>(null);
     const [expandedRouteId, setExpandedRouteId] = useState<string | null>(null);
-    const [resolvingId, setResolvingId]   = useState<string | null>(null);
+    const [resolvingId, setResolvingId]         = useState<string | null>(null);
 
     useEffect(() => {
         setLoading(true);
@@ -160,22 +159,10 @@ export default function AdminErrorsPage() {
                         {/* Row 3: timestamp */}
                         <p className="text-xs text-white/30 font-medium mt-1.5">{fmtDateTime(e.timestamp)}</p>
 
-                        {/* Row 4: description (truncated, expandable) */}
-                        <div className="mt-2">
-                            {expandedId === e.id ? (
-                                <p className="text-sm text-white/60 font-medium leading-relaxed rounded-xl p-3 border border-white/[0.07] wrap-break-word" style={{ background: "rgba(255,255,255,0.04)" }}>
-                                    {e.description}
-                                </p>
-                            ) : (
-                                <p className="text-sm text-white/45 font-medium truncate">{e.description}</p>
-                            )}
-                            <button
-                                onClick={() => setExpandedId(expandedId === e.id ? null : e.id)}
-                                className="mt-1 text-xs font-bold text-emerald-400/70 hover:text-emerald-400 transition-colors"
-                            >
-                                {expandedId === e.id ? "Thu gọn" : "Xem chi tiết"}
-                            </button>
-                        </div>
+                        {/* Row 4: description — always visible, wraps long text */}
+                        <p className="mt-2 text-sm text-white/55 font-medium leading-relaxed wrap-break-word">
+                            {e.description}
+                        </p>
                     </div>
                 ))}
             </div>
