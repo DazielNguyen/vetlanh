@@ -63,7 +63,7 @@ export default function AdminErrorsPage() {
     };
 
     return (
-        <div className="w-full space-y-6">
+        <div className="w-full max-w-full overflow-x-hidden space-y-6">
             <div>
                 <h1 className="text-[28px] font-bold text-white tracking-tight leading-none mb-1.5">Báo lỗi hệ thống</h1>
                 <p className="text-white/45 font-medium text-sm">Ghi nhận lỗi để DEV cập nhật và xử lý</p>
@@ -117,51 +117,29 @@ export default function AdminErrorsPage() {
                     </div>
                 )}
                 {!loading && errors.map((e) => (
-                    <div key={e.id} className="px-6 py-5 hover:bg-white/3 transition-colors">
-                        <div className="flex items-start gap-4">
-                            <span className={`text-[10px] font-bold px-2 py-1 rounded-md border shrink-0 mt-0.5 ${severityStyle[e.severity]}`}>
+                    <div key={e.id} className="px-6 py-4 hover:bg-white/3 transition-colors min-w-0">
+                        {/* Row 1: severity + type + badges + actions */}
+                        <div className="flex items-center gap-3 min-w-0">
+                            <span className={`text-[10px] font-bold px-2 py-1 rounded-md border shrink-0 ${severityStyle[e.severity]}`}>
                                 {e.severity}
                             </span>
-                            <div className="flex-1 min-w-0">
-                                <div className="flex items-center gap-2 mb-1 flex-wrap min-w-0">
-                                    <p className="text-sm font-bold text-white/90 shrink-0">{e.type}</p>
-                                    <code
-                                        onClick={() => setExpandedRouteId(expandedRouteId === e.id ? null : e.id)}
-                                        title={expandedRouteId === e.id ? "Thu gọn" : "Xem đầy đủ"}
-                                        className={`text-[11px] font-mono bg-white/8 text-white/40 px-1.5 py-0.5 rounded-md border border-white/10 max-w-full block cursor-pointer hover:bg-white/12 hover:text-white/60 transition-colors ${expandedRouteId === e.id ? "wrap-break-word" : "truncate"}`}
-                                    >{e.route}</code>
-                                    {e.status === "resolved" && (
-                                        <span className="text-[10px] font-bold bg-emerald-500/15 text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-500/20">Đã xử lý</span>
-                                    )}
-                                </div>
-                                <p className="text-xs text-white/35 font-medium mb-2">{fmtDateTime(e.timestamp)}</p>
-                                {expandedId === e.id ? (
-                                    <p className="text-sm text-white/60 font-medium leading-relaxed rounded-xl p-3 border border-white/[0.07] wrap-break-word" style={{ background: "rgba(255,255,255,0.04)" }}>
-                                        {e.description}
-                                    </p>
-                                ) : (
-                                    <p className="text-sm text-white/45 font-medium truncate">{e.description}</p>
-                                )}
-                                <button
-                                    onClick={() => setExpandedId(expandedId === e.id ? null : e.id)}
-                                    className="mt-1.5 text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors"
-                                >
-                                    {expandedId === e.id ? "Thu gọn" : "Xem chi tiết"}
-                                </button>
-                            </div>
+                            <p className="text-sm font-bold text-white/90 truncate flex-1 min-w-0">{e.type}</p>
+                            {e.status === "resolved" && (
+                                <span className="text-[10px] font-bold bg-emerald-500/15 text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-500/20 shrink-0">Đã xử lý</span>
+                            )}
                             <div className="flex items-center gap-2 shrink-0">
                                 <button
                                     onClick={() => copyError(e)}
                                     title="Copy để gửi DEV"
-                                    className="h-8 w-8 flex items-center justify-center rounded-xl bg-white/8 hover:bg-white/12 text-white/40 hover:text-white/70 transition-colors border border-white/10"
+                                    className="h-7 w-7 flex items-center justify-center rounded-lg bg-white/8 hover:bg-white/12 text-white/40 hover:text-white/70 transition-colors border border-white/10"
                                 >
-                                    {copiedId === e.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                                    {copiedId === e.id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
                                 </button>
                                 {e.status === "open" && (
                                     <button
                                         onClick={() => markResolved(e.id)}
                                         disabled={resolvingId === e.id}
-                                        className="h-8 px-3.5 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 hover:text-emerald-300 text-xs font-bold rounded-xl transition-colors border border-emerald-500/20 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+                                        className="h-7 px-3 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 hover:text-emerald-300 text-[11px] font-bold rounded-lg transition-colors border border-emerald-500/20 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
                                     >
                                         {resolvingId === e.id
                                             ? <><Loader2 className="w-3 h-3 animate-spin" />Đang xử lý...</>
@@ -170,6 +148,33 @@ export default function AdminErrorsPage() {
                                     </button>
                                 )}
                             </div>
+                        </div>
+
+                        {/* Row 2: route (clickable, truncated by default) */}
+                        <code
+                            onClick={() => setExpandedRouteId(expandedRouteId === e.id ? null : e.id)}
+                            title={expandedRouteId === e.id ? "Thu gọn" : "Bấm để xem đầy đủ"}
+                            className={`mt-1.5 text-[11px] font-mono bg-white/8 text-white/40 px-2 py-0.5 rounded-md border border-white/10 cursor-pointer hover:bg-white/12 hover:text-white/60 transition-colors block w-full ${expandedRouteId === e.id ? "wrap-break-word" : "truncate"}`}
+                        >{e.route}</code>
+
+                        {/* Row 3: timestamp */}
+                        <p className="text-xs text-white/30 font-medium mt-1.5">{fmtDateTime(e.timestamp)}</p>
+
+                        {/* Row 4: description (truncated, expandable) */}
+                        <div className="mt-2">
+                            {expandedId === e.id ? (
+                                <p className="text-sm text-white/60 font-medium leading-relaxed rounded-xl p-3 border border-white/[0.07] wrap-break-word" style={{ background: "rgba(255,255,255,0.04)" }}>
+                                    {e.description}
+                                </p>
+                            ) : (
+                                <p className="text-sm text-white/45 font-medium truncate">{e.description}</p>
+                            )}
+                            <button
+                                onClick={() => setExpandedId(expandedId === e.id ? null : e.id)}
+                                className="mt-1 text-xs font-bold text-emerald-400/70 hover:text-emerald-400 transition-colors"
+                            >
+                                {expandedId === e.id ? "Thu gọn" : "Xem chi tiết"}
+                            </button>
                         </div>
                     </div>
                 ))}
