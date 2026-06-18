@@ -1,5 +1,6 @@
 import apiService from "../core";
 import type { SafetyPlan, CrisisResource } from "@/types/safetyPlan";
+import { env } from "@/lib/env";
 
 export const fetchSafetyPlan = {
   getSafetyPlan: async (): Promise<SafetyPlan> => {
@@ -15,7 +16,7 @@ export const fetchSafetyPlan = {
   // Public endpoint — no auth header. Plain fetch avoids the Axios interceptor that
   // always attaches Bearer if a token exists in the cookie.
   getCrisisResources: async (): Promise<CrisisResource[]> => {
-    const base = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/").replace(/\/$/, "");
+    const base = env.apiUrl.replace(/\/$/, "");
     const res = await fetch(`${base}/api/v1/crisis/resources`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     return res.json() as Promise<CrisisResource[]>;

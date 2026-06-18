@@ -1,6 +1,7 @@
 import apiService from "@/lib/api/core";
 import { getCookie } from "cookies-next";
 import type { Conversation, ChatMessage, StreamChunk } from "@/types/chat";
+import { env } from "@/lib/env";
 
 export const fetchChat = {
   createConversation: async (): Promise<Conversation> => {
@@ -39,7 +40,7 @@ export const fetchChat = {
     }
 
     const token = getCookie("authToken");
-    const base = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/").replace(/\/$/, "");
+    const base = env.apiUrl.replace(/\/$/, "");
     const url = `${base}/api/v1/chat/conversations/${conversationId}/messages`;
 
     const response = await fetch(url, {

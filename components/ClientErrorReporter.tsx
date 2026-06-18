@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
+import { env } from "@/lib/env";
 
-const BASE = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080/").replace(/\/$/, "");
+const BASE = env.apiUrl.replace(/\/$/, "");
 const REPORT_URL = `${BASE}/api/v1/errors/report`;
 
 function report(payload: { error_type: string; route: string; severity: "HIGH" | "MEDIUM" | "LOW"; description: string }) {
