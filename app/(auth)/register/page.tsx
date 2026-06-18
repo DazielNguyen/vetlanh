@@ -7,7 +7,7 @@ import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowRight, Mail, Lock, Loader2, User } from "lucide-react";
+import { ArrowRight, Mail, Lock, Loader2, User, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { fetchAuth } from "@/lib/api/services/fetchAuth";
 import { useAppDispatch } from "@/lib/redux/hooks";
@@ -61,6 +61,41 @@ function IconInput({ icon: Icon, ...props }: { icon: LucideIcon } & React.Compon
                 className="pl-11 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/35 focus:bg-white/15 focus-visible:ring-white/20 rounded-2xl transition-all duration-200"
                 {...props}
             />
+        </div>
+    );
+}
+
+function PasswordInput({ id, value, onChange, placeholder, minLength }: {
+    id: string;
+    value: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    placeholder?: string;
+    minLength?: number;
+}) {
+    const [show, setShow] = useState(false);
+    return (
+        <div className="relative">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-white/40">
+                <Lock className="h-4 w-4" />
+            </div>
+            <Input
+                id={id}
+                type={show ? "text" : "password"}
+                value={value}
+                onChange={onChange}
+                placeholder={placeholder}
+                minLength={minLength}
+                required
+                className="pl-11 pr-11 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/35 focus:bg-white/15 focus-visible:ring-white/20 rounded-2xl transition-all duration-200"
+            />
+            <button
+                type="button"
+                onClick={() => setShow((s) => !s)}
+                className="absolute inset-y-0 right-0 flex items-center pr-4 text-white/40 hover:text-white/70 transition-colors"
+                tabIndex={-1}
+            >
+                {show ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
         </div>
     );
 }
@@ -178,11 +213,11 @@ export default function RegisterPage() {
                         </div>
                         <div className="space-y-2.5">
                             <Label htmlFor="email-password" className="text-white/80 font-semibold ml-1">Mật khẩu</Label>
-                            <IconInput icon={Lock} id="email-password" type="password" value={emailPassword} onChange={(e) => setEmailPassword(e.target.value)} placeholder="Tối thiểu 8 ký tự" required minLength={8} />
+                            <PasswordInput id="email-password" value={emailPassword} onChange={(e) => setEmailPassword(e.target.value)} placeholder="Tối thiểu 8 ký tự" minLength={8} />
                         </div>
                         <div className="space-y-2.5">
                             <Label htmlFor="email-confirm" className="text-white/80 font-semibold ml-1">Xác nhận mật khẩu</Label>
-                            <IconInput icon={Lock} id="email-confirm" type="password" value={emailConfirm} onChange={(e) => setEmailConfirm(e.target.value)} placeholder="Nhập lại mật khẩu" required />
+                            <PasswordInput id="email-confirm" value={emailConfirm} onChange={(e) => setEmailConfirm(e.target.value)} placeholder="Nhập lại mật khẩu" />
                         </div>
                         <SubmitButton isLoading={isLoading} label="Đăng ký" />
                     </form>
@@ -197,11 +232,11 @@ export default function RegisterPage() {
                         </div>
                         <div className="space-y-2.5">
                             <Label htmlFor="username-password" className="text-white/80 font-semibold ml-1">Mật khẩu</Label>
-                            <IconInput icon={Lock} id="username-password" type="password" value={usernamePassword} onChange={(e) => setUsernamePassword(e.target.value)} placeholder="Tối thiểu 8 ký tự" required minLength={8} />
+                            <PasswordInput id="username-password" value={usernamePassword} onChange={(e) => setUsernamePassword(e.target.value)} placeholder="Tối thiểu 8 ký tự" minLength={8} />
                         </div>
                         <div className="space-y-2.5">
                             <Label htmlFor="username-confirm" className="text-white/80 font-semibold ml-1">Xác nhận mật khẩu</Label>
-                            <IconInput icon={Lock} id="username-confirm" type="password" value={usernameConfirm} onChange={(e) => setUsernameConfirm(e.target.value)} placeholder="Nhập lại mật khẩu" required />
+                            <PasswordInput id="username-confirm" value={usernameConfirm} onChange={(e) => setUsernameConfirm(e.target.value)} placeholder="Nhập lại mật khẩu" />
                         </div>
                         <SubmitButton isLoading={isLoading} label="Đăng ký nhanh" />
                     </form>
