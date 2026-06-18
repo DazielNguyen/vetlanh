@@ -100,4 +100,8 @@ export const fetchAdmin = {
     const res = await apiService.patch<AdminError>(`api/v1/admin/errors/${id}/resolve`);
     return res.data;
   },
+
+  deleteUser: async (userId: number): Promise<void> => {
+    await apiService.delete<void>(`api/v1/admin/users/${userId}`);
+  },
 };

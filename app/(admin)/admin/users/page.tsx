@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight, Trash2, AlertTriangle, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { fetchAdmin, type AdminUser } from "@/lib/api/services/fetchAdmin";
 
 const PAGE_LIMIT = 20;
@@ -24,7 +25,60 @@ const accountTypeLabel: Record<string, string> = {
     google:   "Google",
 };
 
-const cardStyle = { background: "rgba(255,255,255,0.04)", backdropFilter: "blur(16px)" };
+const cardStyle    = { background: "rgba(255,255,255,0.04)", backdropFilter: "blur(16px)" };
+const overlayStyle = { background: "rgba(0,0,0,0.7)", backdropFilter: "blur(4px)" };
+
+function DeleteConfirmModal({ user, onConfirm, onClose, loading }: {
+    user: AdminUser;
+    onConfirm: () => void;
+    onClose: () => void;
+    loading: boolean;
+}) {
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={overlayStyle}>
+            <div className="w-full max-w-sm rounded-[24px] border border-white/10 p-6 space-y-5" style={{ background: "#111915" }}>
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-rose-500/15 border border-rose-500/20 flex items-center justify-center shrink-0">
+                        <AlertTriangle className="w-5 h-5 text-rose-400" />
+                    </div>
+                    <div>
+                        <h2 className="text-base font-bold text-white">Xóa tài khoản</h2>
+                        <p className="text-xs text-white/40 font-medium">Hành động này không thể hoàn tác</p>
+                    </div>
+                </div>
+
+                <p className="text-sm text-white/70 leading-relaxed">
+                    Bạn có chắc muốn xóa tài khoản{" "}
+                    <span className="font-bold text-white">@{user.username}</span>
+                    {user.displayName && user.displayName !== user.username && (
+                        <> (<span className="text-white/80">{user.displayName}</span>)</>
+                    )}
+                    ? Tất cả dữ liệu của người dùng này sẽ bị xóa vĩnh viễn.
+                </p>
+
+                <div className="flex gap-3">
+                    <button
+                        onClick={onClose}
+                        disabled={loading}
+                        className="flex-1 h-10 rounded-xl text-sm font-semibold text-white/60 hover:text-white border border-white/10 bg-white/8 hover:bg-white/12 transition-colors"
+                    >
+                        Hủy
+                    </button>
+                    <button
+                        onClick={onConfirm}
+                        disabled={loading}
+                        className="flex-1 h-10 rounded-xl text-sm font-bold bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                        {loading
+                            ? <><Loader2 className="w-3.5 h-3.5 animate-spin" />Đang xóa...</>
+                            : <><Trash2 className="w-3.5 h-3.5" />Xóa tài khoản</>
+                        }
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
 
 export default function AdminUsersPage() {
     const [search, setSearch]               = useState("");
@@ -33,6 +87,8 @@ export default function AdminUsersPage() {
     const [total, setTotal]                 = useState(0);
     const [page, setPage]                   = useState(1);
     const [loading, setLoading]             = useState(false);
+    const [deleteTarget, setDeleteTarget]   = useState<AdminUser | null>(null);
+    const [deleting, setDeleting]           = useState(false);
 
     // debounce: reset to page 1 when search changes
     useEffect(() => {
@@ -54,7 +110,32 @@ export default function AdminUsersPage() {
 
     const totalPages = Math.max(1, Math.ceil(total / PAGE_LIMIT));
 
+    const handleDelete = async () => {
+        if (!deleteTarget) return;
+        setDeleting(true);
+        try {
+            await fetchAdmin.deleteUser(deleteTarget.id);
+            setUsers(prev => prev.filter(u => u.id !== deleteTarget.id));
+            setTotal(prev => prev - 1);
+            toast.success(`Đã xóa tài khoản @${deleteTarget.username}`);
+            setDeleteTarget(null);
+        } catch (err) {
+            toast.error((err as { message?: string })?.message ?? "Không thể xóa tài khoản");
+        } finally {
+            setDeleting(false);
+        }
+    };
+
     return (
+        <>
+        {deleteTarget && (
+            <DeleteConfirmModal
+                user={deleteTarget}
+                onConfirm={handleDelete}
+                onClose={() => !deleting && setDeleteTarget(null)}
+                loading={deleting}
+            />
+        )}
         <div className="w-full space-y-6">
             <div>
                 <h1 className="text-[28px] font-bold text-white tracking-tight leading-none mb-1.5">Người dùng</h1>
@@ -89,19 +170,20 @@ export default function AdminUsersPage() {
                                 <th className="px-4 py-3.5 text-[10px] font-bold text-white/30 uppercase tracking-widest">Hết hạn</th>
                                 <th className="px-4 py-3.5 text-[10px] font-bold text-white/30 uppercase tracking-widest">Tham gia</th>
                                 <th className="px-4 py-3.5 text-[10px] font-bold text-white/30 uppercase tracking-widest">Hoạt động</th>
+                                <th className="px-4 py-3.5 text-[10px] font-bold text-white/30 uppercase tracking-widest"></th>
                             </tr>
                         </thead>
                         <tbody>
                             {!loading && users.length === 0 && (
                                 <tr>
-                                    <td colSpan={6} className="px-6 py-12 text-center text-sm text-white/30 font-medium">
+                                    <td colSpan={7} className="px-6 py-12 text-center text-sm text-white/30 font-medium">
                                         Không tìm thấy người dùng nào.
                                     </td>
                                 </tr>
                             )}
                             {loading && (
                                 <tr>
-                                    <td colSpan={6} className="px-6 py-12 text-center text-sm text-white/30 font-medium">
+                                    <td colSpan={7} className="px-6 py-12 text-center text-sm text-white/30 font-medium">
                                         Đang tải...
                                     </td>
                                 </tr>
@@ -138,6 +220,15 @@ export default function AdminUsersPage() {
                                         <td className="px-4 py-4 text-sm font-medium text-white/50">
                                             {fmtDate(u.lastActiveAt) ?? <span className="text-white/20">-</span>}
                                         </td>
+                                        <td className="px-4 py-4">
+                                            <button
+                                                onClick={() => setDeleteTarget(u)}
+                                                title="Xóa tài khoản"
+                                                className="h-8 w-8 flex items-center justify-center rounded-xl bg-white/5 hover:bg-rose-500/15 text-white/25 hover:text-rose-400 transition-colors border border-white/8 hover:border-rose-500/20"
+                                            >
+                                                <Trash2 className="w-3.5 h-3.5" />
+                                            </button>
+                                        </td>
                                     </tr>
                                 );
                             })}
@@ -171,5 +262,6 @@ export default function AdminUsersPage() {
                 )}
             </div>
         </div>
+        </>
     );
 }

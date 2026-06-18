@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { CheckCircle2, Copy, Check } from "lucide-react";
+import { CheckCircle2, Copy, Check, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { fetchAdmin, type AdminError } from "@/lib/api/services/fetchAdmin";
 
 type FilterTab = "all" | "open" | "resolved";
@@ -24,8 +25,9 @@ export default function AdminErrorsPage() {
     const [errors, setErrors]         = useState<AdminError[]>([]);
     const [filter, setFilter]         = useState<FilterTab>("all");
     const [loading, setLoading]       = useState(false);
-    const [copiedId, setCopiedId]     = useState<string | null>(null);
-    const [expandedId, setExpandedId] = useState<string | null>(null);
+    const [copiedId, setCopiedId]       = useState<string | null>(null);
+    const [expandedId, setExpandedId]   = useState<string | null>(null);
+    const [resolvingId, setResolvingId] = useState<string | null>(null);
 
     useEffect(() => {
         setLoading(true);
@@ -41,10 +43,15 @@ export default function AdminErrorsPage() {
     const resolvedCount = errors.filter(e => e.status === "resolved").length;
 
     const markResolved = async (id: string) => {
+        setResolvingId(id);
         try {
             const updated = await fetchAdmin.resolveError(id);
             setErrors(prev => prev.map(e => e.id === id ? updated : e));
-        } catch {
+            toast.success("Đã đánh dấu lỗi là đã xử lý");
+        } catch (err) {
+            toast.error((err as { message?: string })?.message ?? "Không thể cập nhật trạng thái");
+        } finally {
+            setResolvingId(null);
         }
     };
 
@@ -148,9 +155,13 @@ export default function AdminErrorsPage() {
                                 {e.status === "open" && (
                                     <button
                                         onClick={() => markResolved(e.id)}
-                                        className="h-8 px-3.5 bg-white/8 hover:bg-white/12 text-white/60 hover:text-white text-xs font-bold rounded-xl transition-colors border border-white/10 active:scale-[0.97]"
+                                        disabled={resolvingId === e.id}
+                                        className="h-8 px-3.5 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 hover:text-emerald-300 text-xs font-bold rounded-xl transition-colors border border-emerald-500/20 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
                                     >
-                                        Đánh dấu xử lý
+                                        {resolvingId === e.id
+                                            ? <><Loader2 className="w-3 h-3 animate-spin" />Đang xử lý...</>
+                                            : <><CheckCircle2 className="w-3 h-3" />Đã xử lý</>
+                                        }
                                     </button>
                                 )}
                             </div>
