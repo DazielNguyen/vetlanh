@@ -25,9 +25,10 @@ export default function AdminErrorsPage() {
     const [errors, setErrors]         = useState<AdminError[]>([]);
     const [filter, setFilter]         = useState<FilterTab>("all");
     const [loading, setLoading]       = useState(false);
-    const [copiedId, setCopiedId]       = useState<string | null>(null);
-    const [expandedId, setExpandedId]   = useState<string | null>(null);
-    const [resolvingId, setResolvingId] = useState<string | null>(null);
+    const [copiedId, setCopiedId]         = useState<string | null>(null);
+    const [expandedId, setExpandedId]     = useState<string | null>(null);
+    const [expandedRouteId, setExpandedRouteId] = useState<string | null>(null);
+    const [resolvingId, setResolvingId]   = useState<string | null>(null);
 
     useEffect(() => {
         setLoading(true);
@@ -124,7 +125,11 @@ export default function AdminErrorsPage() {
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 mb-1 flex-wrap min-w-0">
                                     <p className="text-sm font-bold text-white/90 shrink-0">{e.type}</p>
-                                    <code className="text-[11px] font-mono bg-white/8 text-white/40 px-1.5 py-0.5 rounded-md border border-white/10 max-w-full truncate block">{e.route}</code>
+                                    <code
+                                        onClick={() => setExpandedRouteId(expandedRouteId === e.id ? null : e.id)}
+                                        title={expandedRouteId === e.id ? "Thu gọn" : "Xem đầy đủ"}
+                                        className={`text-[11px] font-mono bg-white/8 text-white/40 px-1.5 py-0.5 rounded-md border border-white/10 max-w-full block cursor-pointer hover:bg-white/12 hover:text-white/60 transition-colors ${expandedRouteId === e.id ? "wrap-break-word" : "truncate"}`}
+                                    >{e.route}</code>
                                     {e.status === "resolved" && (
                                         <span className="text-[10px] font-bold bg-emerald-500/15 text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-500/20">Đã xử lý</span>
                                     )}
