@@ -41,8 +41,9 @@ export function SettingsList() {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [passwordError, setPasswordError] = useState<string | null>(null);
 
-    // Đổi email state
-    const [showEmailForm, setShowEmailForm] = useState(false);
+    // Đổi / thêm email state
+    const [showEmailForm, setShowEmailForm] = useState(false);   // toggle trong "Thông tin cá nhân" (đổi email)
+    const [showAddEmailRow, setShowAddEmailRow] = useState(false); // expand trong row "Xác minh email" (thêm email)
     const [newEmail, setNewEmail] = useState("");
     const [emailPassword, setEmailPassword] = useState("");
     const [emailError, setEmailError] = useState<string | null>(null);
@@ -117,6 +118,7 @@ export function SettingsList() {
             setAvatarPreview(null);
             setAvatarFile(null);
             setShowEmailForm(false);
+            setShowAddEmailRow(false);
             setOpenRow("personal");
         }
     }
@@ -279,60 +281,52 @@ export function SettingsList() {
                                 />
                             </div>
 
-                            {/* Email — add (no email) or change (has email) */}
-                            <div className="space-y-1">
-                                {user?.email ? (
-                                    <>
-                                        <div className="flex items-center justify-between">
-                                            <label className="text-xs font-medium text-foreground/60">Email</label>
-                                            <button
-                                                type="button"
-                                                onClick={() => { setShowEmailForm((v) => !v); setEmailError(null); }}
-                                                className="text-[11px] font-medium text-primary hover:underline"
-                                            >
-                                                {showEmailForm ? "Hủy đổi" : "Đổi email"}
-                                            </button>
-                                        </div>
-                                        <p className="text-sm text-foreground/50 py-1">{user.email}</p>
-                                    </>
-                                ) : (
-                                    <label className="text-xs font-medium text-foreground/60">
-                                        Email <span className="text-amber-500 ml-1">— Chưa có, thêm ngay để xác thực tài khoản</span>
-                                    </label>
-                                )}
-
-                                {/* Form: always open when no email; toggle when has email */}
-                                {(!user?.email || showEmailForm) && (
-                                    <div className="space-y-2 pt-1">
-                                        <Input
-                                            type="email"
-                                            value={newEmail}
-                                            onChange={(e) => { setNewEmail(e.target.value); setEmailError(null); }}
-                                            placeholder={user?.email ? "Email mới" : "Nhập địa chỉ email của bạn"}
-                                            className="h-9 text-sm"
-                                        />
-                                        <Input
-                                            type="password"
-                                            value={emailPassword}
-                                            onChange={(e) => { setEmailPassword(e.target.value); setEmailError(null); }}
-                                            placeholder="Mật khẩu để xác nhận"
-                                            className="h-9 text-sm"
-                                            onKeyDown={(e) => e.key === "Enter" && handleChangeEmail()}
-                                        />
-                                        {emailError && (
-                                            <p className="text-xs text-destructive">{emailError}</p>
-                                        )}
-                                        <Button
-                                            size="sm"
-                                            onClick={handleChangeEmail}
-                                            disabled={changeEmail.isPending || !newEmail.trim() || !emailPassword}
-                                            className="h-8 text-xs w-full"
+                            {/* Email — chỉ hiện khi user đã có email, để đổi */}
+                            {user?.email && (
+                                <div className="space-y-1">
+                                    <div className="flex items-center justify-between">
+                                        <label className="text-xs font-medium text-foreground/60">Email</label>
+                                        <button
+                                            type="button"
+                                            onClick={() => { setShowEmailForm((v) => !v); setEmailError(null); }}
+                                            className="text-[11px] font-medium text-primary hover:underline"
                                         >
-                                            {changeEmail.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : "Gửi email xác nhận"}
-                                        </Button>
+                                            {showEmailForm ? "Hủy" : "Đổi email"}
+                                        </button>
                                     </div>
-                                )}
-                            </div>
+                                    <p className="text-sm text-foreground/50 py-1">{user.email}</p>
+                                    {showEmailForm && (
+                                        <div className="space-y-2 pt-1">
+                                            <Input
+                                                type="email"
+                                                value={newEmail}
+                                                onChange={(e) => { setNewEmail(e.target.value); setEmailError(null); }}
+                                                placeholder="Email mới"
+                                                className="h-9 text-sm"
+                                            />
+                                            <Input
+                                                type="password"
+                                                value={emailPassword}
+                                                onChange={(e) => { setEmailPassword(e.target.value); setEmailError(null); }}
+                                                placeholder="Mật khẩu để xác nhận"
+                                                className="h-9 text-sm"
+                                                onKeyDown={(e) => e.key === "Enter" && handleChangeEmail()}
+                                            />
+                                            {emailError && (
+                                                <p className="text-xs text-destructive">{emailError}</p>
+                                            )}
+                                            <Button
+                                                size="sm"
+                                                onClick={handleChangeEmail}
+                                                disabled={changeEmail.isPending || !newEmail.trim() || !emailPassword}
+                                                className="h-8 text-xs w-full"
+                                            >
+                                                {changeEmail.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : "Gửi email xác nhận"}
+                                            </Button>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
 
                             <div className="flex gap-2 pt-1">
                                 <Button
@@ -440,41 +434,92 @@ export function SettingsList() {
                 </div>
 
                 {/* Email verification row */}
-                <button
-                    onClick={user?.email && !user.is_verified ? handleResendVerification : undefined}
-                    disabled={sendingVerify || !user?.email || user?.is_verified}
-                    className="w-full flex items-center gap-4 p-4 hover:bg-secondary/30 transition text-left disabled:cursor-default disabled:hover:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
-                >
-                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${user?.is_verified ? "bg-emerald-100/80" : "bg-amber-100/80"}`}>
-                        {sendingVerify
-                            ? <Loader2 className="w-5 h-5 text-amber-500 animate-spin" strokeWidth={2} />
-                            : <MailCheck className={`w-5 h-5 ${user?.is_verified ? "text-emerald-500" : "text-amber-500"}`} strokeWidth={2} />
-                        }
+                {!user?.email ? (
+                    // Chưa có email — accordion để thêm email ngay tại đây
+                    <div>
+                        <button
+                            onClick={() => { setShowAddEmailRow((v) => !v); setEmailError(null); setNewEmail(""); setEmailPassword(""); }}
+                            className="w-full flex items-center gap-4 p-4 hover:bg-secondary/30 transition text-left"
+                        >
+                            <div className="w-10 h-10 rounded-2xl bg-amber-100/80 flex items-center justify-center shrink-0">
+                                <MailCheck className="w-5 h-5 text-amber-500" strokeWidth={2} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <h3 className="font-semibold text-foreground text-sm">Xác minh email</h3>
+                                <p className="text-xs text-foreground/40">Thêm email để xác thực tài khoản</p>
+                            </div>
+                            <ChevronRight
+                                className={cn(
+                                    "w-4 h-4 text-foreground/20 shrink-0 transition-transform duration-200",
+                                    showAddEmailRow && "rotate-90"
+                                )}
+                                strokeWidth={2}
+                            />
+                        </button>
+                        <div className={cn(
+                            "overflow-hidden transition-all duration-200",
+                            showAddEmailRow ? "max-h-52" : "max-h-0"
+                        )}>
+                            <div className="px-4 pb-4 space-y-2">
+                                <Input
+                                    type="email"
+                                    value={newEmail}
+                                    onChange={(e) => { setNewEmail(e.target.value); setEmailError(null); }}
+                                    placeholder="Nhập địa chỉ email"
+                                    className="h-9 text-sm"
+                                />
+                                <Input
+                                    type="password"
+                                    value={emailPassword}
+                                    onChange={(e) => { setEmailPassword(e.target.value); setEmailError(null); }}
+                                    placeholder="Mật khẩu để xác nhận"
+                                    className="h-9 text-sm"
+                                    onKeyDown={(e) => e.key === "Enter" && handleChangeEmail()}
+                                />
+                                {emailError && (
+                                    <p className="text-xs text-destructive">{emailError}</p>
+                                )}
+                                <Button
+                                    size="sm"
+                                    onClick={handleChangeEmail}
+                                    disabled={changeEmail.isPending || !newEmail.trim() || !emailPassword}
+                                    className="h-8 text-xs w-full"
+                                >
+                                    {changeEmail.isPending ? <Loader2 className="w-3 h-3 animate-spin" /> : "Gửi email xác thực"}
+                                </Button>
+                            </div>
+                        </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-foreground text-sm">Xác minh email</h3>
-                        <p className="text-xs text-foreground/40">
-                            {!user?.email
-                                ? "Thêm email trong Thông tin cá nhân để xác thực"
-                                : user.is_verified
-                                ? "Email đã được xác minh"
-                                : "Nhấn để gửi lại email xác minh"}
-                        </p>
-                    </div>
-                    {!user?.email ? (
-                        <span className="text-[10px] font-semibold text-foreground/40 bg-secondary/60 px-2 py-0.5 rounded-full shrink-0 whitespace-nowrap">
-                            Chưa có email
-                        </span>
-                    ) : user.is_verified ? (
-                        <span className="text-xs font-semibold text-emerald-600 bg-emerald-100/80 px-2 py-0.5 rounded-full shrink-0">
-                            Đã xác minh
-                        </span>
-                    ) : (
-                        <span className="text-xs font-semibold text-amber-600 bg-amber-100/80 px-2 py-0.5 rounded-full shrink-0">
-                            Chưa xác minh
-                        </span>
-                    )}
-                </button>
+                ) : (
+                    // Đã có email — click gửi lại hoặc hiện đã xác minh
+                    <button
+                        onClick={!user.is_verified ? handleResendVerification : undefined}
+                        disabled={sendingVerify || user.is_verified}
+                        className="w-full flex items-center gap-4 p-4 hover:bg-secondary/30 transition text-left disabled:cursor-default disabled:hover:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                    >
+                        <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${user.is_verified ? "bg-emerald-100/80" : "bg-amber-100/80"}`}>
+                            {sendingVerify
+                                ? <Loader2 className="w-5 h-5 text-amber-500 animate-spin" strokeWidth={2} />
+                                : <MailCheck className={`w-5 h-5 ${user.is_verified ? "text-emerald-500" : "text-amber-500"}`} strokeWidth={2} />
+                            }
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-foreground text-sm">Xác minh email</h3>
+                            <p className="text-xs text-foreground/40">
+                                {user.is_verified ? "Email đã được xác minh" : "Nhấn để gửi lại email xác minh"}
+                            </p>
+                        </div>
+                        {user.is_verified ? (
+                            <span className="text-xs font-semibold text-emerald-600 bg-emerald-100/80 px-2 py-0.5 rounded-full shrink-0">
+                                Đã xác minh
+                            </span>
+                        ) : (
+                            <span className="text-xs font-semibold text-amber-600 bg-amber-100/80 px-2 py-0.5 rounded-full shrink-0">
+                                Chưa xác minh
+                            </span>
+                        )}
+                    </button>
+                )}
             </Card>
 
             {/* Tùy chỉnh */}
