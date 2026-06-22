@@ -131,7 +131,7 @@ export default function RegisterPage() {
         try {
             await fetchAuth.register({ email, password: emailPassword });
             toast.success("Đăng ký thành công! Hãy kiểm tra email để xác minh tài khoản.");
-            router.push("/verify-pending");
+            router.push(`/verify-pending?email=${encodeURIComponent(email)}`);
         } catch (err) {
             const msg = extractError(err);
             setError(mapRegisterError(msg));

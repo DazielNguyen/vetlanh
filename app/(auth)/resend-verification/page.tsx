@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Mail, Loader2, ArrowRight, ArrowLeft, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +12,8 @@ import { fetchAuth } from "@/lib/api/services/fetchAuth";
 import { AuthCard, AuthIconCircle } from "@/components/auth/auth-card";
 
 export default function ResendVerificationPage() {
-  const [email, setEmail] = useState("");
+  const searchParams = useSearchParams();
+  const [email, setEmail] = useState(searchParams.get("email") ?? "");
   const [isLoading, setIsLoading] = useState(false);
   const [sentEmail, setSentEmail] = useState("");
 
