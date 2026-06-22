@@ -78,9 +78,9 @@
     --popover-foreground: #3D3530;
     /* #d6e8f5 (light blue) is near-invisible on cream background, use warm readable gray */
     --muted-foreground: #7A736E;
-    /* Sidebar — deep ocean dark theme, contrasts with warm cream dashboard */
-    --sidebar: #0d1f2d;
-    --sidebar-foreground: rgba(255, 255, 255, 0.55);
+    /* Sidebar — light sky blue, dark text */
+    --sidebar: rgba(255, 255, 255, 0.55);
+    --sidebar-foreground: rgba(15, 30, 45, 0.75);
     --sidebar-accent: rgba(120, 157, 188, 0.15);
     --sidebar-accent-foreground: #ffffff;
     --sidebar-border: rgba(255, 255, 255, 0.08);

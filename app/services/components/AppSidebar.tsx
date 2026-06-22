@@ -34,7 +34,7 @@ function SidebarToggleButton() {
     return (
         <button
             onClick={toggleSidebar}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-white/30 hover:bg-white/10 hover:text-white/60 transition-colors shrink-0"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-500 dark:text-white/50 hover:bg-black/8 dark:hover:bg-white/10 hover:text-slate-800 dark:hover:text-white/80 transition-colors shrink-0"
             aria-label="Toggle Sidebar"
         >
             {open ? <PanelLeftClose className="w-4 h-4" /> : <PanelLeftOpen className="w-4 h-4" />}
@@ -47,7 +47,7 @@ export function AppSidebar() {
     const { logout } = useAuth();
 
     return (
-        <Sidebar collapsible="icon" className="border-r border-white/8 text-white">
+        <Sidebar collapsible="icon" className="border-r border-black/10 dark:border-white/8 text-slate-800 dark:text-white">
 
 
             {/* ── Header ──────────────────────────────────────── */}
@@ -59,12 +59,12 @@ export function AppSidebar() {
                             alt="Vết Lành"
                             width={22}
                             height={22}
-                            className="brightness-0 invert"
+                            className="brightness-0 dark:invert"
                         />
                     </div>
                     <div className="flex flex-col flex-1 min-w-0">
-                        <span className="text-[1.3rem] font-dancing font-bold tracking-tight text-white leading-none">Vết Lành</span>
-                        <span className="text-[10px] text-white/35 font-medium mt-0.5">Healing & Peace</span>
+                        <span className="text-[1.3rem] font-dancing font-bold tracking-tight text-slate-800 dark:text-white leading-none">Vết Lành</span>
+                        <span className="text-[10px] text-slate-600 dark:text-white/55 font-medium mt-0.5">Healing & Peace</span>
                     </div>
                 </Link>
                 <SidebarToggleButton />
@@ -92,7 +92,7 @@ export function AppSidebar() {
                                                 "group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:rounded-full",
                                                 isActive
                                                     ? "bg-primary/18 border border-primary/35 shadow-[0_2px_12px_rgba(120,157,188,0.18)]"
-                                                    : "hover:bg-white/7 border border-transparent hover:border-white/10",
+                                                    : "hover:bg-black/8 dark:hover:bg-white/7 border border-transparent hover:border-black/10 dark:hover:border-white/10",
                                             ].join(" ")}
                                         >
                                             <a href={item.url} className="flex items-center gap-3 w-full group-data-[collapsible=icon]:justify-center" data-tour={item.tourId}>
@@ -101,9 +101,9 @@ export function AppSidebar() {
                                                     "group-data-[collapsible=icon]:w-5 group-data-[collapsible=icon]:h-5 group-data-[collapsible=icon]:rounded-lg",
                                                     isActive ? "bg-primary/25" : "",
                                                 ].join(" ")}>
-                                                    <item.icon className={`w-[16px] h-[16px] ${isActive ? "text-primary" : "text-white/40"}`} />
+                                                    <item.icon className={`w-[16px] h-[16px] ${isActive ? "text-primary" : "text-slate-600 dark:text-white/60"}`} />
                                                 </div>
-                                                <span className={`group-data-[collapsible=icon]:hidden text-[13.5px] ${isActive ? "text-primary font-bold" : "text-white/50 font-semibold"}`}>
+                                                <span className={`group-data-[collapsible=icon]:hidden text-[13.5px] ${isActive ? "text-primary font-bold" : "text-slate-700 dark:text-white/70 font-semibold"}`}>
                                                     {item.title}
                                                 </span>
                                             </a>
@@ -117,12 +117,12 @@ export function AppSidebar() {
             </SidebarContent>
 
             {/* ── Footer — logout only ─────────────────────────── */}
-            <SidebarFooter className="px-4 pb-5 pt-3 border-t border-white/8 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:pb-4">
+            <SidebarFooter className="px-4 pb-5 pt-3 border-t border-black/10 dark:border-white/8 group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:pb-4">
                 <button
                     onClick={logout}
                     className={[
                         "w-full h-10 rounded-xl px-3 flex items-center gap-2.5 text-[13px] font-medium",
-                        "text-white/25 hover:text-red-400 hover:bg-red-500/10",
+                        "text-slate-500 dark:text-white/45 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-500/10",
                         "transition-all duration-200",
                         "group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:h-10",
                         "group-data-[collapsible=icon]:rounded-full group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:px-0",
