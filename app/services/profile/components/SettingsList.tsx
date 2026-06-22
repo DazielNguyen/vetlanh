@@ -279,34 +279,43 @@ export function SettingsList() {
                                 />
                             </div>
 
-                            {/* Email — expandable change form */}
+                            {/* Email — add (no email) or change (has email) */}
                             <div className="space-y-1">
-                                <div className="flex items-center justify-between">
-                                    <label className="text-xs font-medium text-foreground/60">Email</label>
-                                    <button
-                                        type="button"
-                                        onClick={() => { setShowEmailForm((v) => !v); setEmailError(null); }}
-                                        className="text-[11px] font-medium text-primary hover:underline"
-                                    >
-                                        {showEmailForm ? "Hủy đổi" : "Đổi email"}
-                                    </button>
-                                </div>
-                                <p className="text-sm text-foreground/50 py-1">{user?.email}</p>
+                                {user?.email ? (
+                                    <>
+                                        <div className="flex items-center justify-between">
+                                            <label className="text-xs font-medium text-foreground/60">Email</label>
+                                            <button
+                                                type="button"
+                                                onClick={() => { setShowEmailForm((v) => !v); setEmailError(null); }}
+                                                className="text-[11px] font-medium text-primary hover:underline"
+                                            >
+                                                {showEmailForm ? "Hủy đổi" : "Đổi email"}
+                                            </button>
+                                        </div>
+                                        <p className="text-sm text-foreground/50 py-1">{user.email}</p>
+                                    </>
+                                ) : (
+                                    <label className="text-xs font-medium text-foreground/60">
+                                        Email <span className="text-amber-500 ml-1">— Chưa có, thêm ngay để xác thực tài khoản</span>
+                                    </label>
+                                )}
 
-                                {showEmailForm && (
+                                {/* Form: always open when no email; toggle when has email */}
+                                {(!user?.email || showEmailForm) && (
                                     <div className="space-y-2 pt-1">
                                         <Input
                                             type="email"
                                             value={newEmail}
                                             onChange={(e) => { setNewEmail(e.target.value); setEmailError(null); }}
-                                            placeholder="Email mới"
+                                            placeholder={user?.email ? "Email mới" : "Nhập địa chỉ email của bạn"}
                                             className="h-9 text-sm"
                                         />
                                         <Input
                                             type="password"
                                             value={emailPassword}
                                             onChange={(e) => { setEmailPassword(e.target.value); setEmailError(null); }}
-                                            placeholder="Mật khẩu hiện tại để xác nhận"
+                                            placeholder="Mật khẩu để xác nhận"
                                             className="h-9 text-sm"
                                             onKeyDown={(e) => e.key === "Enter" && handleChangeEmail()}
                                         />
@@ -432,8 +441,8 @@ export function SettingsList() {
 
                 {/* Email verification row */}
                 <button
-                    onClick={!user?.is_verified ? handleResendVerification : undefined}
-                    disabled={sendingVerify || user?.is_verified}
+                    onClick={user?.email && !user.is_verified ? handleResendVerification : undefined}
+                    disabled={sendingVerify || !user?.email || user?.is_verified}
                     className="w-full flex items-center gap-4 p-4 hover:bg-secondary/30 transition text-left disabled:cursor-default disabled:hover:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
                 >
                     <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 ${user?.is_verified ? "bg-emerald-100/80" : "bg-amber-100/80"}`}>
@@ -445,10 +454,18 @@ export function SettingsList() {
                     <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-foreground text-sm">Xác minh email</h3>
                         <p className="text-xs text-foreground/40">
-                            {user?.is_verified ? "Email đã được xác minh" : "Nhấn để gửi lại email xác minh"}
+                            {!user?.email
+                                ? "Thêm email trong Thông tin cá nhân để xác thực"
+                                : user.is_verified
+                                ? "Email đã được xác minh"
+                                : "Nhấn để gửi lại email xác minh"}
                         </p>
                     </div>
-                    {user?.is_verified ? (
+                    {!user?.email ? (
+                        <span className="text-[10px] font-semibold text-foreground/40 bg-secondary/60 px-2 py-0.5 rounded-full shrink-0 whitespace-nowrap">
+                            Chưa có email
+                        </span>
+                    ) : user.is_verified ? (
                         <span className="text-xs font-semibold text-emerald-600 bg-emerald-100/80 px-2 py-0.5 rounded-full shrink-0">
                             Đã xác minh
                         </span>
