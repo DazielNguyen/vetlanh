@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui/card";
 import { User, Shield, Palette, Globe, LogOut, ChevronRight, MailCheck, Loader2 } from "lucide-react";
 import { useAppDispatch } from "@/lib/redux/hooks";
@@ -21,6 +22,7 @@ const appearanceSections = [
 
 export function SettingsList() {
     const dispatch = useAppDispatch();
+    const router = useRouter();
     const { data: user } = useCurrentUser();
     const [sendingVerify, setSendingVerify] = useState(false);
 
@@ -34,7 +36,7 @@ export function SettingsList() {
         setSendingVerify(true);
         try {
             await fetchAuth.resendVerification(user.email);
-            toast.success("Email xác minh đã được gửi!", { description: "Kiểm tra hộp thư của bạn." });
+            router.push(`/verify-pending?email=${encodeURIComponent(user.email)}`);
         } catch {
             toast.error("Không thể gửi email. Vui lòng thử lại sau.");
         } finally {
