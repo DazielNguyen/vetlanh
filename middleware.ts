@@ -52,6 +52,7 @@ export function middleware(request: NextRequest) {
     "/verify-email",
     "/verify",
     "/verify-pending",
+    "/verify-email-change",
     "/resend-verification",
     "/auth/google/callback", // Google OAuth callback — token not yet in cookie at this point
   ];
