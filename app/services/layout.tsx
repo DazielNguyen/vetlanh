@@ -11,7 +11,7 @@ export default function ServicesLayout({ children }: { children: React.ReactNode
             <div className="fixed inset-0 -z-10 pointer-events-none">
                 <Image src="/images/bg3.png" alt="" fill className="object-cover" priority />
                 {/* Light warm overlay: enough to keep readability, thin enough to let nature show */}
-                <div className="absolute inset-0 bg-[#FEF9F2]/78 dark:bg-transparent" />
+                <div className="absolute inset-0 bg-[#FEF9F2]/78 dark:bg-[#0b0f0d]/92" />
             </div>
 
             <SidebarProvider>

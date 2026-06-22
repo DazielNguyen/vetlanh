@@ -157,10 +157,14 @@
     --chart-3: #60a5fa;
     --chart-4: #6ee7b7;
     --chart-5: #a7f3d0;
-    /* Only sidebar-primary/foreground appear in this block — other sidebar tokens
-       come from .dark {} + .services-area {} cascade and must not be duplicated */
+    --sidebar: rgba(11, 15, 13, 0.85);
+    --sidebar-foreground: rgba(255, 255, 255, 0.55);
     --sidebar-primary: #10b981;
     --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: rgba(16, 185, 129, 0.15);
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: rgba(255, 255, 255, 0.08);
+    --sidebar-ring: rgba(16, 185, 129, 0.40);
     --amber-accent: #10b981;
     --lavender-soft: rgba(16, 185, 129, 0.08);
     --surface-2: rgba(11, 15, 13, 0.80);

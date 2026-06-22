@@ -29,7 +29,7 @@ export function ProUpgradeCard() {
           </div>
 
           <div>
-            <h3 className="text-lg font-bold text-slate-800 leading-snug">
+            <h3 className="text-lg font-bold text-slate-800 dark:text-white leading-snug">
               Bạn đang là thành viên Pro
             </h3>
             {user.subscription_expires_at && (
@@ -57,17 +57,17 @@ export function ProUpgradeCard() {
         </div>
 
         <div>
-          <h3 className="text-lg font-bold text-slate-800 leading-snug">
+          <h3 className="text-lg font-bold text-slate-800 dark:text-white leading-snug">
             Mở khoá toàn bộ hành trình
           </h3>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 dark:text-white/50 mt-1">
             Từ <span className="font-semibold text-[#6D8A96]">{PACKAGES[0].price}/tháng</span>
           </p>
         </div>
 
         <ul className="space-y-2 flex-1">
           {HIGHLIGHTS.map((item) => (
-            <li key={item} className="flex items-center gap-2 text-sm text-slate-700">
+            <li key={item} className="flex items-center gap-2 text-sm text-slate-700 dark:text-white/70">
               <div className="w-5 h-5 rounded-full bg-[#6D8A96]/15 flex items-center justify-center shrink-0">
                 <Check className="w-3 h-3 text-[#6D8A96]" strokeWidth={3} />
               </div>
