@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Dumbbell, MessageSquare, PanelLeftClose, PanelLeftOpen, Settings, LogOut, Brain, BookOpen, Headphones } from "lucide-react";
+import { Home, Dumbbell, MessageSquare, PanelLeftClose, PanelLeftOpen, Settings, LogOut, Brain, BookOpen, Headphones, type LucideIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -18,14 +18,14 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar";
 
-const navItems = [
+const navItems: Array<{ title: string; url: string; icon: LucideIcon; exact: boolean; tourId?: string }> = [
     { title: "Trang chủ", url: "/services", icon: Home, exact: true },
-    { title: "Bài tập", url: "/services/exercises", icon: Dumbbell, exact: false },
+    { title: "Bài tập", url: "/services/exercises", icon: Dumbbell, exact: false, tourId: "exercises" },
     { title: "Tin nhắn", url: "/services/chat", icon: MessageSquare, exact: false },
     { title: "Suy nghĩ", url: "/services/thought-records", icon: Brain, exact: false },
-    { title: "Thư viện", url: "/services/library", icon: BookOpen, exact: false },
-    { title: "Âm thanh", url: "/services/sounds", icon: Headphones, exact: false },
-    { title: "Cài đặt", url: "/services/profile", icon: Settings, exact: false },
+    { title: "Thư viện", url: "/services/library", icon: BookOpen, exact: false, tourId: "library" },
+    { title: "Âm thanh", url: "/services/sounds", icon: Headphones, exact: false, tourId: "sounds" },
+    { title: "Cài đặt", url: "/services/profile", icon: Settings, exact: false, tourId: "settings" },
 ];
 
 function SidebarToggleButton() {
@@ -94,7 +94,7 @@ export function AppSidebar() {
                                                     : "hover:bg-white/7 border border-transparent hover:border-white/10",
                                             ].join(" ")}
                                         >
-                                            <a href={item.url} className="flex items-center gap-3 w-full group-data-[collapsible=icon]:justify-center">
+                                            <a href={item.url} className="flex items-center gap-3 w-full group-data-[collapsible=icon]:justify-center" data-tour={item.tourId}>
                                                 <div className={[
                                                     "shrink-0 w-7 h-7 rounded-xl flex items-center justify-center transition-colors",
                                                     "group-data-[collapsible=icon]:w-5 group-data-[collapsible=icon]:h-5 group-data-[collapsible=icon]:rounded-lg",
