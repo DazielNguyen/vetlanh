@@ -64,8 +64,8 @@ export function ServiceTour() {
                     {
                         element: '[data-tour="settings"]',
                         popover: {
-                            title: "Hồ sơ & Cài đặt",
-                            description: "Quản lý thông tin tài khoản, xem lịch sử sử dụng và nâng cấp Pro để mở khoá toàn bộ tính năng.",
+                            title: "Cài đặt",
+                            description: "Tuỳ chỉnh thông báo, giao diện và bảo mật tài khoản của bạn.",
                             side: "right",
                         },
                     },

@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Dumbbell, MessageSquare, PanelLeftClose, PanelLeftOpen, Settings, LogOut, Brain, BookOpen, Headphones, type LucideIcon } from "lucide-react";
+import { Home, Dumbbell, MessageSquare, PanelLeftClose, PanelLeftOpen, Settings, LogOut, Brain, BookOpen, Headphones, User, type LucideIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -25,7 +25,8 @@ const navItems: Array<{ title: string; url: string; icon: LucideIcon; exact: boo
     { title: "Suy nghĩ", url: "/services/thought-records", icon: Brain, exact: false },
     { title: "Thư viện", url: "/services/library", icon: BookOpen, exact: false, tourId: "library" },
     { title: "Âm thanh", url: "/services/sounds", icon: Headphones, exact: false, tourId: "sounds" },
-    { title: "Cài đặt", url: "/services/profile", icon: Settings, exact: false, tourId: "settings" },
+    { title: "Hồ sơ", url: "/services/profile", icon: User, exact: false },
+    { title: "Cài đặt", url: "/services/settings", icon: Settings, exact: false, tourId: "settings" },
 ];
 
 function SidebarToggleButton() {
