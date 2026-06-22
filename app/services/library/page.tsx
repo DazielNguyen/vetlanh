@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Clock, BookOpen, TrendingUp, Sparkles, Brain, Leaf, Loader2, type LucideIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLibrary, type ArticleCategory } from "@/hooks/useLibrary";
+import { ProContentGate } from "@/components/ProContentGate";
 
 // ── Design system mapping ────────────────────────────────────────────────────
 
@@ -25,6 +26,7 @@ const CATEGORY_LABELS: Record<ArticleCategory, string> = {
 };
 
 const ALL_CATEGORIES = Object.keys(CATEGORY_CONFIG) as ArticleCategory[];
+const GRID_CLASS = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4";
 
 function formatDate(iso: string): string {
   const d = new Date(iso);
@@ -93,61 +95,65 @@ export default function LibraryPage() {
 
       {/* Article grid */}
       {!isLoading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {allArticles.map((article) => {
-            const { bg, text, cover, Icon } = CATEGORY_CONFIG[article.category];
-            return (
-              <Card
-                key={article.id}
-                onClick={() => router.push(`/services/library/${article.id}`)}
-                className="card-lifted border-none rounded-3xl overflow-hidden group hover:scale-[1.01] transition-transform cursor-pointer"
-              >
-                {/* Cover */}
-                <div className={`h-28 ${cover ? `bg-gradient-to-br ${cover}` : ""} flex items-end px-5 pb-4 relative overflow-hidden`}>
-                  {article.cover_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={article.cover_url}
-                      alt={article.title}
-                      className="absolute inset-0 w-full h-full object-cover"
-                    />
-                  ) : (
-                    <Icon
-                      className="absolute top-4 right-5 w-12 h-12 text-foreground/5"
-                      strokeWidth={1.5}
-                    />
-                  )}
-                  <span className={`relative text-[11px] font-bold px-2.5 py-1 rounded-full ${bg} ${text}`}>
-                    {CATEGORY_LABELS[article.category]}
-                  </span>
-                </div>
-
-                {/* Content */}
-                <CardContent className="p-5 space-y-3">
-                  <h3 className="font-bold text-foreground text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">
-                    {article.title}
-                  </h3>
-                  <p className="text-xs text-foreground/50 leading-relaxed line-clamp-3">
-                    {article.excerpt}
-                  </p>
-                  <div className="flex items-center justify-between pt-1 border-t border-border/30">
-                    <div className="flex items-center gap-3 text-[11px] text-foreground/40">
-                      {article.read_minutes !== null && (
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3 h-3" strokeWidth={2} />
-                          {article.read_minutes} phút đọc
-                        </span>
-                      )}
-                      {article.published_at && <span>{formatDate(article.published_at)}</span>}
-                    </div>
-                    <span className={`text-[11px] font-semibold ${text} group-hover:underline`}>
-                      Đọc thêm →
+        <div className={GRID_CLASS}>
+          <ProContentGate
+            items={allArticles}
+            lockedGridClassName={GRID_CLASS}
+            renderItem={(article) => {
+              const { bg, text, cover, Icon } = CATEGORY_CONFIG[article.category];
+              return (
+                <Card
+                  key={article.id}
+                  onClick={() => router.push(`/services/library/${article.id}`)}
+                  className="card-lifted border-none rounded-3xl overflow-hidden group hover:scale-[1.01] transition-transform cursor-pointer"
+                >
+                  {/* Cover */}
+                  <div className={`h-28 ${cover ? `bg-linear-to-br ${cover}` : ""} flex items-end px-5 pb-4 relative overflow-hidden`}>
+                    {article.cover_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={article.cover_url}
+                        alt={article.title}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                    ) : (
+                      <Icon
+                        className="absolute top-4 right-5 w-12 h-12 text-foreground/5"
+                        strokeWidth={1.5}
+                      />
+                    )}
+                    <span className={`relative text-[11px] font-bold px-2.5 py-1 rounded-full ${bg} ${text}`}>
+                      {CATEGORY_LABELS[article.category]}
                     </span>
                   </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+
+                  {/* Content */}
+                  <CardContent className="p-5 space-y-3">
+                    <h3 className="font-bold text-foreground text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                      {article.title}
+                    </h3>
+                    <p className="text-xs text-foreground/50 leading-relaxed line-clamp-3">
+                      {article.excerpt}
+                    </p>
+                    <div className="flex items-center justify-between pt-1 border-t border-border/30">
+                      <div className="flex items-center gap-3 text-[11px] text-foreground/40">
+                        {article.read_minutes !== null && (
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3 h-3" strokeWidth={2} />
+                            {article.read_minutes} phút đọc
+                          </span>
+                        )}
+                        {article.published_at && <span>{formatDate(article.published_at)}</span>}
+                      </div>
+                      <span className={`text-[11px] font-semibold ${text} group-hover:underline`}>
+                        Đọc thêm →
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            }}
+          />
         </div>
       )}
 

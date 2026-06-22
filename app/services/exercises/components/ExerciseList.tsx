@@ -25,6 +25,10 @@ import {
 import { useExerciseList } from "@/hooks/useExercise";
 import { useExerciseReminder } from "@/hooks/useNotifications";
 import { useExerciseCategories, useExerciseMoodFilters } from "@/hooks/useServices";
+import { useCurrentUser } from "@/hooks/useUser";
+import { ProContentGate } from "@/components/ProContentGate";
+
+const GRID_CLASS = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3";
 
 const FALLBACK_CATEGORIES = [
   { key: "breathing", label: "Hơi thở" },
@@ -93,6 +97,9 @@ export function ExerciseList() {
     mood || category ? params : undefined
   );
 
+  const { data: user } = useCurrentUser();
+  const isPro = user?.subscription_status === "pro";
+
   const chipClass = (active: boolean) =>
     `flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-2xl border transition ${
       active
@@ -116,8 +123,8 @@ export function ExerciseList() {
         </div>
       )}
 
-      {/* Filters - one chip style across categories and moods, single scrollable row */}
-      <div className="flex gap-1.5 overflow-x-auto pb-2 mb-4 -mx-1 px-1">
+      {/* Filters — hidden for free users to prevent per-category bypass */}
+      {isPro && <div className="flex gap-1.5 overflow-x-auto pb-2 mb-4 -mx-1 px-1">
         {categoryOptions.map((opt) => {
           const Icon = opt.key === "" ? Sparkles : CATEGORY_ICONS[opt.key] ?? Sparkles;
           return (
@@ -143,7 +150,7 @@ export function ExerciseList() {
             Bỏ lọc
           </button>
         )}
-      </div>
+      </div>}
 
       {isLoading ? (
         <div className="flex items-center justify-center h-32">
@@ -154,34 +161,38 @@ export function ExerciseList() {
           Không có bài tập nào phù hợp với lựa chọn hiện tại.
         </p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {exercises.map((exercise) => {
-            const cardStyle = CATEGORY_CARD_STYLE[exercise.category] ?? { bg: "bg-secondary/60", iconColor: "text-primary" };
-            const CategoryIcon = CATEGORY_ICONS[exercise.category] ?? Sparkles;
-            return (
-              <Link key={exercise.slug} href={`/services/exercises/${exercise.slug}`}>
-                <Card className="card-lifted border-none rounded-2xl overflow-hidden group hover:scale-[1.01] transition-transform">
-                  <CardContent className="p-4 flex items-center gap-4">
-                    <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 ${cardStyle.bg}`}>
-                      <CategoryIcon className={`w-5 h-5 ${cardStyle.iconColor}`} strokeWidth={2} />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h3 className="font-bold text-foreground text-sm group-hover:text-primary transition-colors">
-                        {exercise.title}
-                      </h3>
-                      {exercise.duration_seconds && (
-                        <p className="flex items-center gap-1 text-xs text-foreground/40 mt-0.5">
-                          <Clock className="w-3 h-3" strokeWidth={2} />
-                          {formatDuration(exercise.duration_seconds)}
-                        </p>
-                      )}
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-foreground/20 group-hover:text-primary transition-colors shrink-0" strokeWidth={2} />
-                  </CardContent>
-                </Card>
-              </Link>
-            );
-          })}
+        <div className={GRID_CLASS}>
+          <ProContentGate
+            items={exercises}
+            lockedGridClassName={GRID_CLASS}
+            renderItem={(exercise) => {
+              const cardStyle = CATEGORY_CARD_STYLE[exercise.category] ?? { bg: "bg-secondary/60", iconColor: "text-primary" };
+              const CategoryIcon = CATEGORY_ICONS[exercise.category] ?? Sparkles;
+              return (
+                <Link key={exercise.slug} href={`/services/exercises/${exercise.slug}`}>
+                  <Card className="card-lifted border-none rounded-2xl overflow-hidden group hover:scale-[1.01] transition-transform">
+                    <CardContent className="p-4 flex items-center gap-4">
+                      <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 ${cardStyle.bg}`}>
+                        <CategoryIcon className={`w-5 h-5 ${cardStyle.iconColor}`} strokeWidth={2} />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-bold text-foreground text-sm group-hover:text-primary transition-colors">
+                          {exercise.title}
+                        </h3>
+                        {exercise.duration_seconds && (
+                          <p className="flex items-center gap-1 text-xs text-foreground/40 mt-0.5">
+                            <Clock className="w-3 h-3" strokeWidth={2} />
+                            {formatDuration(exercise.duration_seconds)}
+                          </p>
+                        )}
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-foreground/20 group-hover:text-primary transition-colors shrink-0" strokeWidth={2} />
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            }}
+          />
         </div>
       )}
     </div>

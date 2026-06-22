@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import type { Driver } from "driver.js";
 
 const TOUR_KEY = "vetlanh_tour_done";
 
 export function ServiceTour() {
-    const driverRef = useRef<{ destroy: () => void; drive: () => void } | null>(null);
+    const driverRef = useRef<Driver | null>(null);
 
     useEffect(() => {
         if (localStorage.getItem(TOUR_KEY)) return;

@@ -9,6 +9,7 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useSounds, type Sound, type SoundCategory } from "@/hooks/useSounds";
+import { ProContentGate } from "@/components/ProContentGate";
 
 // ── Design system mapping ────────────────────────────────────────────────────
 
@@ -20,6 +21,7 @@ const CATEGORY_CONFIG: Record<SoundCategory, { label: string; chipBg: string; ch
 };
 
 const ALL_CATEGORIES = Object.keys(CATEGORY_CONFIG) as SoundCategory[];
+const GRID_CLASS = "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3";
 
 // Icon per sound id — falls back to category icon
 const SOUND_ICON: Record<string, { Icon: LucideIcon; bg: string; color: string }> = {
@@ -190,69 +192,73 @@ export default function SoundsPage() {
 
       {/* Sound grid */}
       {!isLoading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-          {(sounds ?? []).map((sound) => {
-            const isPlaying = playingId === sound.id;
-            const catCfg = CATEGORY_CONFIG[sound.category];
-            const { Icon, bg, color } = getSoundIcon(sound);
-            return (
-              <Card
-                key={sound.id}
-                className={[
-                  "card-lifted border-none rounded-2xl overflow-hidden transition-all duration-300",
-                  isPlaying ? "ring-2 ring-primary/30 shadow-[0_0_24px_rgba(120,157,188,0.15)]" : "",
-                ].join(" ")}
-              >
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-3">
-                    {/* Icon */}
-                    <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 ${bg}`}>
-                      <Icon className={`w-5 h-5 ${color}`} strokeWidth={2} />
-                    </div>
-
-                    {/* Text */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-bold text-foreground text-sm leading-snug">{sound.title}</h3>
-                        {isPlaying && <WaveformBars />}
+        <div className={GRID_CLASS}>
+          <ProContentGate
+            items={sounds ?? []}
+            lockedGridClassName={GRID_CLASS}
+            renderItem={(sound) => {
+              const isPlaying = playingId === sound.id;
+              const catCfg = CATEGORY_CONFIG[sound.category];
+              const { Icon, bg, color } = getSoundIcon(sound);
+              return (
+                <Card
+                  key={sound.id}
+                  className={[
+                    "card-lifted border-none rounded-2xl overflow-hidden transition-all duration-300",
+                    isPlaying ? "ring-2 ring-primary/30 shadow-[0_0_24px_rgba(120,157,188,0.15)]" : "",
+                  ].join(" ")}
+                >
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      {/* Icon */}
+                      <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 ${bg}`}>
+                        <Icon className={`w-5 h-5 ${color}`} strokeWidth={2} />
                       </div>
-                      <p className="text-xs text-foreground/50 mt-1 leading-relaxed line-clamp-2">
-                        {sound.description}
-                      </p>
-                      <div className="flex items-center gap-2 mt-2">
-                        <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${catCfg.chipBg} ${catCfg.chipText}`}>
-                          {catCfg.label}
-                        </span>
-                        {sound.duration_seconds !== null && (
-                          <span className="text-[11px] text-foreground/40">
-                            {Math.round(sound.duration_seconds / 60)} phút
+
+                      {/* Text */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-bold text-foreground text-sm leading-snug">{sound.title}</h3>
+                          {isPlaying && <WaveformBars />}
+                        </div>
+                        <p className="text-xs text-foreground/50 mt-1 leading-relaxed line-clamp-2">
+                          {sound.description}
+                        </p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${catCfg.chipBg} ${catCfg.chipText}`}>
+                            {catCfg.label}
                           </span>
-                        )}
+                          {sound.duration_seconds !== null && (
+                            <span className="text-[11px] text-foreground/40">
+                              {Math.round(sound.duration_seconds / 60)} phút
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Play / Pause — 44px Fitts's Law */}
-                    <button
-                      onClick={() => togglePlay(sound)}
-                      aria-label={isPlaying ? `Dừng ${sound.title}` : `Phát ${sound.title}`}
-                      className={[
-                        "w-11 h-11 rounded-full flex items-center justify-center shrink-0 transition-all duration-200",
-                        isPlaying
-                          ? "bg-primary text-white shadow-md shadow-primary/30 scale-95"
-                          : "bg-primary/10 text-primary hover:bg-primary hover:text-white hover:scale-95",
-                      ].join(" ")}
-                    >
-                      {isPlaying ? (
-                        <Pause className="w-4 h-4" strokeWidth={2.5} />
-                      ) : (
-                        <Play className="w-4 h-4 translate-x-0.5" strokeWidth={2.5} />
-                      )}
-                    </button>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
+                      {/* Play / Pause — 44px Fitts's Law */}
+                      <button
+                        onClick={() => togglePlay(sound)}
+                        aria-label={isPlaying ? `Dừng ${sound.title}` : `Phát ${sound.title}`}
+                        className={[
+                          "w-11 h-11 rounded-full flex items-center justify-center shrink-0 transition-all duration-200",
+                          isPlaying
+                            ? "bg-primary text-white shadow-md shadow-primary/30 scale-95"
+                            : "bg-primary/10 text-primary hover:bg-primary hover:text-white hover:scale-95",
+                        ].join(" ")}
+                      >
+                        {isPlaying ? (
+                          <Pause className="w-4 h-4" strokeWidth={2.5} />
+                        ) : (
+                          <Play className="w-4 h-4 translate-x-0.5" strokeWidth={2.5} />
+                        )}
+                      </button>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            }}
+          />
         </div>
       )}
 
