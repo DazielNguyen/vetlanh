@@ -26,4 +26,11 @@ export const fetchUser = {
     const response = await apiService.get<AvailableGoal[]>("api/v1/users/goals");
     return response.data;
   },
+
+  uploadAvatar: async (file: File): Promise<{ avatar_url: string }> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await apiService.upload<{ avatar_url: string }>("api/v1/users/me/avatar", formData);
+    return response.data;
+  },
 };

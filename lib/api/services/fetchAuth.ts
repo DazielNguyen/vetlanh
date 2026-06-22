@@ -73,4 +73,19 @@ export const fetchAuth = {
     const response = await apiService.post<LoginResponse>("api/v1/auth/login-username", data);
     return response.data;
   },
+
+  changePassword: async (data: { current_password: string; new_password: string }): Promise<{ message: string }> => {
+    const response = await apiService.post<{ message: string }>("api/v1/auth/change-password", data);
+    return response.data;
+  },
+
+  changeEmail: async (data: { new_email: string; current_password: string }): Promise<{ message: string }> => {
+    const response = await apiService.patch<{ message: string }>("api/v1/users/me/email", data);
+    return response.data;
+  },
+
+  verifyEmailChange: async (token: string): Promise<{ message: string }> => {
+    const response = await apiService.get<{ message: string }>("api/v1/auth/verify-email-change", { token });
+    return response.data;
+  },
 };
