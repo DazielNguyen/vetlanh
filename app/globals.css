@@ -3,7 +3,7 @@
 @import "shadcn/tailwind.css";
 @import "driver.js/dist/driver.css";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
   :root {
@@ -85,6 +85,86 @@
     --sidebar-accent-foreground: #ffffff;
     --sidebar-border: rgba(255, 255, 255, 0.08);
     --sidebar-ring: rgba(120, 157, 188, 0.4);
+  }
+
+  .dark {
+    --background: #0f172a;
+    --foreground: #e2e8f0;
+
+    --primary: #8fb3d4;
+    --primary-foreground: #0f172a;
+
+    --secondary: #1e293b;
+    --secondary-foreground: #cbd5e1;
+
+    --accent: #3b1f1f;
+    --accent-foreground: #fca5a5;
+
+    --muted: #1e293b;
+    --muted-foreground: #94a3b8;
+
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+
+    --border: #334155;
+    --input: #1e293b;
+    --ring: #8fb3d4;
+
+    --card: #1e293b;
+    --card-foreground: #e2e8f0;
+
+    --popover: #1e293b;
+    --popover-foreground: #e2e8f0;
+
+    --sidebar: #0a0f1a;
+    --sidebar-foreground: rgba(255, 255, 255, 0.7);
+    --sidebar-primary: #8fb3d4;
+    --sidebar-primary-foreground: #0f172a;
+    --sidebar-accent: rgba(120, 157, 188, 0.2);
+    --sidebar-accent-foreground: #ffffff;
+    --sidebar-border: rgba(255, 255, 255, 0.1);
+    --sidebar-ring: rgba(143, 179, 212, 0.4);
+
+    --amber-accent: #d4a855;
+    --lavender-soft: #1e1b2e;
+    --surface-2: rgba(15, 23, 42, 0.8);
+    --glass-border: rgba(143, 179, 212, 0.2);
+  }
+
+  /* Services area always uses light mode — dark mode is non-services only in Phase 1 */
+  .dark .services-area {
+    color-scheme: light;
+    --background: #fef9f2;
+    --foreground: #789dbc;
+    --primary: #789dbc;
+    --primary-foreground: #ffffff;
+    --secondary: #d6e8f5;
+    --secondary-foreground: #789dbc;
+    --accent: #ffe3e3;
+    --accent-foreground: #789dbc;
+    --muted: #fef9f2;
+    /* Matches .services-area override — #d6e8f5 is near-invisible on cream */
+    --muted-foreground: #7A736E;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #d6e8f5;
+    --input: #fef9f2;
+    --ring: #ffe3e3;
+    --card: #ffffff;
+    --card-foreground: #789dbc;
+    --popover: #ffffff;
+    --popover-foreground: #789dbc;
+    --chart-1: #789dbc;
+    --chart-2: #d6e8f5;
+    --chart-3: #ffe3e3;
+    --chart-4: #5b82a3;
+    --chart-5: #a8c4dc;
+    --sidebar-primary: #789dbc;
+    --sidebar-primary-foreground: #ffffff;
+    --amber-accent: #F5C07A;
+    --lavender-soft: #E8E4F4;
+    --surface-2: rgba(254, 249, 242, 0.72);
+    --glass-border: rgba(214, 232, 245, 0.45);
   }
 
   * {
