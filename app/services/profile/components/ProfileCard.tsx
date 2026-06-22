@@ -1,12 +1,35 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Pencil, Check, X } from "lucide-react";
 import { useCurrentUser, useUpdateProfile } from "@/hooks/useUser";
 import { useDashboard } from "@/hooks/useDashboard";
 import { formatImageUrl } from "@/lib/utils/formatImageUrl";
+
+function SubscriptionBadge({ status }: { status: string | undefined }) {
+    if (status === "pro") {
+        return (
+            <span className="text-[10px] font-bold tracking-widest uppercase bg-[#6D8A96] text-white px-2 py-0.5 rounded-full ml-1">
+                Pro
+            </span>
+        );
+    }
+    if (status === "expired") {
+        return (
+            <span className="text-[10px] font-bold tracking-widest uppercase bg-red-100 text-red-500 px-2 py-0.5 rounded-full ml-1">
+                Hết hạn
+            </span>
+        );
+    }
+    return (
+        <span className="text-[10px] font-bold tracking-widest uppercase bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full ml-1">
+            Free
+        </span>
+    );
+}
 
 export function ProfileCard() {
     const { data: user } = useCurrentUser();
@@ -66,17 +89,26 @@ export function ProfileCard() {
                                 <h2 className="text-lg font-extrabold text-foreground">
                                     {user?.display_name ?? "Chưa đặt tên"}
                                 </h2>
-                                {user?.subscription_status === "pro" && (
-                                    <span className="text-[10px] font-bold tracking-widest uppercase bg-[#6D8A96] text-white px-2 py-0.5 rounded-full ml-1">
-                                        Pro
-                                    </span>
-                                )}
+                                <SubscriptionBadge status={user?.subscription_status} />
                                 <button onClick={startEdit} className="text-foreground/20 hover:text-primary transition ml-1">
                                     <Pencil className="w-3.5 h-3.5" strokeWidth={2} />
                                 </button>
                             </div>
                         )}
                         <p className="text-xs text-foreground/40">{user?.email ?? "Chưa có email"}</p>
+                        {user?.subscription_status === "pro" && user.subscription_expires_at && (
+                            <p className="text-xs text-foreground/40 mt-0.5">
+                                Pro đến {new Intl.DateTimeFormat("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" }).format(new Date(user.subscription_expires_at))}
+                            </p>
+                        )}
+                        {user?.subscription_status !== "pro" && (
+                            <Link
+                                href="/services/upgrade"
+                                className="inline-flex items-center justify-center mt-2 px-3 py-1.5 text-xs font-semibold rounded-full border border-[#6D8A96]/40 text-[#6D8A96] hover:bg-[#6D8A96]/10 transition-colors min-h-8"
+                            >
+                                Nâng cấp Pro
+                            </Link>
+                        )}
                     </div>
                 </CardContent>
             </Card>
