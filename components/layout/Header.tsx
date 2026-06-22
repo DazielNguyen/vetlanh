@@ -26,7 +26,7 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="shrink-0 flex items-center gap-2">
             <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-sm">
-              <Image src="/images/logo.svg" alt="Vết Lành Logo" width={24} height={24} />
+              <Image src="/images/logo.svg" alt="Vết Lành Logo" width={24} height={24} className="dark:brightness-0 dark:invert" />
             </div>
             <span className="text-[1.75rem] font-bold tracking-tight font-dancing text-white">
               Vết Lành

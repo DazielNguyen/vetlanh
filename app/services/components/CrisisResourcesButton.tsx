@@ -14,7 +14,7 @@ export function CrisisResourcesButton() {
       <button
         onClick={() => setOpen(true)}
         aria-label="Đường dây hỗ trợ khẩn cấp"
-        className="w-10 h-10 border border-red-200 rounded-full flex items-center justify-center bg-white cursor-pointer hover:bg-red-50 transition text-red-400 hover:text-red-500"
+        className="w-10 h-10 border border-red-200 dark:border-red-900/50 rounded-full flex items-center justify-center bg-white dark:bg-slate-800 cursor-pointer hover:bg-red-50 dark:hover:bg-slate-700 transition text-red-400 hover:text-red-500"
       >
         <Phone className="w-4 h-4" />
       </button>
@@ -28,7 +28,7 @@ export function CrisisResourcesButton() {
           // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
         >
           <div
-            className="bg-white rounded-3xl shadow-xl w-full max-w-md p-6 space-y-4"
+            className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl w-full max-w-md p-6 space-y-4 dark:border dark:border-white/10"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between">
@@ -36,7 +36,7 @@ export function CrisisResourcesButton() {
                 <div className="w-9 h-9 rounded-full bg-red-50 flex items-center justify-center">
                   <Phone className="w-4 h-4 text-red-500" />
                 </div>
-                <h2 className="text-base font-bold text-slate-800">Đường dây hỗ trợ</h2>
+                <h2 className="text-base font-bold text-slate-800 dark:text-white">Đường dây hỗ trợ</h2>
               </div>
               <button
                 onClick={() => setOpen(false)}
@@ -64,13 +64,13 @@ export function CrisisResourcesButton() {
                 {resources.map((r) => (
                   <div
                     key={r.name + (r.phone ?? "")}
-                    className="flex items-start gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-100"
+                    className="flex items-start gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-white/10"
                   >
                     <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center shrink-0 mt-0.5">
                       <Phone className="w-3.5 h-3.5 text-red-500" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-slate-800">{r.name}</p>
+                      <p className="text-sm font-semibold text-slate-800 dark:text-white">{r.name}</p>
                       {r.phone && (
                         <a
                           href={`tel:${r.phone}`}

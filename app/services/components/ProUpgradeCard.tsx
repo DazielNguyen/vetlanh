@@ -16,7 +16,7 @@ export function ProUpgradeCard() {
 
   if (user?.subscription_status === "pro") {
     return (
-      <Card className="border-none card-lifted rounded-3xl bg-linear-to-br from-[#E8F2F6] to-[#C8DFE9] relative overflow-hidden h-full flex flex-col">
+      <Card className="border-none card-lifted rounded-3xl bg-linear-to-br from-[#E8F2F6] to-[#C8DFE9] dark:bg-none dark:from-transparent dark:to-transparent relative overflow-hidden h-full flex flex-col">
         <div className="absolute -right-6 -bottom-6 opacity-20 text-[#6D8A96]">
           <Crown className="w-32 h-32" />
         </div>
@@ -44,7 +44,7 @@ export function ProUpgradeCard() {
   }
 
   return (
-    <Card className="border-none card-lifted rounded-3xl bg-linear-to-br from-[#E8F2F6] to-[#C8DFE9] relative overflow-hidden h-full flex flex-col">
+    <Card className="border-none card-lifted rounded-3xl bg-linear-to-br from-[#E8F2F6] to-[#C8DFE9] dark:bg-none dark:from-transparent dark:to-transparent relative overflow-hidden h-full flex flex-col">
       <div className="absolute -right-6 -bottom-6 opacity-20 text-[#6D8A96]">
         <Sparkles className="w-32 h-32" />
       </div>

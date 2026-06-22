@@ -88,83 +88,83 @@
   }
 
   .dark {
-    --background: #0f172a;
-    --foreground: #e2e8f0;
+    --background: #0b0f0d;
+    --foreground: #ffffff;
 
-    --primary: #8fb3d4;
-    --primary-foreground: #0f172a;
+    --primary: #10b981;
+    --primary-foreground: #ffffff;
 
-    --secondary: #1e293b;
-    --secondary-foreground: #cbd5e1;
+    --secondary: rgba(16, 185, 129, 0.12);
+    --secondary-foreground: #ffffff;
 
-    --accent: #3b1f1f;
-    --accent-foreground: #fca5a5;
+    --accent: rgba(59, 130, 246, 0.10);
+    --accent-foreground: #93c5fd;
 
-    --muted: #1e293b;
-    --muted-foreground: #94a3b8;
+    --muted: rgba(255, 255, 255, 0.04);
+    --muted-foreground: rgba(255, 255, 255, 0.50);
 
     --destructive: #ef4444;
     --destructive-foreground: #ffffff;
 
-    --border: #334155;
-    --input: #1e293b;
-    --ring: #8fb3d4;
+    --border: rgba(255, 255, 255, 0.09);
+    --input: rgba(255, 255, 255, 0.05);
+    --ring: rgba(16, 185, 129, 0.40);
 
-    --card: #1e293b;
-    --card-foreground: #e2e8f0;
+    --card: rgba(255, 255, 255, 0.03);
+    --card-foreground: #ffffff;
 
-    --popover: #1e293b;
-    --popover-foreground: #e2e8f0;
+    --popover: rgba(11, 15, 13, 0.95);
+    --popover-foreground: #ffffff;
 
-    --sidebar: #0a0f1a;
-    --sidebar-foreground: rgba(255, 255, 255, 0.7);
-    --sidebar-primary: #8fb3d4;
-    --sidebar-primary-foreground: #0f172a;
-    --sidebar-accent: rgba(120, 157, 188, 0.2);
+    --sidebar: rgba(11, 15, 13, 0.85);
+    --sidebar-foreground: rgba(255, 255, 255, 0.55);
+    --sidebar-primary: #10b981;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: rgba(16, 185, 129, 0.15);
     --sidebar-accent-foreground: #ffffff;
-    --sidebar-border: rgba(255, 255, 255, 0.1);
-    --sidebar-ring: rgba(143, 179, 212, 0.4);
+    --sidebar-border: rgba(255, 255, 255, 0.08);
+    --sidebar-ring: rgba(16, 185, 129, 0.40);
 
-    --amber-accent: #d4a855;
-    --lavender-soft: #1e1b2e;
-    --surface-2: rgba(15, 23, 42, 0.8);
-    --glass-border: rgba(143, 179, 212, 0.2);
+    --amber-accent: #10b981;
+    --lavender-soft: rgba(16, 185, 129, 0.08);
+    --surface-2: rgba(11, 15, 13, 0.80);
+    --glass-border: rgba(16, 185, 129, 0.15);
   }
 
-  /* Services area always uses light mode — dark mode is non-services only in Phase 1 */
+  /* Services area dark mode — emerald/charcoal palette matching admin */
   .dark .services-area {
-    color-scheme: light;
-    --background: #fef9f2;
-    --foreground: #789dbc;
-    --primary: #789dbc;
+    --background: #0b0f0d;
+    --foreground: #ffffff;
+    --primary: #10b981;
     --primary-foreground: #ffffff;
-    --secondary: #d6e8f5;
-    --secondary-foreground: #789dbc;
-    --accent: #ffe3e3;
-    --accent-foreground: #789dbc;
-    --muted: #fef9f2;
-    /* Matches .services-area override — #d6e8f5 is near-invisible on cream */
-    --muted-foreground: #7A736E;
+    --secondary: rgba(16, 185, 129, 0.12);
+    --secondary-foreground: #ffffff;
+    --accent: rgba(59, 130, 246, 0.10);
+    --accent-foreground: #93c5fd;
+    --muted: rgba(255, 255, 255, 0.04);
+    --muted-foreground: rgba(255, 255, 255, 0.50);
     --destructive: #ef4444;
     --destructive-foreground: #ffffff;
-    --border: #d6e8f5;
-    --input: #fef9f2;
-    --ring: #ffe3e3;
-    --card: #ffffff;
-    --card-foreground: #789dbc;
-    --popover: #ffffff;
-    --popover-foreground: #789dbc;
-    --chart-1: #789dbc;
-    --chart-2: #d6e8f5;
-    --chart-3: #ffe3e3;
-    --chart-4: #5b82a3;
-    --chart-5: #a8c4dc;
-    --sidebar-primary: #789dbc;
+    --border: rgba(255, 255, 255, 0.09);
+    --input: rgba(255, 255, 255, 0.05);
+    --ring: rgba(16, 185, 129, 0.40);
+    --card: rgba(255, 255, 255, 0.03);
+    --card-foreground: #ffffff;
+    --popover: rgba(11, 15, 13, 0.95);
+    --popover-foreground: #ffffff;
+    --chart-1: #10b981;
+    --chart-2: #34d399;
+    --chart-3: #60a5fa;
+    --chart-4: #6ee7b7;
+    --chart-5: #a7f3d0;
+    /* Only sidebar-primary/foreground appear in this block — other sidebar tokens
+       come from .dark {} + .services-area {} cascade and must not be duplicated */
+    --sidebar-primary: #10b981;
     --sidebar-primary-foreground: #ffffff;
-    --amber-accent: #F5C07A;
-    --lavender-soft: #E8E4F4;
-    --surface-2: rgba(254, 249, 242, 0.72);
-    --glass-border: rgba(214, 232, 245, 0.45);
+    --amber-accent: #10b981;
+    --lavender-soft: rgba(16, 185, 129, 0.08);
+    --surface-2: rgba(11, 15, 13, 0.80);
+    --glass-border: rgba(16, 185, 129, 0.15);
   }
 
   * {
@@ -259,6 +259,10 @@
     background-color: rgba(254, 249, 242, 0.8);
   }
 
+  .dark .sticky-nav {
+    background-color: rgba(11, 15, 13, 0.85);
+  }
+
   .card-lifted {
     background: rgba(255, 255, 255, 0.72);
     backdrop-filter: blur(14px) saturate(150%);
@@ -276,6 +280,18 @@
     background: var(--surface-2);
     border: 1px solid var(--glass-border);
   }
+
+  /* Dark mode override for card-lifted — must stay in @layer utilities so it
+     wins over utility classes (bg-white etc.) applied directly on elements */
+  .dark .card-lifted {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.4),
+      0 8px 28px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
 
   @keyframes waveform-bar {
     0%, 100% { transform: scaleY(0.3); }

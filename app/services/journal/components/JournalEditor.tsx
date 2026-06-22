@@ -116,7 +116,7 @@ export function JournalEditor({ id, initialPromptText, onSaved, onCancel }: Prop
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Tiêu đề nhật ký... (tuỳ chọn)"
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-4 py-2.5 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-white transition"
+              className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/5 px-4 py-2.5 text-sm text-slate-700 dark:text-white placeholder-slate-400 dark:placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-white dark:focus:bg-white/10 transition"
             />
           </div>
 
@@ -129,7 +129,7 @@ export function JournalEditor({ id, initialPromptText, onSaved, onCancel }: Prop
               onChange={(e) => setContent(e.target.value)}
               placeholder="Hôm nay bạn muốn ghi lại điều gì?"
               rows={10}
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm text-slate-700 placeholder-slate-400 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-white transition leading-relaxed"
+              className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/5 px-4 py-3 text-sm text-slate-700 dark:text-white placeholder-slate-400 dark:placeholder-white/30 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-white dark:focus:bg-white/10 transition leading-relaxed"
             />
           </div>
 

@@ -47,7 +47,7 @@ export function WelcomeHeader({ greeting: backendGreeting }: { greeting?: string
     return (
         <div ref={ref} className="col-span-12 rounded-3xl overflow-hidden relative min-h-40">
             {/* Glass surface matching landing page card language */}
-            <div className="absolute inset-0 bg-white/45 backdrop-blur-xl border border-white/60 rounded-3xl shadow-[0_8px_32px_rgba(120,157,188,0.12),inset_0_1px_0_rgba(255,255,255,0.8)]" />
+            <div className="absolute inset-0 bg-white/45 dark:bg-white/5 backdrop-blur-xl border border-white/60 dark:border-white/10 rounded-3xl shadow-[0_8px_32px_rgba(120,157,188,0.12),inset_0_1px_0_rgba(255,255,255,0.8)]" />
 
             {/* Ambient blur orbs (same technique as landing page) */}
             <div className="absolute -top-12 -right-8 w-64 h-64 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
@@ -108,7 +108,7 @@ export function WelcomeHeader({ greeting: backendGreeting }: { greeting?: string
                                         className={`h-9 px-3 rounded-full flex items-center gap-1.5 transition-all duration-200 border text-xs font-medium ${
                                             selectedMood === i
                                                 ? "bg-primary/15 border-primary/50 text-primary scale-110 shadow-sm"
-                                                : "bg-white/50 border-white/60 hover:bg-white/70 hover:border-primary/25 text-foreground/60 backdrop-blur-sm"
+                                                : "bg-white/50 dark:bg-white/8 border-white/60 dark:border-white/15 hover:bg-white/70 dark:hover:bg-white/12 hover:border-primary/25 text-foreground/60 backdrop-blur-sm"
                                         }`}
                                         aria-label={mood.label}
                                     >

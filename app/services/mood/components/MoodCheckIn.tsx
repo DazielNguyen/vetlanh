@@ -103,7 +103,7 @@ export function MoodCheckIn() {
                     <span className="text-5xl">
                         {MOOD_OPTIONS.find((o) => o.value === mood)?.emoji ?? "✅"}
                     </span>
-                    <p className="text-lg font-bold text-slate-800">
+                    <p className="text-lg font-bold text-slate-800 dark:text-white">
                         {isEditMode ? "Đã cập nhật tâm trạng!" : "Đã ghi lại tâm trạng hôm nay!"}
                     </p>
                     <p className="text-sm text-slate-400">Hẹn gặp lại bạn vào ngày mai nhé 🌿</p>
@@ -123,7 +123,7 @@ export function MoodCheckIn() {
     return (
         <Card className="border-none shadow-sm rounded-3xl">
             <CardHeader className="pb-2">
-                <CardTitle className="text-lg font-bold text-slate-800">
+                <CardTitle className="text-lg font-bold text-slate-800 dark:text-white">
                     {isEditMode ? "Chỉnh sửa tâm trạng hôm nay" : "Tâm trạng hôm nay của bạn?"}
                 </CardTitle>
                 <p className="text-xs text-slate-400">{today}</p>
@@ -132,7 +132,7 @@ export function MoodCheckIn() {
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Mood selector */}
                     <div className="space-y-2">
-                        <p className="text-sm font-semibold text-slate-600">Cảm xúc <span className="text-red-400">*</span></p>
+                        <p className="text-sm font-semibold text-slate-600 dark:text-white/70">Cảm xúc <span className="text-red-400">*</span></p>
                         <div className="flex gap-2">
                             {MOOD_OPTIONS.map((option) => (
                                 <button
@@ -142,12 +142,12 @@ export function MoodCheckIn() {
                                     className={`flex-1 flex flex-col items-center gap-1 py-3 rounded-2xl border-2 transition-all ${
                                         mood === option.value
                                             ? "border-primary bg-primary/5 scale-105"
-                                            : "border-slate-100 bg-white hover:border-slate-200"
+                                            : "border-slate-100 dark:border-white/10 bg-white dark:bg-white/5 hover:border-slate-200 dark:hover:border-white/20"
                                     }`}
                                     title={option.label}
                                 >
                                     <span className="text-2xl">{option.emoji}</span>
-                                    <span className="text-[10px] text-slate-500 font-medium hidden sm:block">
+                                    <span className="text-[10px] text-slate-500 dark:text-white/50 font-medium hidden sm:block">
                                         {option.label}
                                     </span>
                                 </button>
@@ -157,7 +157,7 @@ export function MoodCheckIn() {
 
                     {/* Energy level */}
                     <div className="space-y-2">
-                        <p className="text-sm font-semibold text-slate-600">Mức năng lượng (tuỳ chọn)</p>
+                        <p className="text-sm font-semibold text-slate-600 dark:text-white/70">Mức năng lượng (tuỳ chọn)</p>
                         <div className="flex gap-2">
                             {ENERGY_OPTIONS.map((option) => (
                                 <button
@@ -166,8 +166,8 @@ export function MoodCheckIn() {
                                     onClick={() => setEnergy(energy === option.value ? null : option.value)}
                                     className={`flex-1 flex flex-col items-center gap-1 py-2 rounded-xl border-2 text-sm font-bold transition-all ${
                                         energy === option.value
-                                            ? "border-emerald-500 bg-emerald-50 text-emerald-700"
-                                            : "border-slate-100 bg-white text-slate-500 hover:border-slate-200"
+                                            ? "border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400"
+                                            : "border-slate-100 dark:border-white/10 bg-white dark:bg-white/5 text-slate-500 dark:text-white/50 hover:border-slate-200 dark:hover:border-white/20"
                                     }`}
                                 >
                                     <span className="text-lg">{option.emoji}</span>
@@ -179,7 +179,7 @@ export function MoodCheckIn() {
 
                     {/* Factors */}
                     <div className="space-y-2">
-                        <p className="text-sm font-semibold text-slate-600">Yếu tố ảnh hưởng (tuỳ chọn)</p>
+                        <p className="text-sm font-semibold text-slate-600 dark:text-white/70">Yếu tố ảnh hưởng (tuỳ chọn)</p>
                         <div className="flex flex-wrap gap-2">
                             {PRESET_FACTORS.map((factor) => (
                                 <button
@@ -189,7 +189,7 @@ export function MoodCheckIn() {
                                     className={`text-xs font-semibold px-3 py-1.5 rounded-full border transition ${
                                         factors.has(factor.value)
                                             ? "bg-primary text-white border-primary"
-                                            : "bg-white text-slate-600 border-slate-200 hover:border-primary/50"
+                                            : "bg-white dark:bg-white/5 text-slate-600 dark:text-white/60 border-slate-200 dark:border-white/10 hover:border-primary/50"
                                     }`}
                                 >
                                     {factor.label}
@@ -200,13 +200,13 @@ export function MoodCheckIn() {
 
                     {/* Note */}
                     <div className="space-y-2">
-                        <p className="text-sm font-semibold text-slate-600">Ghi chú (tuỳ chọn)</p>
+                        <p className="text-sm font-semibold text-slate-600 dark:text-white/70">Ghi chú (tuỳ chọn)</p>
                         <textarea
                             value={note}
                             onChange={(e) => setNote(e.target.value)}
                             placeholder="Hôm nay bạn có muốn ghi lại điều gì không?"
                             rows={3}
-                            className="w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm text-slate-700 placeholder-slate-400 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-white transition"
+                            className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/5 px-4 py-3 text-sm text-slate-700 dark:text-white placeholder-slate-400 dark:placeholder-white/30 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-white dark:focus:bg-white/10 transition"
                         />
                     </div>
 

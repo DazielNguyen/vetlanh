@@ -115,7 +115,7 @@ export default function SafetyPlanPage() {
                   value={form[key] ?? ""}
                   onChange={(e) => handleChange(key, e.target.value)}
                   placeholder={placeholder}
-                  className="w-full resize-none px-4 py-3 rounded-2xl border border-slate-200 bg-white text-sm text-slate-700 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition"
+                  className="w-full resize-none px-4 py-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-slate-700 dark:text-white placeholder-slate-300 dark:placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary dark:focus:bg-white/10 transition"
                 />
               </div>
             ))}
