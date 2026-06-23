@@ -121,7 +121,8 @@ function AddSoundModal({ onClose, onAdded }: { onClose: () => void; onAdded: (s:
         setStep("creating");
         let sound: Sound;
         try {
-            const id = slugify(title) || `sound-${Date.now()}`;
+            const base = slugify(title);
+            const id = base ? `${base}-${Date.now()}` : `sound-${Date.now()}`;
             const res = await apiService.post<Sound>("api/v1/sounds", {
                 id,
                 title: title.trim(),
