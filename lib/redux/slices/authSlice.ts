@@ -75,7 +75,6 @@ const authSlice = createSlice({
       state.error = null;
       deleteCookie("authToken", { path: "/" });
     },
-    // Set token directly (used by Google OAuth callback) — mirrors loginAsync side-effects
     setToken: (state, action: { payload: { token: string; user: User | null } }) => {
       state.token = action.payload.token;
       state.user = action.payload.user;
