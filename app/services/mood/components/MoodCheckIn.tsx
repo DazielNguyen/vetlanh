@@ -106,7 +106,7 @@ export function MoodCheckIn() {
                     <p className="text-lg font-bold text-slate-800 dark:text-white">
                         {isEditMode ? "Đã cập nhật tâm trạng!" : "Đã ghi lại tâm trạng hôm nay!"}
                     </p>
-                    <p className="text-sm text-slate-400">Hẹn gặp lại bạn vào ngày mai nhé 🌿</p>
+                    <p className="text-sm text-slate-400 dark:text-white/40">Hẹn gặp lại bạn vào ngày mai nhé 🌿</p>
                     <Button
                         variant="outline"
                         size="sm"
@@ -126,7 +126,7 @@ export function MoodCheckIn() {
                 <CardTitle className="text-lg font-bold text-slate-800 dark:text-white">
                     {isEditMode ? "Chỉnh sửa tâm trạng hôm nay" : "Tâm trạng hôm nay của bạn?"}
                 </CardTitle>
-                <p className="text-xs text-slate-400">{today}</p>
+                <p className="text-xs text-slate-400 dark:text-white/40">{today}</p>
             </CardHeader>
             <CardContent className="p-6 pt-2">
                 <form onSubmit={handleSubmit} className="space-y-6">

@@ -47,14 +47,14 @@ export function MoodTrend() {
         <Card className="border-none shadow-sm rounded-3xl">
             <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
-                    <CardTitle className="text-base font-bold text-slate-800">Xu hướng tâm trạng</CardTitle>
-                    <div className="flex gap-1 bg-slate-100 p-1 rounded-xl">
+                    <CardTitle className="text-base font-bold text-slate-800 dark:text-white">Xu hướng tâm trạng</CardTitle>
+                    <div className="flex gap-1 bg-slate-100 dark:bg-white/5 p-1 rounded-xl">
                         <Button
                             variant="ghost"
                             size="sm"
                             onClick={() => setPeriod("week")}
                             className={`h-7 px-3 text-xs font-semibold rounded-lg transition ${
-                                period === "week" ? "bg-white shadow-sm text-slate-800" : "text-slate-500"
+                                period === "week" ? "bg-white dark:bg-white/10 shadow-sm text-slate-800 dark:text-white" : "text-slate-500 dark:text-white/50"
                             }`}
                         >
                             7 ngày
@@ -64,7 +64,7 @@ export function MoodTrend() {
                             size="sm"
                             onClick={() => setPeriod("month")}
                             className={`h-7 px-3 text-xs font-semibold rounded-lg transition ${
-                                period === "month" ? "bg-white shadow-sm text-slate-800" : "text-slate-500"
+                                period === "month" ? "bg-white dark:bg-white/10 shadow-sm text-slate-800 dark:text-white" : "text-slate-500 dark:text-white/50"
                             }`}
                         >
                             30 ngày
@@ -78,7 +78,7 @@ export function MoodTrend() {
                         <Loader2 className="h-5 w-5 animate-spin text-slate-300" />
                     </div>
                 ) : chartData.length === 0 ? (
-                    <div className="flex items-center justify-center h-40 text-sm text-slate-400">
+                    <div className="flex items-center justify-center h-40 text-sm text-slate-400 dark:text-white/40">
                         Chưa có dữ liệu tâm trạng trong giai đoạn này
                     </div>
                 ) : (
@@ -144,12 +144,12 @@ export function MoodTrend() {
                     <div className="flex gap-4 mt-2 justify-end">
                         <div className="flex items-center gap-1.5">
                             <div className="w-4 h-0.5 bg-[#789DBC]" />
-                            <span className="text-[10px] text-slate-500">Tâm trạng</span>
+                            <span className="text-[10px] text-slate-500 dark:text-white/40">Tâm trạng</span>
                         </div>
                         {chartData.some((d) => d.energy != null) && (
                             <div className="flex items-center gap-1.5">
                                 <div className="w-4 h-0.5 bg-emerald-500 border-dashed" />
-                                <span className="text-[10px] text-slate-500">Năng lượng</span>
+                                <span className="text-[10px] text-slate-500 dark:text-white/40">Năng lượng</span>
                             </div>
                         )}
                     </div>

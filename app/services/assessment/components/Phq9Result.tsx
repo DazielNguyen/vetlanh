@@ -46,17 +46,17 @@ export function Phq9Result({ result, onRetake }: Props) {
       {hasGoals && (
         <Card className="border-none shadow-sm rounded-3xl">
           <CardHeader>
-            <CardTitle className="text-base font-bold text-slate-800">
+            <CardTitle className="text-base font-bold text-slate-800 dark:text-white">
               Mục tiêu gợi ý cho bạn
             </CardTitle>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-500 dark:text-white/50">
               Dựa trên kết quả, hệ thống gợi ý những mục tiêu sau:
             </p>
           </CardHeader>
           <CardContent className="space-y-4">
             <ul className="space-y-2">
               {result.suggested_goals.map((goal) => (
-                <li key={goal} className="flex items-center gap-2 text-sm text-slate-700">
+                <li key={goal} className="flex items-center gap-2 text-sm text-slate-700 dark:text-white/80">
                   <span className="w-2 h-2 rounded-full bg-primary shrink-0" />
                   {goal}
                 </li>

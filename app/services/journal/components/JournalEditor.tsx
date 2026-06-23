@@ -93,11 +93,11 @@ export function JournalEditor({ id, initialPromptText, onSaved, onCancel }: Prop
     <Card className="border-none shadow-sm rounded-3xl">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-bold text-slate-800">
+          <CardTitle className="text-lg font-bold text-slate-800 dark:text-white">
             {isEdit ? "Chỉnh sửa nhật ký" : "Viết nhật ký mới"}
           </CardTitle>
           {isEdit && (
-            <span className="text-xs text-slate-400 flex items-center gap-1">
+            <span className="text-xs text-slate-400 dark:text-white/40 flex items-center gap-1">
               {isAutoSaving ? (
                 <><Loader2 className="h-3 w-3 animate-spin" /> Đang lưu...</>
               ) : savedIndicator ? (
@@ -110,7 +110,7 @@ export function JournalEditor({ id, initialPromptText, onSaved, onCancel }: Prop
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-slate-600">Tiêu đề</label>
+            <label className="text-sm font-semibold text-slate-600 dark:text-white/60">Tiêu đề</label>
             <input
               type="text"
               value={title}
@@ -121,7 +121,7 @@ export function JournalEditor({ id, initialPromptText, onSaved, onCancel }: Prop
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-slate-600">
+            <label className="text-sm font-semibold text-slate-600 dark:text-white/60">
               Nội dung <span className="text-red-400">*</span>
             </label>
             <textarea

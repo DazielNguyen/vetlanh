@@ -75,7 +75,7 @@ export function MoodHeatmap() {
         <Card className="border-none shadow-sm rounded-3xl">
             <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
-                    <CardTitle className="text-base font-bold text-slate-800">
+                    <CardTitle className="text-base font-bold text-slate-800 dark:text-white">
                         {VI_MONTHS[month - 1]} {year}
                     </CardTitle>
                     <div className="flex gap-1">
@@ -104,7 +104,7 @@ export function MoodHeatmap() {
                         {/* Weekday header row */}
                         <div className="grid grid-cols-7 mb-1">
                             {WEEKDAY_LABELS.map((d) => (
-                                <div key={d} className="text-center text-[10px] font-bold text-slate-400 py-1">
+                                <div key={d} className="text-center text-[10px] font-bold text-slate-400 dark:text-white/40 py-1">
                                     {d}
                                 </div>
                             ))}
@@ -125,7 +125,7 @@ export function MoodHeatmap() {
                                         key={dateStr}
                                         title={moodVal ? `${moodEmoji(moodVal)} ${moodVal}/5` : "Chưa ghi lại"}
                                         className={`aspect-square rounded-lg flex items-center justify-center text-[11px] font-semibold transition ${
-                                            moodVal ? moodColor(moodVal) + " text-slate-700" : "bg-slate-100 text-slate-400"
+                                            moodVal ? moodColor(moodVal) + " text-slate-700 dark:text-slate-900" : "bg-slate-100 dark:bg-white/10 text-slate-400 dark:text-white/40"
                                         } ${isToday ? "ring-2 ring-primary ring-offset-1" : ""}`}
                                     >
                                         {day}
@@ -136,7 +136,7 @@ export function MoodHeatmap() {
 
                         {/* Legend */}
                         <div className="flex items-center gap-2 mt-3 justify-end">
-                            <span className="text-[10px] text-slate-400">Tâm trạng:</span>
+                            <span className="text-[10px] text-slate-400 dark:text-white/40">Tâm trạng:</span>
                             {[1, 2, 3, 4, 5].map((v) => (
                                 <div
                                     key={v}

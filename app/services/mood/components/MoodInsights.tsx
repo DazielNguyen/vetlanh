@@ -8,9 +8,9 @@ import type { InsightItem } from "@/types/mood";
 const MIN_ENTRIES = 7;
 
 const INSIGHT_CONFIG: Record<InsightItem["type"], { icon: React.ElementType; iconColor: string; bg: string }> = {
-  overall_average: { icon: TrendingUp, iconColor: "text-slate-500", bg: "bg-slate-100" },
-  day_of_week:    { icon: Calendar,    iconColor: "text-amber-500",  bg: "bg-amber-50"  },
-  factor_correlation: { icon: Zap,     iconColor: "text-emerald-500", bg: "bg-emerald-50" },
+  overall_average: { icon: TrendingUp, iconColor: "text-slate-500 dark:text-white/50", bg: "bg-slate-100 dark:bg-white/10" },
+  day_of_week:    { icon: Calendar,    iconColor: "text-amber-500 dark:text-amber-400",   bg: "bg-amber-50 dark:bg-amber-900/20"   },
+  factor_correlation: { icon: Zap,     iconColor: "text-emerald-500 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-900/20" },
 };
 
 export function MoodInsights() {
@@ -19,7 +19,7 @@ export function MoodInsights() {
   return (
     <Card className="border-none shadow-sm rounded-3xl">
       <CardHeader className="pb-2">
-        <CardTitle className="text-base font-bold text-slate-800 flex items-center gap-2">
+        <CardTitle className="text-base font-bold text-slate-800 dark:text-white flex items-center gap-2">
           <Lightbulb className="h-4 w-4 text-amber-500" />
           Nhận xét từ AI
         </CardTitle>
@@ -31,17 +31,17 @@ export function MoodInsights() {
           </div>
 
         ) : error ? (
-          <p className="text-sm text-slate-400 text-center py-6">
+          <p className="text-sm text-slate-400 dark:text-white/40 text-center py-6">
             Không thể tải nhận xét. Vui lòng thử lại sau.
           </p>
 
         ) : data && !data.has_enough_data ? (
           <div className="flex flex-col items-center gap-3 py-6 text-center">
-            <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
-              <Lock className="h-5 w-5 text-slate-400" />
+            <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center">
+              <Lock className="h-5 w-5 text-slate-400 dark:text-white/40" />
             </div>
-            <p className="text-sm font-semibold text-slate-600">Chưa đủ dữ liệu</p>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-sm font-semibold text-slate-600 dark:text-white/60">Chưa đủ dữ liệu</p>
+            <p className="text-xs text-slate-400 dark:text-white/40 leading-relaxed">
               Bạn cần thêm{" "}
               <span className="font-bold text-primary">
                 {Math.max(0, MIN_ENTRIES - (data.total_entries ?? 0))} ngày
@@ -60,13 +60,13 @@ export function MoodInsights() {
                     <cfg.icon className={`w-4 h-4 ${cfg.iconColor}`} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-slate-700 leading-relaxed">{item.text}</p>
+                    <p className="text-xs text-slate-700 dark:text-white/80 leading-relaxed">{item.text}</p>
                     {item.delta !== null && (
                       <span
                         className={`inline-block mt-1 text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${
                           item.delta >= 0
-                            ? "text-emerald-600 bg-emerald-50"
-                            : "text-red-600 bg-red-50"
+                            ? "text-emerald-600 bg-emerald-50 dark:text-emerald-400 dark:bg-emerald-900/20"
+                            : "text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/20"
                         }`}
                       >
                         {item.delta >= 0 ? "+" : ""}{item.delta} điểm

@@ -37,10 +37,10 @@ export function JournalEntry({ id, onEdit, onDeleted }: Props) {
       <CardHeader>
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
-            <CardTitle className="text-lg font-bold text-slate-800 break-words">
+            <CardTitle className="text-lg font-bold text-slate-800 dark:text-white wrap-break-word">
               {entry.title ?? "Không có tiêu đề"}
             </CardTitle>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-400 dark:text-white/40 mt-1">
               {formatDate(entry.created_at)} · {entry.word_count} từ
             </p>
           </div>
@@ -72,7 +72,7 @@ export function JournalEntry({ id, onEdit, onDeleted }: Props) {
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">
+        <p className="text-sm text-slate-700 dark:text-white/80 whitespace-pre-wrap leading-relaxed">
           {entry.content}
         </p>
       </CardContent>
