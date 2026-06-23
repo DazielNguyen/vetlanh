@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, ShieldCheck } from "lucide-react";
 import { useSafetyPlan, useUpsertSafetyPlan } from "@/hooks/useSafetyPlan";
+import { ErrorCard } from "@/components/ui/state";
 import type { SafetyPlan } from "@/types/safetyPlan";
 
 const SECTIONS: { key: keyof SafetyPlan; label: string; description: string; placeholder: string }[] = [
@@ -42,7 +43,7 @@ const EMPTY: SafetyPlan = {
 };
 
 export default function SafetyPlanPage() {
-  const { data: plan, isLoading } = useSafetyPlan();
+  const { data: plan, isLoading, isError, refetch } = useSafetyPlan();
   const { mutate: upsert, isPending } = useUpsertSafetyPlan();
 
   const [form, setForm] = useState<SafetyPlan>(EMPTY);
@@ -70,6 +71,14 @@ export default function SafetyPlanPage() {
     );
   }
 
+  if (isError) {
+    return (
+      <div className="w-full max-w-2xl">
+        <ErrorCard message="Không thể tải kế hoạch an toàn." onRetry={() => { void refetch(); }} />
+      </div>
+    );
+  }
+
   return (
     <div className="w-full pb-10 space-y-6 max-w-2xl">
       <div>
@@ -82,14 +91,14 @@ export default function SafetyPlanPage() {
       </div>
 
       {!plan && (
-        <Card className="border-none shadow-sm rounded-3xl bg-emerald-50 border-emerald-100">
+        <Card className="border-none shadow-sm rounded-3xl bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/30">
           <CardContent className="p-5 flex items-start gap-4">
-            <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
-              <ShieldCheck className="w-5 h-5 text-emerald-600" />
+            <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center shrink-0 mt-0.5">
+              <ShieldCheck className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-emerald-800 mb-1">Tạo kế hoạch an toàn đầu tiên</p>
-              <p className="text-sm text-emerald-700">
+              <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-300 mb-1">Tạo kế hoạch an toàn đầu tiên</p>
+              <p className="text-sm text-emerald-700 dark:text-emerald-400">
                 Điền vào các mục bên dưới để tạo kế hoạch cá nhân. Kế hoạch này chỉ có bạn thấy
                 và có thể cập nhật bất cứ lúc nào.
               </p>
@@ -100,7 +109,7 @@ export default function SafetyPlanPage() {
 
       <Card className="border-none shadow-sm rounded-3xl">
         <CardHeader>
-          <CardTitle className="text-base font-bold text-slate-800">
+          <CardTitle className="text-base font-bold text-slate-800 dark:text-white">
             {plan ? "Kế hoạch của tôi" : "Kế hoạch mới"}
           </CardTitle>
         </CardHeader>
@@ -108,8 +117,8 @@ export default function SafetyPlanPage() {
           <form onSubmit={handleSubmit} className="space-y-6">
             {SECTIONS.map(({ key, label, description, placeholder }) => (
               <div key={key} className="space-y-1.5">
-                <label className="text-sm font-semibold text-slate-700">{label}</label>
-                <p className="text-xs text-slate-400">{description}</p>
+                <label className="text-sm font-semibold text-slate-700 dark:text-white/80">{label}</label>
+                <p className="text-xs text-slate-400 dark:text-white/40">{description}</p>
                 <textarea
                   rows={4}
                   value={form[key] ?? ""}

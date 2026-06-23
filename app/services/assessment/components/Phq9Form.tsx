@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { usePhq9Questions, useSubmitPhq9 } from "@/hooks/usePhq9";
+import { ErrorCard } from "@/components/ui/state";
 import type { Phq9Result } from "@/types/phq9";
 
 const DRAFT_KEY = "phq9_draft_answers";
@@ -21,7 +22,7 @@ interface Props {
 }
 
 export function Phq9Form({ onComplete }: Props) {
-  const { data: questions, isLoading } = usePhq9Questions();
+  const { data: questions, isLoading, isError, refetch } = usePhq9Questions();
   const { mutate: submit, isPending } = useSubmitPhq9();
 
   // Lazy init from localStorage — avoids a second effect that would
@@ -78,21 +79,17 @@ export function Phq9Form({ onComplete }: Props) {
     );
   }
 
-  if (!questions || questions.length === 0) {
-    return (
-      <Card className="border-none shadow-sm rounded-3xl">
-        <CardContent className="p-6 text-center text-slate-400">
-          Không thể tải câu hỏi. Vui lòng thử lại sau.
-        </CardContent>
-      </Card>
-    );
+  if (isError) {
+    return <ErrorCard message="Không thể tải câu hỏi PHQ-9." onRetry={() => { void refetch(); }} />;
   }
+
+  if (!questions || questions.length === 0) return null;
 
   return (
     <Card className="border-none shadow-sm rounded-3xl">
       <CardHeader>
-        <CardTitle className="text-lg font-bold text-slate-800">Đánh giá PHQ-9</CardTitle>
-        <p className="text-sm text-slate-500">
+        <CardTitle className="text-lg font-bold text-slate-800 dark:text-white">Đánh giá PHQ-9</CardTitle>
+        <p className="text-sm text-slate-500 dark:text-white/50">
           Trong 2 tuần qua, bạn có thường xuyên gặp phải những vấn đề sau không?
         </p>
       </CardHeader>
@@ -100,7 +97,7 @@ export function Phq9Form({ onComplete }: Props) {
         <form onSubmit={handleSubmit} className="space-y-6">
           {questions.map((question, index) => (
             <div key={question.id} className="space-y-3">
-              <p className="text-sm font-semibold text-slate-700">
+              <p className="text-sm font-semibold text-slate-700 dark:text-white/80">
                 {index + 1}. {question.text}
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -112,7 +109,7 @@ export function Phq9Form({ onComplete }: Props) {
                     className={`py-2 px-3 rounded-xl border-2 text-xs font-semibold transition-all ${
                       answers[index] === option.value
                         ? "border-primary bg-primary/10 text-primary"
-                        : "border-slate-100 bg-white text-slate-500 hover:border-slate-200"
+                        : "border-slate-100 bg-white text-slate-500 hover:border-slate-200 dark:border-white/10 dark:bg-white/5 dark:text-white/50 dark:hover:border-white/20"
                     }`}
                   >
                     {option.label}
@@ -123,7 +120,7 @@ export function Phq9Form({ onComplete }: Props) {
           ))}
 
           <div className="pt-2">
-            <p className="text-xs text-slate-400 mb-4">
+            <p className="text-xs text-slate-400 dark:text-white/40 mb-4">
               Đã trả lời: {answeredCount}/{questions.length} câu hỏi
             </p>
             <Button

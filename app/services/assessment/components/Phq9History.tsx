@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { usePhq9History } from "@/hooks/usePhq9";
+import { ErrorCard } from "@/components/ui/state";
 import { formatDate } from "@/lib/utils/formatDate";
 import { SEVERITY_LABELS, SEVERITY_COLORS } from "./phq9SeverityConfig";
 
@@ -12,7 +13,7 @@ const PAGE_SIZE = 5;
 
 export function Phq9History() {
   const [offset, setOffset] = useState(0);
-  const { data: items, isLoading } = usePhq9History({ limit: PAGE_SIZE, offset });
+  const { data: items, isLoading, isError, refetch } = usePhq9History({ limit: PAGE_SIZE, offset });
 
   if (isLoading) {
     return (
@@ -24,13 +25,17 @@ export function Phq9History() {
     );
   }
 
+  if (isError) {
+    return <ErrorCard message="Không thể tải lịch sử đánh giá." onRetry={() => { void refetch(); }} />;
+  }
+
   if (!items || items.length === 0) {
     return (
       <Card className="border-none shadow-sm rounded-3xl">
         <CardHeader>
-          <CardTitle className="text-base font-bold text-slate-800">Lịch sử đánh giá</CardTitle>
+          <CardTitle className="text-base font-bold text-slate-800 dark:text-white">Lịch sử đánh giá</CardTitle>
         </CardHeader>
-        <CardContent className="text-sm text-slate-400 pb-6">
+        <CardContent className="text-sm text-slate-400 dark:text-white/40 pb-6">
           Chưa có lịch sử đánh giá nào.
         </CardContent>
       </Card>
@@ -40,16 +45,16 @@ export function Phq9History() {
   return (
     <Card className="border-none shadow-sm rounded-3xl">
       <CardHeader>
-        <CardTitle className="text-base font-bold text-slate-800">Lịch sử đánh giá</CardTitle>
+        <CardTitle className="text-base font-bold text-slate-800 dark:text-white">Lịch sử đánh giá</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         {items.map((item) => (
           <div
             key={item.id}
-            className="flex items-center justify-between px-4 py-3 rounded-2xl bg-slate-50"
+            className="flex items-center justify-between px-4 py-3 rounded-2xl bg-slate-50 dark:bg-white/5"
           >
             <div>
-              <p className="text-sm font-semibold text-slate-700">
+              <p className="text-sm font-semibold text-slate-700 dark:text-white/80">
                 {formatDate(item.submitted_at)}
               </p>
               {item.score_delta !== null && (
@@ -66,7 +71,7 @@ export function Phq9History() {
               >
                 {SEVERITY_LABELS[item.severity] ?? item.severity}
               </span>
-              <span className="text-lg font-extrabold text-slate-800">{item.score}</span>
+              <span className="text-lg font-extrabold text-slate-800 dark:text-white">{item.score}</span>
             </div>
           </div>
         ))}

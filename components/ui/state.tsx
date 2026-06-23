@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AlertTriangle } from "lucide-react";
 
 interface ErrorStateProps extends React.HTMLAttributes<HTMLDivElement> {
   message?: string;
@@ -96,4 +97,28 @@ function LoadingSkeleton({
   );
 }
 
-export { ErrorState, EmptyState, LoadingSkeleton };
+interface ErrorCardProps {
+  message?: string;
+  onRetry?: () => void;
+  className?: string;
+}
+
+function ErrorCard({ message, onRetry, className }: ErrorCardProps) {
+  return (
+    <Card className={cn("border-none rounded-3xl", className)}>
+      <CardContent className="p-6 flex flex-col items-center gap-3 text-center">
+        <AlertTriangle className="w-8 h-8 text-rose-400 dark:text-rose-400 shrink-0" />
+        <p className="text-sm font-medium text-slate-700 dark:text-white/70">
+          {message ?? "Không thể tải dữ liệu. Vui lòng thử lại."}
+        </p>
+        {onRetry && (
+          <Button size="sm" variant="outline" onClick={onRetry} className="rounded-xl dark:border-white/20 dark:text-white/70 dark:hover:bg-white/10">
+            Thử lại
+          </Button>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+export { ErrorState, EmptyState, LoadingSkeleton, ErrorCard };
