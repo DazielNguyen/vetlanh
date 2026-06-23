@@ -18,6 +18,8 @@ export function usePhq9Questions() {
     queryKey: PHQ9_KEYS.questions,
     queryFn: fetchPhq9.getQuestions,
     staleTime: STALE.LONG,
+    // 404 = endpoint not built yet; retrying won't help
+    retry: skipRetryOn(404),
   });
 }
 
@@ -36,6 +38,8 @@ export function usePhq9History(params?: Phq9HistoryParams) {
     queryKey: params ? PHQ9_KEYS.historyPaged(params) : PHQ9_KEYS.history,
     queryFn: () => fetchPhq9.getHistory(params),
     staleTime: STALE.SHORT,
+    // 404 = endpoint not built yet; retrying won't help
+    retry: skipRetryOn(404),
   });
 }
 
@@ -44,6 +48,8 @@ export function usePhq9Reminder() {
     queryKey: PHQ9_KEYS.reminder,
     queryFn: fetchPhq9.getReminder,
     staleTime: STALE.SHORT,
+    // 404 = endpoint not built yet; retrying won't help
+    retry: skipRetryOn(404),
   });
 }
 

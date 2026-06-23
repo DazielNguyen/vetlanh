@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { usePhq9History } from "@/hooks/usePhq9";
-import { ErrorCard } from "@/components/ui/state";
+import { ErrorCard, FeatureUnavailable } from "@/components/ui/state";
+import type { ApiError } from "@/lib/api/core";
 import { formatDate } from "@/lib/utils/formatDate";
 import { SEVERITY_LABELS, SEVERITY_COLORS } from "./phq9SeverityConfig";
 
@@ -13,7 +14,7 @@ const PAGE_SIZE = 5;
 
 export function Phq9History() {
   const [offset, setOffset] = useState(0);
-  const { data: items, isLoading, isError, refetch } = usePhq9History({ limit: PAGE_SIZE, offset });
+  const { data: items, isLoading, isError, error, refetch } = usePhq9History({ limit: PAGE_SIZE, offset });
 
   if (isLoading) {
     return (
@@ -26,6 +27,14 @@ export function Phq9History() {
   }
 
   if (isError) {
+    if ((error as ApiError).code === 404) {
+      return (
+        <FeatureUnavailable
+          message="Tính năng đang được phát triển"
+          description="Lịch sử đánh giá PHQ-9 sẽ sớm có mặt. Vui lòng quay lại sau."
+        />
+      );
+    }
     return <ErrorCard message="Không thể tải lịch sử đánh giá." onRetry={() => { void refetch(); }} />;
   }
 
@@ -58,7 +67,7 @@ export function Phq9History() {
                 {formatDate(item.submitted_at)}
               </p>
               {item.score_delta !== null && (
-                <p className={`text-xs font-semibold mt-0.5 ${item.score_delta < 0 ? "text-emerald-600" : "text-red-500"}`}>
+                <p className={`text-xs font-semibold mt-0.5 ${item.score_delta < 0 ? "text-emerald-600 dark:text-emerald-400" : "text-red-500 dark:text-red-400"}`}>
                   {item.score_delta < 0 ? `▼ ${Math.abs(item.score_delta)} điểm` : `▲ ${item.score_delta} điểm`}
                 </p>
               )}
@@ -66,7 +75,7 @@ export function Phq9History() {
             <div className="flex items-center gap-3">
               <span
                 className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                  SEVERITY_COLORS[item.severity] ?? "text-slate-600 bg-slate-100"
+                  SEVERITY_COLORS[item.severity] ?? "text-slate-600 bg-slate-100 dark:text-white/60 dark:bg-white/10"
                 }`}
               >
                 {SEVERITY_LABELS[item.severity] ?? item.severity}

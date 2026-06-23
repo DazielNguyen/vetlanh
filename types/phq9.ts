@@ -1,14 +1,9 @@
-export interface Phq9Question {
-  id: number;
-  text: string;
-}
-
 export interface Phq9SubmitRequest {
   answers: number[]; // 9 values, each 0–3
 }
 
 export interface Phq9Result {
-  id: string;
+  id: number;
   score: number;
   severity: "Minimal" | "Mild" | "Moderate" | "Moderately Severe" | "Severe";
   answers: number[];
@@ -19,7 +14,7 @@ export interface Phq9Result {
 }
 
 export interface Phq9HistoryItem {
-  id: string;
+  id: number;
   score: number;
   severity: string;
   answers: number[];

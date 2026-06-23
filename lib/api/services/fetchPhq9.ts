@@ -1,6 +1,5 @@
 import apiService from "../core";
 import type {
-  Phq9Question,
   Phq9SubmitRequest,
   Phq9Result,
   Phq9HistoryItem,
@@ -13,9 +12,10 @@ export interface Phq9HistoryParams {
 }
 
 export const fetchPhq9 = {
-  getQuestions: async (): Promise<Phq9Question[]> => {
-    const response = await apiService.get<Phq9Question[]>("api/v1/assessments/phq9/questions");
-    return response.data;
+  // BE wraps the question list in an object: { questions: string[] } — no per-question id.
+  getQuestions: async (): Promise<string[]> => {
+    const response = await apiService.get<{ questions: string[] }>("api/v1/assessments/phq9/questions");
+    return response.data.questions;
   },
 
   submitAssessment: async (body: Phq9SubmitRequest): Promise<Phq9Result> => {

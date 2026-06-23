@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, LockKeyhole } from "lucide-react";
 
 interface ErrorStateProps extends React.HTMLAttributes<HTMLDivElement> {
   message?: string;
@@ -121,4 +121,26 @@ function ErrorCard({ message, onRetry, className }: ErrorCardProps) {
   );
 }
 
-export { ErrorState, EmptyState, LoadingSkeleton, ErrorCard };
+interface FeatureUnavailableProps {
+  message?: string;
+  description?: string;
+  className?: string;
+}
+
+function FeatureUnavailable({ message, description, className }: FeatureUnavailableProps) {
+  return (
+    <Card className={cn("border-none rounded-3xl", className)}>
+      <CardContent className="p-6 flex flex-col items-center gap-3 text-center">
+        <LockKeyhole className="w-8 h-8 text-slate-400 dark:text-white/40 shrink-0" />
+        <p className="text-sm font-medium text-slate-700 dark:text-white/70">
+          {message ?? "Tính năng đang được phát triển"}
+        </p>
+        {description && (
+          <p className="text-xs text-slate-400 dark:text-white/40">{description}</p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+export { ErrorState, EmptyState, LoadingSkeleton, ErrorCard, FeatureUnavailable };

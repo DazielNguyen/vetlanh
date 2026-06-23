@@ -74,17 +74,17 @@ export function DailyPromptCard({ onUsePrompt }: Props) {
   }
 
   return (
-    <Card className="border-none shadow-sm rounded-3xl bg-gradient-to-br from-violet-50 to-indigo-50">
+    <Card className="border-none shadow-sm rounded-3xl bg-gradient-to-br from-violet-50 to-indigo-50 dark:from-violet-900/20 dark:to-indigo-900/20">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-violet-500" />
-            <CardTitle className="text-base font-bold text-violet-800">Gợi ý hôm nay</CardTitle>
+            <Sparkles className="h-4 w-4 text-violet-500 dark:text-violet-400" />
+            <CardTitle className="text-base font-bold text-violet-800 dark:text-violet-300">Gợi ý hôm nay</CardTitle>
           </div>
           <button
             onClick={handleRefresh}
             disabled={isFetching}
-            className="text-violet-400 hover:text-violet-600 transition"
+            className="text-violet-400 hover:text-violet-600 dark:text-violet-400/70 dark:hover:text-violet-300 transition"
             title="Gợi ý tiếp theo"
           >
             <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
@@ -100,8 +100,8 @@ export function DailyPromptCard({ onUsePrompt }: Props) {
                 onClick={() => handleTopicSelect(topic)}
                 className={`text-[10px] font-semibold px-2.5 py-1 rounded-full transition ${
                   selectedTopic === topic
-                    ? "bg-violet-600 text-white"
-                    : "bg-violet-100 text-violet-600 hover:bg-violet-200"
+                    ? "bg-violet-600 text-white dark:bg-violet-500"
+                    : "bg-violet-100 text-violet-600 hover:bg-violet-200 dark:bg-violet-900/30 dark:text-violet-300 dark:hover:bg-violet-900/50"
                 }`}
               >
                 {topic}
@@ -110,15 +110,15 @@ export function DailyPromptCard({ onUsePrompt }: Props) {
           </div>
         )}
 
-        <span className="text-xs font-semibold text-violet-400 uppercase tracking-wide">
+        <span className="text-xs font-semibold text-violet-400 dark:text-violet-400/70 uppercase tracking-wide">
           {displayedPrompt.topic}
         </span>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="text-sm text-slate-700 leading-relaxed italic">"{displayedPrompt.text}"</p>
+        <p className="text-sm text-slate-700 dark:text-white/80 leading-relaxed italic">"{displayedPrompt.text}"</p>
         <Button
           onClick={() => onUsePrompt(displayedPrompt.text)}
-          className="w-full h-10 rounded-2xl font-bold bg-violet-600 hover:bg-violet-700"
+          className="w-full h-10 rounded-2xl font-bold bg-violet-600 hover:bg-violet-700 dark:bg-violet-600 dark:hover:bg-violet-500"
         >
           Dùng gợi ý này
         </Button>

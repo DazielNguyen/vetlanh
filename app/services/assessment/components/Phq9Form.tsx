@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { usePhq9Questions, useSubmitPhq9 } from "@/hooks/usePhq9";
-import { ErrorCard } from "@/components/ui/state";
+import { ErrorCard, FeatureUnavailable } from "@/components/ui/state";
+import type { ApiError } from "@/lib/api/core";
 import type { Phq9Result } from "@/types/phq9";
 
 const DRAFT_KEY = "phq9_draft_answers";
@@ -22,7 +23,7 @@ interface Props {
 }
 
 export function Phq9Form({ onComplete }: Props) {
-  const { data: questions, isLoading, isError, refetch } = usePhq9Questions();
+  const { data: questions, isLoading, isError, error, refetch } = usePhq9Questions();
   const { mutate: submit, isPending } = useSubmitPhq9();
 
   // Lazy init from localStorage — avoids a second effect that would
@@ -80,6 +81,14 @@ export function Phq9Form({ onComplete }: Props) {
   }
 
   if (isError) {
+    if ((error as ApiError).code === 404) {
+      return (
+        <FeatureUnavailable
+          message="Tính năng đang được phát triển"
+          description="Bảng câu hỏi PHQ-9 sẽ sớm có mặt. Vui lòng quay lại sau."
+        />
+      );
+    }
     return <ErrorCard message="Không thể tải câu hỏi PHQ-9." onRetry={() => { void refetch(); }} />;
   }
 
@@ -95,10 +104,10 @@ export function Phq9Form({ onComplete }: Props) {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
-          {questions.map((question, index) => (
-            <div key={question.id} className="space-y-3">
+          {questions.map((questionText, index) => (
+            <div key={index} className="space-y-3">
               <p className="text-sm font-semibold text-slate-700 dark:text-white/80">
-                {index + 1}. {question.text}
+                {index + 1}. {questionText}
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {ANSWER_OPTIONS.map((option) => (

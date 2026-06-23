@@ -3,42 +3,36 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, ShieldCheck } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Loader2, ShieldCheck, Plus, X } from "lucide-react";
 import { useSafetyPlan, useUpsertSafetyPlan } from "@/hooks/useSafetyPlan";
 import { ErrorCard } from "@/components/ui/state";
-import type { SafetyPlan } from "@/types/safetyPlan";
+import type { SafetyPlan, TrustedContact } from "@/types/safetyPlan";
 
-const SECTIONS: { key: keyof SafetyPlan; label: string; description: string; placeholder: string }[] = [
+const LIST_SECTIONS: {
+  key: "warning_signs" | "coping_activities";
+  label: string;
+  description: string;
+  placeholder: string;
+}[] = [
   {
     key: "warning_signs",
     label: "Dấu hiệu cảnh báo",
     description: "Những suy nghĩ, cảm xúc, hành vi hoặc tình huống báo hiệu bạn đang gặp khó khăn.",
-    placeholder: "VD: Mất ngủ nhiều đêm liên tiếp, cảm thấy vô vọng, thu mình lại...",
+    placeholder: "VD: Mất ngủ nhiều đêm liên tiếp",
   },
   {
     key: "coping_activities",
     label: "Hoạt động đối phó",
     description: "Những việc bạn có thể tự làm để cảm thấy tốt hơn khi gặp khó khăn.",
-    placeholder: "VD: Đi bộ 15 phút, nghe nhạc yêu thích, viết nhật ký...",
-  },
-  {
-    key: "trusted_contacts",
-    label: "Người tin cậy",
-    description: "Những người bạn có thể liên hệ khi cần hỗ trợ — tên và số điện thoại.",
-    placeholder: "VD: Mẹ — 0901 234 567\nBạn thân Minh — 0912 345 678",
-  },
-  {
-    key: "reasons_to_live",
-    label: "Lý do để sống",
-    description: "Những điều quan trọng và có ý nghĩa nhất với bạn trong cuộc sống.",
-    placeholder: "VD: Gia đình, thú cưng, những ước mơ chưa thực hiện...",
+    placeholder: "VD: Đi bộ 15 phút",
   },
 ];
 
 const EMPTY: SafetyPlan = {
-  warning_signs: "",
-  coping_activities: "",
-  trusted_contacts: "",
+  warning_signs: [],
+  coping_activities: [],
+  trusted_contacts: [],
   reasons_to_live: "",
 };
 
@@ -53,14 +47,36 @@ export default function SafetyPlanPage() {
     if (plan) setForm(plan);
   }, [plan]);
 
-  function handleChange(key: keyof SafetyPlan, value: string) {
-    setForm((prev) => ({ ...prev, [key]: value }));
+  function addListItem(key: "warning_signs" | "coping_activities", value: string): boolean {
+    const trimmed = value.trim();
+    if (!trimmed) return false;
+    setForm((prev) => ({ ...prev, [key]: [...prev[key], trimmed] }));
+    return true;
+  }
+
+  function removeListItem(key: "warning_signs" | "coping_activities", index: number) {
+    setForm((prev) => ({ ...prev, [key]: prev[key].filter((_, i) => i !== index) }));
+  }
+
+  function addContact(contact: TrustedContact): boolean {
+    if (!contact.name.trim() || !contact.phone.trim()) return false;
+    setForm((prev) => ({ ...prev, trusted_contacts: [...prev.trusted_contacts, contact] }));
+    return true;
+  }
+
+  function removeContact(index: number) {
+    setForm((prev) => ({
+      ...prev,
+      trusted_contacts: prev.trusted_contacts.filter((_, i) => i !== index),
+    }));
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (isPending) return;
-    upsert(form);
+    // Strip read-only server fields — BE's SafetyPlanUpsert schema doesn't accept id/updated_at
+    const { id: _id, updated_at: _updatedAt, ...payload } = form;
+    upsert(payload);
   }
 
   if (isLoading) {
@@ -115,19 +131,39 @@ export default function SafetyPlanPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            {SECTIONS.map(({ key, label, description, placeholder }) => (
-              <div key={key} className="space-y-1.5">
-                <label className="text-sm font-semibold text-slate-700 dark:text-white/80">{label}</label>
-                <p className="text-xs text-slate-400 dark:text-white/40">{description}</p>
-                <textarea
-                  rows={4}
-                  value={form[key] ?? ""}
-                  onChange={(e) => handleChange(key, e.target.value)}
-                  placeholder={placeholder}
-                  className="w-full resize-none px-4 py-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-slate-700 dark:text-white placeholder-slate-300 dark:placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary dark:focus:bg-white/10 transition"
-                />
-              </div>
+            {LIST_SECTIONS.map(({ key, label, description, placeholder }) => (
+              <ListSection
+                key={key}
+                label={label}
+                description={description}
+                placeholder={placeholder}
+                items={form[key]}
+                onAdd={(value) => addListItem(key, value)}
+                onRemove={(index) => removeListItem(key, index)}
+              />
             ))}
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-700 dark:text-white/80">Người tin cậy</label>
+              <p className="text-xs text-slate-400 dark:text-white/40">
+                Những người bạn có thể liên hệ khi cần hỗ trợ — tên và số điện thoại.
+              </p>
+              <ContactList contacts={form.trusted_contacts} onAdd={addContact} onRemove={removeContact} />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-sm font-semibold text-slate-700 dark:text-white/80">Lý do để sống</label>
+              <p className="text-xs text-slate-400 dark:text-white/40">
+                Những điều quan trọng và có ý nghĩa nhất với bạn trong cuộc sống.
+              </p>
+              <textarea
+                rows={4}
+                value={form.reasons_to_live ?? ""}
+                onChange={(e) => setForm((prev) => ({ ...prev, reasons_to_live: e.target.value }))}
+                placeholder="VD: Gia đình, thú cưng, những ước mơ chưa thực hiện..."
+                className="w-full resize-none px-4 py-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 text-sm text-slate-700 dark:text-white placeholder-slate-300 dark:placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary dark:focus:bg-white/10 transition"
+              />
+            </div>
 
             <Button
               type="submit"
@@ -145,6 +181,137 @@ export default function SafetyPlanPage() {
           </form>
         </CardContent>
       </Card>
+    </div>
+  );
+}
+
+function ListSection({
+  label,
+  description,
+  placeholder,
+  items,
+  onAdd,
+  onRemove,
+}: {
+  label: string;
+  description: string;
+  placeholder: string;
+  items: string[];
+  onAdd: (value: string) => boolean;
+  onRemove: (index: number) => void;
+}) {
+  const [draft, setDraft] = useState("");
+
+  function submitDraft() {
+    if (onAdd(draft)) setDraft("");
+  }
+
+  return (
+    <div className="space-y-1.5">
+      <label className="text-sm font-semibold text-slate-700 dark:text-white/80">{label}</label>
+      <p className="text-xs text-slate-400 dark:text-white/40">{description}</p>
+
+      {items.length > 0 && (
+        <ul className="space-y-2">
+          {items.map((item, index) => (
+            <li
+              key={index}
+              className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-slate-50 dark:bg-white/5 text-sm text-slate-700 dark:text-white/80"
+            >
+              <span>{item}</span>
+              <button
+                type="button"
+                onClick={() => onRemove(index)}
+                className="text-slate-400 hover:text-rose-500 dark:text-white/40 dark:hover:text-rose-400 shrink-0"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div className="flex gap-2">
+        <Input
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              submitDraft();
+            }
+          }}
+          placeholder={placeholder}
+          className="rounded-xl"
+        />
+        <Button type="button" variant="outline" size="icon" onClick={submitDraft} className="rounded-xl shrink-0">
+          <Plus className="w-4 h-4" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function ContactList({
+  contacts,
+  onAdd,
+  onRemove,
+}: {
+  contacts: TrustedContact[];
+  onAdd: (contact: TrustedContact) => boolean;
+  onRemove: (index: number) => void;
+}) {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+
+  function submitDraft() {
+    if (onAdd({ name, phone })) {
+      setName("");
+      setPhone("");
+    }
+  }
+
+  return (
+    <div className="space-y-2">
+      {contacts.length > 0 && (
+        <ul className="space-y-2">
+          {contacts.map((contact, index) => (
+            <li
+              key={index}
+              className="flex items-center justify-between gap-2 px-3 py-2 rounded-xl bg-slate-50 dark:bg-white/5 text-sm text-slate-700 dark:text-white/80"
+            >
+              <span>
+                {contact.name} — {contact.phone}
+              </span>
+              <button
+                type="button"
+                onClick={() => onRemove(index)}
+                className="text-slate-400 hover:text-rose-500 dark:text-white/40 dark:hover:text-rose-400 shrink-0"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div className="flex gap-2">
+        <Input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Tên"
+          className="rounded-xl"
+        />
+        <Input
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="Số điện thoại"
+          className="rounded-xl"
+        />
+        <Button type="button" variant="outline" size="icon" onClick={submitDraft} className="rounded-xl shrink-0">
+          <Plus className="w-4 h-4" />
+        </Button>
+      </div>
     </div>
   );
 }
