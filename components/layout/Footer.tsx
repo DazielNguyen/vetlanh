@@ -1,6 +1,14 @@
 import Link from "next/link";
-import { Facebook, Instagram } from "lucide-react";
+import { Facebook } from "lucide-react";
 import Image from "next/image";
+
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path d="M16.6 5.82c-.9-.86-1.5-2.05-1.6-3.32V2h-3.4v13.4a2.6 2.6 0 1 1-2.6-2.6c.24 0 .48.03.7.09V9.44a5.9 5.9 0 0 0-.7-.04A6.05 6.05 0 1 0 15 15.4V9.1a8.14 8.14 0 0 0 4.6 1.42V7.14a4.86 4.86 0 0 1-3-1.32Z" />
+    </svg>
+  );
+}
 
 export default function Footer() {
   return (
@@ -22,11 +30,23 @@ export default function Footer() {
               Vì một Việt Nam hạnh phúc và bình an hơn mỗi ngày.
             </p>
             <div className="flex gap-4">
-              <a className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors" href="#">
+              <a
+                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+                href="https://www.facebook.com/people/V%E1%BA%BFt-L%C3%A0nh-Healing-Together/61590074923894/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook Vết Lành"
+              >
                 <Facebook className="w-5 h-5" />
               </a>
-              <a className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors" href="#">
-                <Instagram className="w-5 h-5" />
+              <a
+                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+                href="https://www.tiktok.com/@vetlanh"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="TikTok Vết Lành"
+              >
+                <TikTokIcon className="w-5 h-5" />
               </a>
             </div>
           </div>
