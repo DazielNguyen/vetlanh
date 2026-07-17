@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope, Geist, Dancing_Script } from "next/font/google";
+import { Manrope, Geist, Dancing_Script, Baloo_2 } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/lib/providers";
 import { Toaster } from "@/components/ui/sonner";
@@ -18,6 +18,11 @@ const manrope = Manrope({
 const dancingScript = Dancing_Script({
   subsets: ["vietnamese"],
   variable: "--font-dancing",
+});
+
+const baloo2 = Baloo_2({
+  subsets: ["vietnamese"],
+  variable: "--font-baloo",
 });
 
 export const metadata: Metadata = {
@@ -45,7 +50,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="vi" suppressHydrationWarning className={cn("font-sans", geist.variable, dancingScript.variable)}>
+    <html lang="vi" suppressHydrationWarning className={cn("font-sans", geist.variable, dancingScript.variable, baloo2.variable)}>
       <body className={`${manrope.variable} font-sans`}>
         <Providers>
           <ClientErrorReporter />

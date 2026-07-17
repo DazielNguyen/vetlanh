@@ -2,7 +2,6 @@
 
 import { useRef } from "react";
 import { motion, useInView, useReducedMotion } from "motion/react";
-import Image from "next/image";
 import { EASING } from "@/lib/motion";
 
 export default function JourneySection() {
@@ -16,11 +15,8 @@ export default function JourneySection() {
     prefersReduced ? { duration: 0 } : { duration: 0.7, ease: EASING, delay };
 
   return (
-    <section className="relative py-32 overflow-hidden" ref={ref}>
-      <Image src="/images/bg2.png" alt="" fill className="object-cover" />
-      <div className="pointer-events-none absolute inset-0 bg-black/40" />
-      <div className="pointer-events-none absolute top-0 inset-x-0 h-28 bg-linear-to-b from-black/70 to-transparent" />
-      <div className="pointer-events-none absolute bottom-0 inset-x-0 h-28 bg-linear-to-b from-transparent to-black/70" />
+    <section className="relative py-32 overflow-hidden bg-linear-to-b from-hero-sky-end/50 via-background to-background" ref={ref}>
+      <div className="pointer-events-none absolute top-0 inset-x-0 h-28 bg-linear-to-b from-hero-sky-end/40 to-transparent" />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="text-center mb-12"
@@ -28,12 +24,12 @@ export default function JourneySection() {
           animate={animate}
           transition={transition()}
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-5 leading-tight">Hành trình chữa lành diễn ra như thế nào?</h2>
-          <p className="text-lg text-white/75">Ba bước đơn giản để thấu hiểu bản thân và tìm lại sự cân bằng.</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-hero-wordmark mb-5 leading-tight">Hành trình chữa lành diễn ra như thế nào?</h2>
+          <p className="text-lg text-hero-wordmark/70">Ba bước đơn giản để thấu hiểu bản thân và tìm lại sự cân bằng.</p>
         </motion.div>
 
         <motion.div
-          className="relative rounded-[40px] overflow-hidden shadow-2xl border-4 border-white/30 aspect-video"
+          className="relative rounded-[40px] overflow-hidden shadow-2xl border-4 border-hero-wordmark/15 aspect-video"
           initial={prefersReduced ? {} : { y: 40, opacity: 0 }}
           animate={prefersReduced ? {} : isInView ? { y: 0, opacity: 1 } : { y: 40, opacity: 0 }}
           transition={transition(0.2)}

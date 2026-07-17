@@ -8,24 +8,24 @@ import { EASING } from "@/lib/motion";
 
 const SMALL_FEATURES = [
   {
-    icon: <Dumbbell className="w-5 h-5 text-white" />,
+    icon: <Dumbbell className="w-5 h-5 text-hero-wordmark" />,
     title: "Bài tập tâm lý",
-    desc: "Thư viện bài tập thở, thiền định và PMR được thiết kế cho từng mức độ căng thẳng.",
+    desc: "Bài tập thở, thiền và PMR cho từng mức độ căng thẳng.",
   },
   {
-    icon: <Activity className="w-5 h-5 text-white" />,
+    icon: <Activity className="w-5 h-5 text-hero-wordmark" />,
     title: "Theo dõi cảm xúc",
-    desc: "Biểu đồ trực quan theo dõi tâm trạng theo ngày, phát hiện xu hướng sớm.",
+    desc: "Biểu đồ tâm trạng theo ngày, phát hiện xu hướng sớm.",
   },
   {
-    icon: <Map className="w-5 h-5 text-white" />,
+    icon: <Map className="w-5 h-5 text-hero-wordmark" />,
     title: "Lộ trình cá nhân",
-    desc: "Hành trình cá nhân hóa với các nhiệm vụ mở khóa dần dần, tiến bộ từng ngày.",
+    desc: "Nhiệm vụ mở khóa dần, tiến bộ từng ngày.",
   },
   {
-    icon: <BookOpen className="w-5 h-5 text-white" />,
+    icon: <BookOpen className="w-5 h-5 text-hero-wordmark" />,
     title: "Nhật ký & Tư duy",
-    desc: "Ghi lại suy nghĩ, phân tích kiểu tư duy tiêu cực và xây dựng góc nhìn tích cực.",
+    desc: "Ghi lại suy nghĩ, xây dựng góc nhìn tích cực.",
   },
 ];
 
@@ -41,12 +41,7 @@ export default function FeaturesSection() {
     prefersReduced ? {} : in_view ? { y: 0, opacity: 1 } : { y: 30, opacity: 0 };
 
   return (
-    <section id="dich-vu" className="relative py-32 overflow-hidden" ref={ref}>
-      <Image src="/images/bg1.png" alt="" fill className="object-cover" />
-      <div className="pointer-events-none absolute inset-0 bg-black/35" />
-      <div className="pointer-events-none absolute top-0 inset-x-0 h-28 bg-linear-to-b from-black/80 to-transparent" />
-      <div className="pointer-events-none absolute bottom-0 inset-x-0 h-28 bg-linear-to-b from-transparent to-black/70" />
-
+    <section id="dich-vu" className="relative py-32 overflow-hidden bg-linear-to-b from-hero-sky-end/40 via-background to-background" ref={ref}>
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Left-aligned header — breaks center-symmetry */}
         <motion.div
@@ -55,10 +50,10 @@ export default function FeaturesSection() {
           animate={av(isInView)}
           transition={t()}
         >
-          <p className="text-xs font-semibold text-white/45 tracking-widest uppercase mb-3">Dịch vụ</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">
+          <p className="text-xs font-semibold text-hero-wordmark/45 tracking-widest uppercase mb-3">Dịch vụ</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-hero-wordmark leading-tight">
             Mọi thứ bạn cần<br />
-            <span className="text-white/55">trên hành trình chữa lành</span>
+            <span className="text-hero-wordmark/55">trên hành trình chữa lành</span>
           </h2>
         </motion.div>
 
@@ -90,7 +85,7 @@ export default function FeaturesSection() {
               </div>
               <h3 className="text-2xl font-bold text-white mb-2">Trợ lý AI thông minh</h3>
               <p className="text-white/70 text-sm leading-relaxed max-w-md mb-5">
-                Trò chuyện 24/7 với AI lắng nghe, phân tích cảm xúc và gợi ý bài tập phù hợp tức thì. Không phán xét — chỉ có sự thấu hiểu.
+                Trò chuyện 24/7 với AI lắng nghe và gợi ý bài tập phù hợp — không phán xét, chỉ thấu hiểu.
               </p>
               {/* Mock chat bubble preview */}
               <div className="space-y-2.5 max-w-sm">
@@ -114,7 +109,7 @@ export default function FeaturesSection() {
 
           {/* Bài tập card (1/3 width) */}
           <motion.div
-            className="relative rounded-[32px] bg-white/8 backdrop-blur-md border border-white/15 p-7 hover:bg-white/13 transition-all group overflow-hidden"
+            className="card-glass-warm relative rounded-[32px] p-7 hover:bg-white/50 transition-all group overflow-hidden"
             initial={iv}
             animate={av(isInView)}
             transition={t(0.15)}
@@ -122,19 +117,19 @@ export default function FeaturesSection() {
             {/* Decorative blurred orb */}
             <div className="absolute -top-8 -right-8 w-32 h-32 bg-primary/20 rounded-full blur-2xl pointer-events-none" />
             <div className="relative z-10">
-              <div className="w-11 h-11 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
-                <Dumbbell className="w-5 h-5 text-white" />
+              <div className="w-11 h-11 rounded-2xl bg-hero-wordmark/10 border border-hero-wordmark/20 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
+                <Dumbbell className="w-5 h-5 text-hero-wordmark" />
               </div>
-              <h3 className="text-lg font-bold text-white mb-2">Bài tập tâm lý</h3>
-              <p className="text-white/65 text-sm leading-relaxed mb-6">
-                Thư viện bài tập thở, thiền định và PMR thiết kế cho từng mức độ căng thẳng.
+              <h3 className="text-lg font-bold text-hero-wordmark mb-2">Bài tập tâm lý</h3>
+              <p className="text-hero-wordmark/65 text-sm leading-relaxed mb-6">
+                Bài tập thở, thiền và PMR cho từng mức độ căng thẳng.
               </p>
               {/* Visual: breathing ring animation */}
               <div className="flex items-center gap-2 opacity-60">
                 {[12, 18, 24, 30, 24].map((size, i) => (
                   <div
                     key={i}
-                    className="rounded-full border border-white/40"
+                    className="rounded-full border border-hero-wordmark/40"
                     style={{ width: size, height: size }}
                   />
                 ))}
@@ -146,16 +141,16 @@ export default function FeaturesSection() {
           {SMALL_FEATURES.slice(1).map((f, i) => (
             <motion.div
               key={f.title}
-              className="rounded-[28px] bg-white/7 backdrop-blur-md border border-white/12 p-6 hover:bg-white/12 hover:border-white/20 transition-all group"
+              className="card-glass-warm rounded-[28px] p-6 hover:bg-white/50 transition-all group"
               initial={iv}
               animate={av(isInView)}
               transition={t(0.22 + i * 0.08)}
             >
-              <div className="w-10 h-10 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <div className="w-10 h-10 rounded-xl bg-hero-wordmark/10 border border-hero-wordmark/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 {f.icon}
               </div>
-              <h3 className="text-base font-bold text-white mb-2">{f.title}</h3>
-              <p className="text-white/60 text-sm leading-relaxed">{f.desc}</p>
+              <h3 className="text-base font-bold text-hero-wordmark mb-2">{f.title}</h3>
+              <p className="text-hero-wordmark/60 text-sm leading-relaxed">{f.desc}</p>
             </motion.div>
           ))}
         </div>

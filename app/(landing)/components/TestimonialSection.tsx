@@ -11,7 +11,7 @@ const TESTIMONIALS = [
     handle: "@minhanh_gen",
     role: "Sinh viên năm 3",
     avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop",
-    quote: "Vết Lành giúp mình vượt qua những đêm mất ngủ vì stress học hành. Các bài tập thở rất tinh tế — chỉ 5 phút mà mình cảm thấy khác hẳn. Mình thường dùng lúc 2 giờ sáng và nó thực sự hiệu quả.",
+    quote: "Vết Lành giúp mình vượt qua những đêm mất ngủ vì stress học hành. Chỉ 5 phút bài tập thở mà cảm thấy khác hẳn.",
     featured: true,
   },
   {
@@ -45,12 +45,7 @@ export default function TestimonialSection() {
   const [featured, ...rest] = TESTIMONIALS;
 
   return (
-    <section id="cau-chuyen" className="relative py-32 overflow-hidden" ref={ref}>
-      <Image src="/images/bg3.png" alt="" fill className="object-cover" />
-      <div className="pointer-events-none absolute inset-0 bg-black/40" />
-      <div className="pointer-events-none absolute top-0 inset-x-0 h-28 bg-linear-to-b from-black/70 to-transparent" />
-      <div className="pointer-events-none absolute bottom-0 inset-x-0 h-28 bg-linear-to-b from-transparent to-black/70" />
-
+    <section id="cau-chuyen" className="relative py-32 overflow-hidden bg-linear-to-b from-background via-illustration-sky-blue/10 to-background" ref={ref}>
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="mb-14"
@@ -58,12 +53,12 @@ export default function TestimonialSection() {
           animate={av}
           transition={t()}
         >
-          <p className="text-xs font-semibold text-white/45 tracking-widest uppercase mb-3">Câu chuyện</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-white leading-tight">
+          <p className="text-xs font-semibold text-hero-wordmark/45 tracking-widest uppercase mb-3">Câu chuyện</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-hero-wordmark leading-tight">
             Hành trình của mọi người
           </h2>
-          <p className="mt-3 text-white/60 text-base max-w-lg">
-            Cộng đồng <span className="font-dancing font-bold text-[1.1em] text-white/80">Vết Lành</span> chia sẻ những thay đổi tích cực.
+          <p className="mt-3 text-hero-wordmark/60 text-base max-w-lg">
+            Cộng đồng <span className="font-baloo font-bold text-[1.1em] text-hero-wordmark/80">Vết Lành</span> chia sẻ những thay đổi tích cực.
           </p>
         </motion.div>
 
@@ -72,18 +67,18 @@ export default function TestimonialSection() {
 
           {/* Featured testimonial — 2/3 width */}
           <motion.div
-            className="md:col-span-2 relative overflow-hidden rounded-[32px] bg-white/10 backdrop-blur-md border border-white/20 p-8 md:p-10 flex flex-col justify-between min-h-72"
+            className="card-glass-warm md:col-span-2 relative overflow-hidden rounded-[32px] p-8 md:p-10 flex flex-col justify-between min-h-72"
             initial={iv}
             animate={av}
             transition={t(0.08)}
           >
             {/* Large decorative quote mark */}
-            <div className="absolute top-6 right-8 text-[120px] leading-none font-serif text-white/6 select-none pointer-events-none">
+            <div className="absolute top-6 right-8 text-[120px] leading-none font-serif text-hero-wordmark/8 select-none pointer-events-none">
               "
             </div>
 
             <div>
-              <p className="text-white/90 text-lg md:text-xl leading-relaxed font-light mb-8 max-w-xl">
+              <p className="text-hero-wordmark/90 text-lg md:text-xl leading-relaxed font-light mb-8 max-w-xl">
                 "{featured.quote}"
               </p>
             </div>
@@ -94,17 +89,17 @@ export default function TestimonialSection() {
                   src={featured.avatar}
                   alt={featured.name}
                   fill
-                  className="rounded-2xl object-cover ring-2 ring-white/25"
+                  className="rounded-2xl object-cover ring-2 ring-hero-wordmark/15"
                   sizes="56px"
                 />
               </div>
               <div>
-                <h5 className="font-bold text-white text-base">{featured.name}</h5>
-                <p className="text-sm text-white/55">{featured.role}</p>
-                <p className="text-xs text-white/35 mt-0.5">{featured.handle}</p>
+                <h5 className="font-bold text-hero-wordmark text-base">{featured.name}</h5>
+                <p className="text-sm text-hero-wordmark/55">{featured.role}</p>
+                <p className="text-xs text-hero-wordmark/35 mt-0.5">{featured.handle}</p>
               </div>
               {/* Verified badge */}
-              <div className="ml-auto shrink-0 bg-white/10 border border-white/20 rounded-full px-3 py-1 text-xs text-white/60">
+              <div className="ml-auto shrink-0 bg-hero-wordmark/10 border border-hero-wordmark/20 rounded-full px-3 py-1 text-xs text-hero-wordmark/60">
                 Đã xác minh
               </div>
             </div>
@@ -115,7 +110,7 @@ export default function TestimonialSection() {
             {rest.map((t_item, i) => (
               <motion.div
                 key={t_item.handle}
-                className="flex-1 rounded-[28px] bg-white/7 backdrop-blur-md border border-white/15 p-7 hover:bg-white/12 hover:border-white/25 transition-all"
+                className="card-glass-warm flex-1 rounded-[28px] p-7 hover:bg-white/50 transition-all"
                 initial={iv}
                 animate={av}
                 transition={t(0.15 + i * 0.1)}
@@ -126,16 +121,16 @@ export default function TestimonialSection() {
                       src={t_item.avatar}
                       alt={t_item.name}
                       fill
-                      className="rounded-xl object-cover ring-1 ring-white/25"
+                      className="rounded-xl object-cover ring-1 ring-hero-wordmark/15"
                       sizes="40px"
                     />
                   </div>
                   <div>
-                    <h5 className="font-bold text-white text-sm">{t_item.name}</h5>
-                    <p className="text-xs text-white/45">{t_item.role}</p>
+                    <h5 className="font-bold text-hero-wordmark text-sm">{t_item.name}</h5>
+                    <p className="text-xs text-hero-wordmark/45">{t_item.role}</p>
                   </div>
                 </div>
-                <p className="text-white/75 text-sm italic leading-relaxed">"{t_item.quote}"</p>
+                <p className="text-hero-wordmark/75 text-sm italic leading-relaxed">"{t_item.quote}"</p>
               </motion.div>
             ))}
           </div>

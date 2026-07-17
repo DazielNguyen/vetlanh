@@ -16,25 +16,23 @@ export default function Header() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "bg-white/10 backdrop-blur-md border-b border-white/20 shadow-lg"
-          : "bg-transparent"
+        scrolled ? "sticky-nav shadow-lg" : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link href="/" className="shrink-0 flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/10 backdrop-blur-sm">
-              <Image src="/images/logo.svg" alt="Vết Lành Logo" width={24} height={24} className="dark:brightness-0 dark:invert" />
+            <div className="w-10 h-10 rounded-full flex items-center justify-center bg-hero-wordmark/8 backdrop-blur-sm">
+              <Image src="/images/logo.svg" alt="Vết Lành Logo" width={24} height={24} />
             </div>
-            <span className="text-[1.75rem] font-bold tracking-tight font-dancing text-white">
+            <span className="text-[1.75rem] font-bold tracking-tight font-baloo text-hero-wordmark">
               Vết Lành
             </span>
           </Link>
 
           {/* Nav Links */}
-          <div className="hidden md:flex space-x-6 items-center font-medium text-white/80">
+          <div className="hidden md:flex space-x-6 items-center font-medium text-hero-wordmark/70">
             <Link className="hover:text-primary transition-colors" href="/">Trang chủ</Link>
             <Link className="hover:text-primary transition-colors" href="/#dich-vu">Dịch vụ</Link>
             <Link className="hover:text-primary transition-colors" href="/#bang-gia">Bảng giá</Link>
@@ -47,13 +45,13 @@ export default function Header() {
           <div className="flex items-center gap-4">
             <Link
               href="/login"
-              className="hidden md:block text-sm font-semibold text-white/80 hover:text-white transition-colors"
+              className="hidden md:block text-sm font-semibold text-hero-wordmark/70 hover:text-hero-wordmark transition-colors"
             >
               Đăng nhập
             </Link>
             <Link
               href="/register"
-              className="inline-flex items-center rounded-full border border-white/30 bg-white/10 backdrop-blur-sm px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-white/20 active:scale-95"
+              className="inline-flex items-center rounded-full border border-hero-wordmark/25 bg-hero-wordmark/10 backdrop-blur-sm px-5 py-2.5 text-sm font-semibold text-hero-wordmark transition-all hover:bg-hero-wordmark/15 active:scale-95"
             >
               Bắt đầu miễn phí
             </Link>

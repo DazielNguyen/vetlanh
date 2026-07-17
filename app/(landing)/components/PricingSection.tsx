@@ -2,7 +2,6 @@
 
 import { useRef, useState } from "react";
 import { motion, useInView, useReducedMotion } from "motion/react";
-import Image from "next/image";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -39,11 +38,7 @@ export default function PricingSection() {
     prefersReduced ? { duration: 0 } : { duration: 0.7, ease: EASING, delay };
 
   return (
-    <section id="bang-gia" className="relative py-32 overflow-hidden" ref={ref}>
-      <Image src="/images/bg4.png" alt="" fill className="object-cover" />
-      <div className="pointer-events-none absolute inset-0 bg-black/45" />
-      <div className="pointer-events-none absolute top-0 inset-x-0 h-28 bg-linear-to-b from-black/70 to-transparent" />
-      <div className="pointer-events-none absolute bottom-0 inset-x-0 h-28 bg-linear-to-b from-transparent to-black/70" />
+    <section id="bang-gia" className="relative py-32 overflow-hidden bg-linear-to-b from-background via-hero-sky-start/50 to-background" ref={ref}>
       <div className="relative mx-auto max-w-300 px-4 sm:px-6 lg:px-8">
         <motion.div
           className="mb-16 text-center"
@@ -51,64 +46,64 @@ export default function PricingSection() {
           animate={animate}
           transition={transition()}
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Lựa chọn gói phù hợp với bạn</h2>
-          <p className="mt-4 text-white/75 max-w-2xl mx-auto text-lg">
-            Bắt đầu miễn phí, nâng cấp khi bạn sẵn sàng để mở khoá toàn bộ hành trình chữa lành.
+          <h2 className="text-3xl md:text-4xl font-bold text-hero-wordmark mb-4">Lựa chọn gói phù hợp với bạn</h2>
+          <p className="mt-4 text-hero-wordmark/70 max-w-2xl mx-auto text-lg">
+            Bắt đầu miễn phí, nâng cấp khi sẵn sàng để mở khoá toàn bộ hành trình.
           </p>
         </motion.div>
 
         <div className="grid gap-8 md:grid-cols-2 items-start">
           {/* Free card */}
           <motion.div
-            className="flex flex-col rounded-[32px] border border-white/20 bg-white/10 backdrop-blur-md p-8 shadow-xl hover:bg-white/15 transition-all"
+            className="card-glass-warm flex flex-col rounded-[32px] p-8 shadow-xl hover:bg-white/50 transition-all"
             initial={initial}
             animate={animate}
             transition={transition(0.1)}
           >
             <div className="mb-8">
-              <h3 className="text-xl font-bold text-white">Dành cho Cá nhân</h3>
+              <h3 className="text-xl font-bold text-hero-wordmark">Dành cho Cá nhân</h3>
               <div className="mt-4 flex items-baseline gap-1">
-                <span className="text-4xl font-extrabold text-white">Miễn phí</span>
+                <span className="text-4xl font-extrabold text-hero-wordmark">Miễn phí</span>
               </div>
-              <p className="mt-2 text-sm text-white/65">Bước đầu tìm lại sự cân bằng.</p>
+              <p className="mt-2 text-sm text-hero-wordmark/65">Bước đầu tìm lại sự cân bằng.</p>
             </div>
-            <ul className="mb-8 flex-1 space-y-4 text-sm text-white/80">
+            <ul className="mb-8 flex-1 space-y-4 text-sm text-hero-wordmark/80">
               {FREE_FEATURES.map((f) => (
                 <li key={f} className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                    <Check className="h-4 w-4 text-white" strokeWidth={3} />
+                  <div className="w-6 h-6 rounded-full bg-hero-wordmark/10 flex items-center justify-center shrink-0">
+                    <Check className="h-4 w-4 text-hero-wordmark" strokeWidth={3} />
                   </div>
                   {f}
                 </li>
               ))}
             </ul>
-            <Button variant="outline" asChild className="w-full rounded-full border-2 border-white/40 py-6 text-base font-bold text-white bg-transparent hover:bg-white/10 transition-all">
+            <Button variant="outline" asChild className="w-full rounded-full border-2 border-hero-wordmark/25 py-6 text-base font-bold text-hero-wordmark bg-transparent hover:bg-hero-wordmark/10 transition-all">
               <Link href="/register">Bắt đầu hành trình</Link>
             </Button>
           </motion.div>
 
           {/* Pro card */}
           <motion.div
-            className="relative flex flex-col rounded-[32px] border-2 border-white/40 bg-white/15 backdrop-blur-md p-8 shadow-2xl"
+            className="relative flex flex-col rounded-[32px] border-2 border-hero-wordmark/25 bg-white/70 backdrop-blur-md p-8 shadow-2xl"
             initial={initial}
             animate={animate}
             transition={transition(0.2)}
           >
-            <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-white/20 backdrop-blur-md px-4 py-1 text-xs font-bold text-white shadow-sm whitespace-nowrap border border-white/30">
+            <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-hero-wordmark text-white px-4 py-1 text-xs font-bold shadow-sm whitespace-nowrap">
               PRO - MỞ KHOÁ TẤT CẢ
             </div>
 
             <div className="mb-6">
-              <h3 className="text-xl font-bold text-white">Gói Pro</h3>
-              <p className="mt-2 text-sm text-white/65">Toàn bộ tính năng, không giới hạn.</p>
+              <h3 className="text-xl font-bold text-hero-wordmark">Gói Pro</h3>
+              <p className="mt-2 text-sm text-hero-wordmark/65">Toàn bộ tính năng, không giới hạn.</p>
             </div>
 
             {/* Pro features */}
-            <ul className="mb-6 space-y-3 text-sm text-white/80">
+            <ul className="mb-6 space-y-3 text-sm text-hero-wordmark/80">
               {PRO_FEATURES.map((f) => (
                 <li key={f} className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                    <Check className="h-4 w-4 text-white" strokeWidth={3} />
+                  <div className="w-6 h-6 rounded-full bg-hero-wordmark/10 flex items-center justify-center shrink-0">
+                    <Check className="h-4 w-4 text-hero-wordmark" strokeWidth={3} />
                   </div>
                   {f}
                 </li>
@@ -116,7 +111,7 @@ export default function PricingSection() {
             </ul>
 
             {/* Package selector */}
-            <p className="text-xs font-bold text-white/60 uppercase tracking-widest mb-3">Chọn thời hạn</p>
+            <p className="text-xs font-bold text-hero-wordmark/60 uppercase tracking-widest mb-3">Chọn thời hạn</p>
             <div className="space-y-2 mb-6">
               {PACKAGES.map((pkg) => (
                 <button
@@ -125,22 +120,22 @@ export default function PricingSection() {
                   onClick={() => setSelectedKey(pkg.key)}
                   className={`w-full flex items-center justify-between px-4 py-3 rounded-2xl border text-left transition-all ${
                     selectedKey === pkg.key
-                      ? "border-white/60 bg-white/20 backdrop-blur-sm"
-                      : "border-white/15 hover:border-white/30 bg-white/5 hover:bg-white/10"
+                      ? "border-hero-wordmark/40 bg-hero-wordmark/10"
+                      : "border-hero-wordmark/12 hover:border-hero-wordmark/25 bg-white/40 hover:bg-white/60"
                   }`}
                 >
                   <div className="flex items-center gap-2 min-w-0">
-                    <span className="font-semibold text-white text-sm">{pkg.label}</span>
+                    <span className="font-semibold text-hero-wordmark text-sm">{pkg.label}</span>
                     {pkg.badge && (
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border shrink-0 ${pkg.badge.className}`}>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 bg-hero-wordmark text-white">
                         {pkg.badge.text}
                       </span>
                     )}
                   </div>
                   <div className="text-right shrink-0 ml-2">
-                    <span className="font-bold text-white text-sm">{pkg.price}</span>
+                    <span className="font-bold text-hero-wordmark text-sm">{pkg.price}</span>
                     {pkg.perMonth && (
-                      <span className="block text-[11px] text-white/55">{pkg.perMonth}</span>
+                      <span className="block text-[11px] text-hero-wordmark/55">{pkg.perMonth}</span>
                     )}
                   </div>
                 </button>
@@ -149,7 +144,7 @@ export default function PricingSection() {
 
             <Button
               onClick={() => setDialogOpen(true)}
-              className="w-full rounded-full bg-white hover:bg-white/90 py-6 text-base font-bold text-[#6D8A96] shadow-lg transition-all"
+              className="w-full rounded-full bg-hero-wordmark hover:bg-hero-wordmark/90 py-6 text-base font-bold text-white shadow-lg transition-all"
             >
               Nâng cấp Pro ngay
             </Button>

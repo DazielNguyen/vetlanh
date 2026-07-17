@@ -9,7 +9,7 @@ import Header from "@/components/layout/Header";
 
 export default function LandingPage() {
     return (
-        <div className="flex min-h-screen flex-col">
+        <div className="landing-light flex min-h-screen flex-col">
             <Header />
             <main className="flex-1 overflow-x-hidden">
                 <HeroSection />

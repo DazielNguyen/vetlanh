@@ -69,6 +69,32 @@
     --lavender-soft: #E8E4F4;
     --surface-2: rgba(254, 249, 242, 0.72);
     --glass-border: rgba(214, 232, 245, 0.45);
+
+    /* Landing "casual game" redesign tokens — Hero + illustration accents */
+    --hero-sky-start: #FFF7E8;
+    --hero-sky-end: #FFD8A8;
+    --hero-wordmark: #3D2B1E;
+    --illustration-coral: #FF8A65;
+    --illustration-mint: #6FD9B6;
+    --illustration-sky-blue: #8FCBFF;
+    --illustration-sun-yellow: #FFD166;
+  }
+
+  /* Landing page is public marketing content and always renders in its bright
+     "casual game" light theme — pin its tokens regardless of a logged-in
+     user's dashboard dark-mode preference (next-themes applies .dark on <html>
+     site-wide, which would otherwise flip --background/--surface-2 under it). */
+  .landing-light {
+    --background: #fef9f2;
+    --surface-2: rgba(254, 249, 242, 0.72);
+    --glass-border: rgba(214, 232, 245, 0.45);
+    --hero-sky-start: #FFF7E8;
+    --hero-sky-end: #FFD8A8;
+    --hero-wordmark: #3D2B1E;
+    --illustration-coral: #FF8A65;
+    --illustration-mint: #6FD9B6;
+    --illustration-sky-blue: #8FCBFF;
+    --illustration-sun-yellow: #FFD166;
   }
 
   /* Scoped token fix — services area only, does not affect landing/auth */
@@ -188,6 +214,15 @@
 @theme inline {
   --font-sans: var(--font-manrope);
   --font-dancing: var(--font-dancing);
+  --font-baloo: var(--font-baloo);
+
+  --color-hero-sky-start: var(--hero-sky-start);
+  --color-hero-sky-end: var(--hero-sky-end);
+  --color-hero-wordmark: var(--hero-wordmark);
+  --color-illustration-coral: var(--illustration-coral);
+  --color-illustration-mint: var(--illustration-mint);
+  --color-illustration-sky-blue: var(--illustration-sky-blue);
+  --color-illustration-sun-yellow: var(--illustration-sun-yellow);
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
