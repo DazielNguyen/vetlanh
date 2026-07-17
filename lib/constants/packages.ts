@@ -19,13 +19,6 @@ export const PACKAGES: Package[] = [
     perMonth: "~50.000 ₫/tháng",
     badge: { text: "KHUYÊN DÙNG", className: "bg-white/20 text-white border border-white/30" },
   },
-  {
-    key: "tronddoi",
-    label: "Trọn đời",
-    price: "999.000 ₫",
-    amount: 999000,
-    badge: { text: "PHỔ BIẾN NHẤT", className: "bg-amber-400/20 text-amber-200 border border-amber-300/30" },
-  },
 ];
 
 export const PRO_FEATURES = [

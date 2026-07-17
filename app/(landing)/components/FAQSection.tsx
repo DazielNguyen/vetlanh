@@ -13,7 +13,7 @@ const FAQS = [
   },
   {
     q: "Gói Pro có giá bao nhiêu?",
-    a: "Gói Pro có 5 lựa chọn linh hoạt: 1 tháng (79.000 ₫), 3 tháng (199.000 ₫), 6 tháng (349.000 ₫), 1 năm (599.000 ₫, được khuyên dùng), và Trọn đời (999.000 ₫, một lần dùng mãi mãi). Không có phí ẩn hay tự gia hạn ngoài ý muốn.",
+    a: "Gói Pro có 4 lựa chọn linh hoạt: 1 tháng (79.000 ₫), 3 tháng (199.000 ₫), 6 tháng (349.000 ₫), và 1 năm (599.000 ₫, được khuyên dùng). Không có phí ẩn hay tự gia hạn ngoài ý muốn.",
   },
   {
     q: "Làm thế nào để thanh toán khi nâng cấp Pro?",
