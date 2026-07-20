@@ -7,6 +7,7 @@ import { ChatInput } from "./components/ChatInput";
 import { LiveInsights } from "./components/LiveInsights";
 import { useConversations, useCreateConversation } from "@/hooks/useChat";
 import { useStreamChat } from "@/hooks/useStreamChat";
+import { getChatCompanionState } from "@/lib/companion";
 
 export default function ChatPage() {
   const [conversationId, setConversationId] = useState<number | undefined>();
@@ -56,10 +57,16 @@ export default function ChatPage() {
     [stream, handleSend, isCreatingConv]
   );
 
+  const companionState = getChatCompanionState(patchedStream);
+
   return (
     <div className="flex h-[calc(100vh-7rem)] gap-6">
       <div className="card-lifted rounded-3xl p-6 flex-1 flex flex-col min-w-0">
-        <ChatHeader conversationId={conversationId} onConversationChange={setConversationId} />
+        <ChatHeader
+          conversationId={conversationId}
+          onConversationChange={setConversationId}
+          companionState={companionState}
+        />
         <ChatMessages
           conversationId={conversationId}
           stream={patchedStream}

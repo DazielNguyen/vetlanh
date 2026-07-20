@@ -6,6 +6,7 @@ import { Clock, BookOpen, TrendingUp, Sparkles, Brain, Leaf, Loader2, type Lucid
 import { Card, CardContent } from "@/components/ui/card";
 import { useLibrary, type ArticleCategory } from "@/hooks/useLibrary";
 import { ProContentGate } from "@/components/ProContentGate";
+import { LevelGate } from "@/components/progression/LevelGate";
 
 // ── Design system mapping ────────────────────────────────────────────────────
 
@@ -50,6 +51,7 @@ export default function LibraryPage() {
     }`;
 
   return (
+    <LevelGate requiredLevel={3}>
     <div className="w-full pb-10 space-y-8">
       {/* Header */}
       <div className="animate-in slide-in-from-bottom-4 fade-in duration-500">
@@ -164,5 +166,6 @@ export default function LibraryPage() {
         </p>
       )}
     </div>
+    </LevelGate>
   );
 }

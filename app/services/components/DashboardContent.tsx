@@ -2,7 +2,9 @@
 
 import { useDashboard } from "@/hooks/useDashboard";
 import { useBadges } from "@/hooks/useBadges";
+import { useFirstRun } from "@/hooks/useFirstRun";
 import { WelcomeHeader } from "./WelcomeHeader";
+import { CompanionOnboarding } from "@/components/progression/CompanionOnboarding";
 import { StressChart } from "./StressChart";
 import { AIPromoCard } from "./AIPromoCard";
 import { DailyQuote } from "./DailyQuote";
@@ -124,6 +126,7 @@ const BENTO_CELLS: Array<{
 export function DashboardContent() {
     const { data: dashboard } = useDashboard();
     const { levelUpTo, dismissLevelUp } = useBadges();
+    const { isFirstRun, dismiss: dismissOnboarding } = useFirstRun();
 
     return (
         <div className="w-full h-full pb-10">
@@ -136,6 +139,8 @@ export function DashboardContent() {
                 >
                     <WelcomeHeader greeting={dashboard?.greeting} />
                 </SpotlightBentoCell>
+
+                {isFirstRun && <CompanionOnboarding onDismiss={dismissOnboarding} />}
 
                 {/* Remaining bento cells — spotlight on all, CardTilt on select cards */}
                 {BENTO_CELLS.map((cell, i) => {

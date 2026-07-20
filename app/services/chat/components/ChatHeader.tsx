@@ -7,14 +7,18 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useConversations, useCreateConversation, useDeleteConversation } from "@/hooks/useChat";
 import { formatRelativeTime } from "@/lib/utils/formatDate";
+import { SafeCompanion } from "@/components/illustrations/SafeCompanion";
+import type { CompanionState } from "@/components/illustrations/CompanionCharacter";
+import { env } from "@/lib/env";
 import type { Conversation } from "@/types/chat";
 
 interface Props {
   conversationId: number | undefined;
   onConversationChange: (id: number | undefined) => void;
+  companionState?: CompanionState;
 }
 
-export function ChatHeader({ conversationId, onConversationChange }: Props) {
+export function ChatHeader({ conversationId, onConversationChange, companionState }: Props) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState<string | undefined>(undefined);
@@ -94,7 +98,11 @@ export function ChatHeader({ conversationId, onConversationChange }: Props) {
     <div ref={dropdownRef} className="flex items-center justify-between pb-4 border-b border-border/40 mb-4 relative">
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-2xl bg-secondary/60 flex items-center justify-center shrink-0">
-          <Image src="/images/logo.svg" alt="Vết Lành" width={20} height={20} />
+          {env.enableCompanion ? (
+            <SafeCompanion state={companionState} className="w-8 h-8" />
+          ) : (
+            <Image src="/images/logo.svg" alt="Vết Lành" width={20} height={20} />
+          )}
         </div>
         <div>
           <button

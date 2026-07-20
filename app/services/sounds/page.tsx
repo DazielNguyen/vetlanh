@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useSounds, type Sound, type SoundCategory } from "@/hooks/useSounds";
 import { ProContentGate } from "@/components/ProContentGate";
+import { LevelGate } from "@/components/progression/LevelGate";
 
 // ── Design system mapping ────────────────────────────────────────────────────
 
@@ -124,6 +125,7 @@ export default function SoundsPage() {
     }`;
 
   return (
+    <LevelGate requiredLevel={4}>
     <div className="w-full pb-10 space-y-8">
       {/* Header */}
       <div className="animate-in slide-in-from-bottom-4 fade-in duration-500">
@@ -269,5 +271,6 @@ export default function SoundsPage() {
         </p>
       )}
     </div>
+    </LevelGate>
   );
 }

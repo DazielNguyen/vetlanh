@@ -8,6 +8,9 @@ export const env = {
   bankId:     process.env.NEXT_PUBLIC_BANK_ID      || "MB",
   bankName:   process.env.NEXT_PUBLIC_BANK_NAME    || "CONG TY TNHH VET LANH",
   adminUsers: (process.env.ADMIN_USERS || "").split(",").filter(Boolean),
+  // Kill switch for the companion mascot (dashboard + chat mounts). Defaults
+  // to enabled; set NEXT_PUBLIC_ENABLE_COMPANION=false to disable app-wide.
+  enableCompanion: process.env.NEXT_PUBLIC_ENABLE_COMPANION !== "false",
   isDev:  process.env.NODE_ENV === "development",
   isProd: process.env.NODE_ENV === "production",
 } as const;

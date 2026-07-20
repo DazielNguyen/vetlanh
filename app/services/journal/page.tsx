@@ -5,6 +5,7 @@ import { JournalList } from "./components/JournalList";
 import { JournalEntry } from "./components/JournalEntry";
 import { JournalEditor } from "./components/JournalEditor";
 import { DailyPromptCard } from "./components/DailyPromptCard";
+import { LevelGate } from "@/components/progression/LevelGate";
 
 type View =
   | { mode: "idle" }
@@ -40,6 +41,7 @@ export default function JournalPage() {
   const showPrompt = view.mode === "idle";
 
   return (
+    <LevelGate requiredLevel={2}>
     <div className="w-full pb-10 space-y-6">
       <div className="animate-in slide-in-from-bottom-4 fade-in duration-500">
         <h1 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">
@@ -83,5 +85,6 @@ export default function JournalPage() {
         </div>
       </div>
     </div>
+    </LevelGate>
   );
 }

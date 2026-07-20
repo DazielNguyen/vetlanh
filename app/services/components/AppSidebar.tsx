@@ -2,6 +2,7 @@
 
 import { Home, Dumbbell, MessageSquare, PanelLeftClose, PanelLeftOpen, Settings, LogOut, Brain, BookOpen, Headphones, User, ShieldCheck, Smile, NotebookPen, ClipboardList, type LucideIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useBadgesData } from "@/hooks/useBadges";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -18,17 +19,17 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar";
 
-const navItems: Array<{ title: string; url: string; icon: LucideIcon; exact: boolean; tourId?: string }> = [
+const navItems: Array<{ title: string; url: string; icon: LucideIcon; exact: boolean; tourId?: string; requiredLevel?: number }> = [
     { title: "Trang chủ", url: "/services", icon: Home, exact: true },
     { title: "Tin nhắn", url: "/services/chat", icon: MessageSquare, exact: false },
     { title: "Tâm trạng", url: "/services/mood", icon: Smile, exact: false },
     { title: "Bài tập", url: "/services/exercises", icon: Dumbbell, exact: false, tourId: "exercises" },
-    { title: "Âm thanh", url: "/services/sounds", icon: Headphones, exact: false, tourId: "sounds" },
-    { title: "Nhật ký", url: "/services/journal", icon: NotebookPen, exact: false },
+    { title: "Âm thanh", url: "/services/sounds", icon: Headphones, exact: false, tourId: "sounds", requiredLevel: 4 },
+    { title: "Nhật ký", url: "/services/journal", icon: NotebookPen, exact: false, requiredLevel: 2 },
     { title: "Suy nghĩ", url: "/services/thought-records", icon: Brain, exact: false },
     { title: "Đánh giá", url: "/services/assessment", icon: ClipboardList, exact: false },
     { title: "An toàn", url: "/services/safety-plan", icon: ShieldCheck, exact: false },
-    { title: "Thư viện", url: "/services/library", icon: BookOpen, exact: false, tourId: "library" },
+    { title: "Thư viện", url: "/services/library", icon: BookOpen, exact: false, tourId: "library", requiredLevel: 3 },
     { title: "Hồ sơ", url: "/services/profile", icon: User, exact: false },
     { title: "Cài đặt", url: "/services/settings", icon: Settings, exact: false, tourId: "settings" },
 ];
@@ -49,6 +50,7 @@ function SidebarToggleButton() {
 export function AppSidebar() {
     const pathname = usePathname();
     const { logout } = useAuth();
+    const { level } = useBadgesData();
 
     return (
         <Sidebar collapsible="icon" className="border-r border-black/10 dark:border-white/8 text-slate-800 dark:text-white">
@@ -107,8 +109,13 @@ export function AppSidebar() {
                                                 ].join(" ")}>
                                                     <item.icon className={`w-[16px] h-[16px] ${isActive ? "text-primary" : "text-slate-600 dark:text-white/60"}`} />
                                                 </div>
-                                                <span className={`group-data-[collapsible=icon]:hidden text-[13.5px] ${isActive ? "text-primary font-bold" : "text-slate-700 dark:text-white/70 font-semibold"}`}>
+                                                <span className={`group-data-[collapsible=icon]:hidden flex items-center gap-1.5 text-[13.5px] ${isActive ? "text-primary font-bold" : "text-slate-700 dark:text-white/70 font-semibold"}`}>
                                                     {item.title}
+                                                    {item.requiredLevel !== undefined && level < item.requiredLevel && (
+                                                        <span className="text-[9px] font-bold tracking-wide uppercase bg-illustration-sky-blue/20 text-(--color-illustration-sky-blue) px-1.5 py-0.5 rounded-full">
+                                                            Cấp {item.requiredLevel}
+                                                        </span>
+                                                    )}
                                                 </span>
                                             </a>
                                         </SidebarMenuButton>

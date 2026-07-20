@@ -5,6 +5,8 @@ import { motion, useInView, useReducedMotion } from "motion/react";
 import { EASING } from "@/lib/motion";
 import StaggerChars from "@/components/ui/stagger-chars";
 import { SupportToolsEntryPoint } from "@/components/progression/SupportToolsEntryPoint";
+import { SafeCompanion } from "@/components/illustrations/SafeCompanion";
+import type { CompanionState } from "@/components/illustrations/CompanionCharacter";
 
 function getTimeGreeting(): string {
     const hour = new Date().getHours();
@@ -28,6 +30,10 @@ const MOODS = [
     { emoji: "😊", label: "Vui" },
     { emoji: "✨", label: "Tuyệt vời" },
 ] as const;
+
+// Companion mirrors the mood the user just picked — the one piece of
+// context this card actually has about how they're feeling right now.
+const MOOD_COMPANION_STATE: CompanionState[] = ["empathetic", "idle", "idle", "happy", "happy"];
 
 export function WelcomeHeader({ greeting: backendGreeting }: { greeting?: string }) {
     const [greeting, setGreeting] = useState<string | null>(null);
@@ -57,6 +63,14 @@ export function WelcomeHeader({ greeting: backendGreeting }: { greeting?: string
             {/* Always-visible, ungated entry point to safety-exempt tools */}
             <div className="absolute top-4 right-4 z-20">
                 <SupportToolsEntryPoint />
+            </div>
+
+            {/* Persistent companion — reacts to the mood the user just picked below */}
+            <div className="hidden md:block absolute bottom-3 right-6 z-10 pointer-events-none">
+                <SafeCompanion
+                    state={selectedMood !== null ? MOOD_COMPANION_STATE[selectedMood] : "idle"}
+                    className="w-20 h-20"
+                />
             </div>
 
             <div className="relative z-10 px-8 py-8 md:py-10">
