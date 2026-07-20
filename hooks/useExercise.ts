@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { fetchExercise } from "@/lib/api/services/fetchExercise";
 import { STALE } from "@/lib/api/queryConfig";
 import { DASHBOARD_KEYS } from "@/hooks/useDashboard";
+import { BADGE_KEYS } from "@/hooks/useBadges";
 import type {
   ExerciseListParams,
   RecommendedParams,
@@ -64,6 +65,8 @@ export function useLogExercise() {
       queryClient.invalidateQueries({ queryKey: EXERCISE_KEYS.logs });
       // Dashboard streak depends on exercise completion
       queryClient.invalidateQueries({ queryKey: DASHBOARD_KEYS.dashboard });
+      // Exercises earn XP — refresh badges so the level/XP indicator updates
+      queryClient.invalidateQueries({ queryKey: BADGE_KEYS.list });
       toast.success("Đã ghi lại buổi tập");
     },
     onError: () => {

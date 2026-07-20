@@ -4,6 +4,7 @@ import { fetchThoughtRecords, type ThoughtRecordsParams } from "@/lib/api/servic
 import { STALE } from "@/lib/api/queryConfig";
 import type { ApiError } from "@/lib/api/core";
 import type { ThoughtRecord, ThoughtRecordRequest } from "@/types/thoughtRecord";
+import { BADGE_KEYS } from "@/hooks/useBadges";
 
 export const THOUGHT_KEYS = {
   all: ["thought-records"] as const,
@@ -43,6 +44,8 @@ export function useCreateThoughtRecord() {
     mutationFn: (body: ThoughtRecordRequest) => fetchThoughtRecords.createRecord(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: THOUGHT_KEYS.all });
+      // Thought records earn XP even though this feature is safety-exempt from level-gating
+      queryClient.invalidateQueries({ queryKey: BADGE_KEYS.list });
       toast.success("Đã lưu ghi chú suy nghĩ");
     },
     onError: (err) => {

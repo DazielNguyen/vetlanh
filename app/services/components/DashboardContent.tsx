@@ -11,6 +11,7 @@ import { ResourcesForYou } from "./ResourcesForYou";
 import { WeeklyOverview } from "./WeeklyOverview";
 import { ProUpgradeCard } from "./ProUpgradeCard";
 import { CommunitySupport } from "./CommunitySupport";
+import { LevelUpCelebration } from "@/components/progression/LevelUpCelebration";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CardTilt, CardTiltContent } from "@/components/ui/card-tilt";
 import { motion, useMotionValue, useMotionTemplate } from "motion/react";
@@ -122,10 +123,11 @@ const BENTO_CELLS: Array<{
 
 export function DashboardContent() {
     const { data: dashboard } = useDashboard();
-    useBadges();
+    const { levelUpTo, dismissLevelUp } = useBadges();
 
     return (
         <div className="w-full h-full pb-10">
+            <LevelUpCelebration levelUpTo={levelUpTo} dismissLevelUp={dismissLevelUp} />
             <div className="grid grid-cols-12 gap-6">
                 {/* WelcomeHeader always full-width, stagger index 0 */}
                 <SpotlightBentoCell

@@ -38,4 +38,9 @@ export interface BadgeItem {
 export interface BadgesData {
   streak_days: number;
   badges: BadgeItem[];
+  // Optional: BE doesn't send these yet (Phase 2 dependency). When absent,
+  // useBadges() derives them client-side from lib/constants/progression.ts.
+  xp?: number;
+  level?: number;
+  xp_to_next_level?: number;
 }

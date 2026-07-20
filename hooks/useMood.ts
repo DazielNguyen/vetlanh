@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { fetchMood, type MoodEntriesParams } from "@/lib/api/services/fetchMood";
 import { STALE } from "@/lib/api/queryConfig";
 import type { CreateMoodEntryRequest } from "@/types/mood";
+import { BADGE_KEYS } from "@/hooks/useBadges";
 
 export const MOOD_KEYS = {
   all: ["mood"] as const,
@@ -63,6 +64,8 @@ export function useLogMood() {
       // Invalidate flat entries list and the heatmap month matching the logged date
       // Invalidate all mood queries: entries (all param variants), heatmap, trend, and insights
       queryClient.invalidateQueries({ queryKey: MOOD_KEYS.all });
+      // Mood check-ins earn XP — refresh badges so the level/XP indicator updates
+      queryClient.invalidateQueries({ queryKey: BADGE_KEYS.list });
       toast.success("Đã lưu tâm trạng hôm nay");
     },
     onError: (err: unknown) => {

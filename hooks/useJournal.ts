@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { fetchJournal } from "@/lib/api/services/fetchJournal";
 import { STALE } from "@/lib/api/queryConfig";
 import type { JournalCreateRequest, JournalUpdateRequest, JournalListParams, JournalEntry } from "@/types/journal";
+import { BADGE_KEYS } from "@/hooks/useBadges";
 
 export const JOURNAL_KEYS = {
   all: ["journal"] as const,
@@ -35,6 +36,8 @@ export function useCreateJournal() {
     mutationFn: (body: JournalCreateRequest) => fetchJournal.createEntry(body),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: JOURNAL_KEYS.list });
+      // Journal entries earn XP — refresh badges so the level/XP indicator updates
+      queryClient.invalidateQueries({ queryKey: BADGE_KEYS.list });
       toast.success("Đã lưu nhật ký");
     },
     onError: () => {

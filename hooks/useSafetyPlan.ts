@@ -4,6 +4,7 @@ import { fetchSafetyPlan } from "@/lib/api/services/fetchSafetyPlan";
 import { STALE, skipRetryOn } from "@/lib/api/queryConfig";
 import type { ApiError } from "@/lib/api/core";
 import type { SafetyPlan } from "@/types/safetyPlan";
+import { BADGE_KEYS } from "@/hooks/useBadges";
 
 export const SAFETY_KEYS = {
   plan: ["safety-plan"] as const,
@@ -42,6 +43,8 @@ export function useUpsertSafetyPlan() {
     },
     onSuccess: () => {
       toast.success("Đã lưu kế hoạch an toàn");
+      // Safety plan updates earn XP even though this feature is safety-exempt from level-gating
+      queryClient.invalidateQueries({ queryKey: BADGE_KEYS.list });
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: SAFETY_KEYS.plan });

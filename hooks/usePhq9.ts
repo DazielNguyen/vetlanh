@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { fetchPhq9, type Phq9HistoryParams } from "@/lib/api/services/fetchPhq9";
 import { STALE, skipRetryOn } from "@/lib/api/queryConfig";
 import type { Phq9SubmitRequest } from "@/types/phq9";
+import { BADGE_KEYS } from "@/hooks/useBadges";
 
 export const PHQ9_KEYS = {
   all: ["phq9"] as const,
@@ -62,6 +63,8 @@ export function useSubmitPhq9() {
       queryClient.invalidateQueries({ queryKey: PHQ9_KEYS.latest });
       queryClient.invalidateQueries({ queryKey: PHQ9_KEYS.history });
       queryClient.invalidateQueries({ queryKey: PHQ9_KEYS.reminder });
+      // PHQ-9 submissions earn XP even though this feature is safety-exempt from level-gating
+      queryClient.invalidateQueries({ queryKey: BADGE_KEYS.list });
     },
     onError: () => {
       toast.error("Gửi bài đánh giá thất bại, vui lòng thử lại");

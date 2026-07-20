@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, useInView, useReducedMotion } from "motion/react";
 import { EASING } from "@/lib/motion";
 import StaggerChars from "@/components/ui/stagger-chars";
+import { SupportToolsEntryPoint } from "@/components/progression/SupportToolsEntryPoint";
 
 function getTimeGreeting(): string {
     const hour = new Date().getHours();
@@ -52,6 +53,11 @@ export function WelcomeHeader({ greeting: backendGreeting }: { greeting?: string
             {/* Ambient blur orbs (same technique as landing page) */}
             <div className="absolute -top-12 -right-8 w-64 h-64 bg-primary/8 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute -bottom-8 left-16 w-48 h-48 bg-secondary/25 rounded-full blur-3xl pointer-events-none" />
+
+            {/* Always-visible, ungated entry point to safety-exempt tools */}
+            <div className="absolute top-4 right-4 z-20">
+                <SupportToolsEntryPoint />
+            </div>
 
             <div className="relative z-10 px-8 py-8 md:py-10">
                 <div className="max-w-3xl">
