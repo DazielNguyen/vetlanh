@@ -51,7 +51,7 @@ export default function LibraryPage() {
     }`;
 
   return (
-    <LevelGate requiredLevel={3}>
+    <LevelGate requiredLevel={1}>
     <div className="w-full pb-10 space-y-8">
       {/* Header */}
       <div className="animate-in slide-in-from-bottom-4 fade-in duration-500">

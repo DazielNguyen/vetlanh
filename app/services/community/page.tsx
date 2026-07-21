@@ -31,7 +31,7 @@ function CommunityContent() {
 
 export default function CommunityPage() {
   return (
-    <LevelGate requiredLevel={5}>
+    <LevelGate requiredLevel={1}>
       <div className="w-full pb-10">
         <div className="animate-in slide-in-from-bottom-4 fade-in duration-500 mb-6">
           <h1 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">Cộng đồng</h1>
