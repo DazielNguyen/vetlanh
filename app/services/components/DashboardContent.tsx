@@ -10,6 +10,8 @@ import { AIPromoCard } from "./AIPromoCard";
 import { DailyQuote } from "./DailyQuote";
 import { DailyWellnessChecklist } from "./DailyWellnessChecklist";
 import { ResourcesForYou } from "./ResourcesForYou";
+import { QuickReliefCard } from "./QuickReliefCard";
+import { AIRecommendationCard } from "./AIRecommendationCard";
 import { WeeklyOverview } from "./WeeklyOverview";
 import { ProUpgradeCard } from "./ProUpgradeCard";
 import { CommunitySupport } from "./CommunitySupport";
@@ -98,6 +100,15 @@ const BENTO_CELLS: Array<{
         colSpan: "col-span-12",
         tilt: true,
         render: () => <AIPromoCard />,
+    },
+    // Row 3b: QuickReliefCard (static top-N) 6 cols + AIRecommendationCard (personalized) 6 cols
+    {
+        colSpan: "col-span-12 md:col-span-6",
+        render: () => <QuickReliefCard />,
+    },
+    {
+        colSpan: "col-span-12 md:col-span-6",
+        render: () => <AIRecommendationCard />,
     },
     // Row 4: DailyWellnessChecklist 7 cols + ProUpgradeCard 5 cols = 12
     {

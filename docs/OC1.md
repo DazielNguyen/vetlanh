@@ -57,6 +57,16 @@ Real-time AI-initiated wellness check-ins delivered as a global floating card, m
 - Non-intrusive, dismissible design — never forces a modal
 - Integration with companion mascot in empathetic state
 
+### 2.2b AI-Personalized Recommendations (Gợi ý cá nhân hoá)
+
+A dashboard card that surfaces one AI-derived exercise or library recommendation based on the user's mood history, journal entries, and latest PHQ-9 result. Each recommendation includes a short Vietnamese rationale explaining why it was selected (e.g., "Vì tuần này bạn có nhiều ngày căng thẳng hơn"). 
+
+- Backend derives the recommendation server-side using full context (mood trend, journal themes, PHQ-9 progression)
+- Card shows a skeleton while loading; renders nothing if insufficient personalization data yet (new user)
+- Adjacent **QuickReliefCard** (static top-3 exercises) serves as visual fallback when no personalization is available
+- Recommendation refreshes once per 24 hours (`staleTime: 24h` cache)
+- Link target is validated client-side — renders nothing if URL is not a same-origin relative path
+
 ### 2.3 PHQ-9 Depression Assessment (Đánh giá)
 Route: `/services/assessment`
 
@@ -299,6 +309,7 @@ Key endpoint groups:
 - `api/v1/safety-plan` — upsert safety plan
 - `api/v1/subscriptions` — subscription requests
 - `api/v1/checkins` — proactive wellness check-ins (pending fetch, dismiss tracking)
+- `api/v1/dashboard/personalized-recommendation` — AI-derived recommendation for dashboard (cached 24h)
 - `POST /hubs/app` (SignalR) — realtime events including `ReceiveProactiveCheckIn`
 
 ### 5.5 Theme System

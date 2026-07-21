@@ -1,6 +1,7 @@
 export const STALE = {
   SHORT: 5 * 60 * 1000,
   LONG: 10 * 60 * 1000,
+  DAILY: 24 * 60 * 60 * 1000,
 } as const;
 
 export const skipRetryOn =
