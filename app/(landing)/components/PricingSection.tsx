@@ -14,6 +14,7 @@ import {
 import Link from "next/link";
 import { EASING } from "@/lib/motion";
 import { PACKAGES, PRO_FEATURES, DEFAULT_PACKAGE_KEY, getPackage } from "@/lib/constants/packages";
+import { FloatingBlob, FloatingSparkle, FloatingCloud, useSectionParallax } from "./decor/FloatingAccents";
 
 const FREE_FEATURES = [
   "Trò chuyện với Trợ lý AI (giới hạn)",
@@ -26,6 +27,8 @@ export default function PricingSection() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   const prefersReduced = useReducedMotion();
+  const parallaxSlow = useSectionParallax(ref, 30);
+  const parallaxFast = useSectionParallax(ref, 45);
 
   const [selectedKey, setSelectedKey] = useState(DEFAULT_PACKAGE_KEY);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -39,6 +42,17 @@ export default function PricingSection() {
 
   return (
     <section id="bang-gia" className="relative py-32 overflow-hidden bg-linear-to-b from-background via-hero-sky-start/50 to-background" ref={ref}>
+      {isInView && (
+        <>
+          <motion.div className="pointer-events-none absolute inset-0" style={{ y: parallaxSlow }}>
+            <FloatingBlob color="bg-illustration-coral/35" className="top-12 left-[5%]" size={170} duration={10.5} />
+            <FloatingCloud className="top-10 right-[5%]" scale={1.1} duration={11.5} />
+          </motion.div>
+          <motion.div className="pointer-events-none absolute inset-0" style={{ y: parallaxFast }}>
+            <FloatingSparkle className="bottom-14 right-[10%]" color="var(--color-illustration-mint)" size={30} delay={0.8} />
+          </motion.div>
+        </>
+      )}
       <div className="relative mx-auto max-w-300 px-4 sm:px-6 lg:px-8">
         <motion.div
           className="mb-16 text-center"

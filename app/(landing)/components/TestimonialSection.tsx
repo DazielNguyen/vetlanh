@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useInView, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import { EASING } from "@/lib/motion";
+import { FloatingBlob, FloatingSparkle, FloatingCloud, useSectionParallax } from "./decor/FloatingAccents";
 
 const TESTIMONIALS = [
   {
@@ -36,6 +37,8 @@ export default function TestimonialSection() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   const prefersReduced = useReducedMotion();
+  const parallaxSlow = useSectionParallax(ref, 30);
+  const parallaxFast = useSectionParallax(ref, 45);
 
   const t = (delay = 0) =>
     prefersReduced ? { duration: 0 } : { duration: 0.7, ease: EASING, delay };
@@ -46,6 +49,17 @@ export default function TestimonialSection() {
 
   return (
     <section id="cau-chuyen" className="relative py-32 overflow-hidden bg-linear-to-b from-background via-illustration-sky-blue/10 to-background" ref={ref}>
+      {isInView && (
+        <>
+          <motion.div className="pointer-events-none absolute inset-0" style={{ y: parallaxSlow }}>
+            <FloatingBlob color="bg-illustration-sky-blue/40" className="top-12 right-[4%]" size={170} duration={9.5} />
+            <FloatingCloud className="top-14 left-[5%]" scale={1.1} duration={10.5} />
+          </motion.div>
+          <motion.div className="pointer-events-none absolute inset-0" style={{ y: parallaxFast }}>
+            <FloatingSparkle className="bottom-16 left-[10%]" color="var(--color-illustration-sun-yellow)" size={30} delay={0.4} />
+          </motion.div>
+        </>
+      )}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="mb-14"

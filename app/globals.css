@@ -67,7 +67,7 @@
     /* Services extended tokens */
     --amber-accent: #F5C07A;
     --lavender-soft: #E8E4F4;
-    --surface-2: rgba(254, 249, 242, 0.72);
+    --surface-2: rgba(255, 255, 255, 0.86);
     --glass-border: rgba(214, 232, 245, 0.45);
 
     /* Landing "casual game" redesign tokens — Hero + illustration accents */
@@ -86,7 +86,7 @@
      site-wide, which would otherwise flip --background/--surface-2 under it). */
   .landing-light {
     --background: #fef9f2;
-    --surface-2: rgba(254, 249, 242, 0.72);
+    --surface-2: rgba(255, 255, 255, 0.86);
     --glass-border: rgba(214, 232, 245, 0.45);
     --hero-sky-start: #FFF7E8;
     --hero-sky-end: #FFD8A8;
@@ -318,6 +318,10 @@
     -webkit-backdrop-filter: blur(16px) saturate(160%);
     background: var(--surface-2);
     border: 1px solid var(--glass-border);
+    box-shadow:
+      0 2px 8px rgba(120, 100, 60, 0.06),
+      0 10px 30px rgba(120, 100, 60, 0.10),
+      inset 0 1px 0 rgba(255, 255, 255, 0.85);
   }
 
   /* Dark mode override for card-lifted — must stay in @layer utilities so it

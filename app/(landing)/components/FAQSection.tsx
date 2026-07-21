@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useInView, useReducedMotion } from "motion/react";
 import { ChevronDown } from "lucide-react";
 import { EASING } from "@/lib/motion";
+import { FloatingBlob, FloatingSparkle, useSectionParallax } from "./decor/FloatingAccents";
 
 const FAQS = [
   {
@@ -28,6 +29,7 @@ export default function FAQSection() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   const prefersReduced = useReducedMotion();
+  const parallax = useSectionParallax(ref, 36);
 
   const initial = prefersReduced ? {} : { y: 30, opacity: 0 };
   const animate = prefersReduced ? {} : isInView ? { y: 0, opacity: 1 } : { y: 30, opacity: 0 };
@@ -36,6 +38,12 @@ export default function FAQSection() {
 
   return (
     <section id="faq" className="relative py-32 overflow-hidden bg-linear-to-b from-background via-background to-illustration-mint/15" ref={ref}>
+      {isInView && (
+        <motion.div className="pointer-events-none absolute inset-0" style={{ y: parallax }}>
+          <FloatingBlob color="bg-illustration-mint/35" className="top-14 right-[6%]" size={150} duration={9} />
+          <FloatingSparkle className="top-24 left-[8%]" color="var(--color-illustration-coral)" size={26} delay={0.5} />
+        </motion.div>
+      )}
       <div className="relative mx-auto max-w-200 px-6">
         <motion.div
           className="mb-16 text-center"

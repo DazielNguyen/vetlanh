@@ -5,6 +5,7 @@ import { motion, useInView, useReducedMotion } from "motion/react";
 import { MessageSquare, Dumbbell, Activity, Map, BookOpen } from "lucide-react";
 import Image from "next/image";
 import { EASING } from "@/lib/motion";
+import { FloatingBlob, FloatingSparkle, FloatingCloud, useSectionParallax } from "./decor/FloatingAccents";
 
 const SMALL_FEATURES = [
   {
@@ -33,6 +34,8 @@ export default function FeaturesSection() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
   const prefersReduced = useReducedMotion();
+  const parallaxSlow = useSectionParallax(ref, 30);
+  const parallaxFast = useSectionParallax(ref, 45);
 
   const t = (delay = 0) =>
     prefersReduced ? { duration: 0 } : { duration: 0.7, ease: EASING, delay };
@@ -42,6 +45,17 @@ export default function FeaturesSection() {
 
   return (
     <section id="dich-vu" className="relative py-32 overflow-hidden bg-linear-to-b from-hero-sky-end/40 via-background to-background" ref={ref}>
+      {isInView && (
+        <>
+          <motion.div className="pointer-events-none absolute inset-0" style={{ y: parallaxSlow }}>
+            <FloatingBlob color="bg-illustration-sun-yellow/40" className="top-14 right-[5%]" size={190} duration={9} />
+            <FloatingCloud className="top-10 left-[3%]" scale={1.2} duration={11} />
+          </motion.div>
+          <motion.div className="pointer-events-none absolute inset-0" style={{ y: parallaxFast }}>
+            <FloatingSparkle className="bottom-20 left-[7%]" color="var(--color-illustration-coral)" size={30} delay={0.6} />
+          </motion.div>
+        </>
+      )}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Left-aligned header — breaks center-symmetry */}
         <motion.div
