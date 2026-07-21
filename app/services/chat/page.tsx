@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { ChatHeader } from "./components/ChatHeader";
 import { ChatMessages } from "./components/ChatMessages";
 import { ChatInput } from "./components/ChatInput";
@@ -12,6 +12,7 @@ import { getChatCompanionState } from "@/lib/companion";
 export default function ChatPage() {
   const [conversationId, setConversationId] = useState<number | undefined>();
   const [pendingFirstMessage, setPendingFirstMessage] = useState<string | null>(null);
+  const handledPrompt = useRef(false);
 
   const { data: conversations } = useConversations();
   const { mutate: createConversation, isPending: isCreatingConv } = useCreateConversation();
@@ -30,8 +31,8 @@ export default function ChatPage() {
       stream.sendMessage(pendingFirstMessage);
       setPendingFirstMessage(null);
     }
-  // stream.sendMessage changes when conversationId changes — that's the trigger we need
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // stream.sendMessage changes when conversationId changes — that's the trigger we need
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [conversationId, pendingFirstMessage, stream.sendMessage]);
 
   const handleSend = useCallback(
@@ -51,9 +52,26 @@ export default function ChatPage() {
     [conversationId, stream.sendMessage, createConversation]
   );
 
+  // Mood insights and other services can hand a focused prompt into chat.
+  // Handle it once and then clean the URL so refresh does not send it again.
+  useEffect(() => {
+    if (handledPrompt.current || typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const prompt = params.get("prompt")?.trim();
+    if (!prompt) return;
+
+    handledPrompt.current = true;
+    void handleSend(prompt);
+    window.history.replaceState({}, "", window.location.pathname);
+  }, [handleSend]);
+
   // Patch stream so ChatInput sees isStreaming=true while conversation is being created
   const patchedStream = useMemo(
-    () => ({ ...stream, sendMessage: handleSend, isStreaming: stream.isStreaming || isCreatingConv }),
+    () => ({
+      ...stream,
+      sendMessage: handleSend,
+      isStreaming: stream.isStreaming || isCreatingConv,
+    }),
     [stream, handleSend, isCreatingConv]
   );
 

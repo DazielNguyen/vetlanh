@@ -44,6 +44,7 @@ export function useMoodInsights() {
     queryKey: MOOD_KEYS.insights,
     queryFn: () => fetchMood.getInsights(),
     staleTime: STALE.SHORT,
+    refetchInterval: (query) => (query.state.data?.status === "processing" ? 1_500 : false),
   });
 }
 

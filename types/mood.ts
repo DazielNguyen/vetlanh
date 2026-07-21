@@ -30,10 +30,33 @@ export interface InsightItem {
   delta: number | null;
 }
 
+export interface MoodCoachReflection {
+  acknowledgement: string;
+  observation: string;
+  evidence: string | null;
+  confidence: "low" | "medium" | "high";
+}
+
+export interface MoodCoachAction {
+  type: "exercise" | "journal" | "chat" | "rest";
+  title: string;
+  description: string | null;
+  url: string;
+}
+
 export interface MoodInsights {
   total_entries: number;
   has_enough_data: boolean;
   insights: InsightItem[];
+  // Optional agentic fields. The current rules-based endpoint can continue
+  // returning only the fields above until the backend rollout is complete.
+  generated_by?: "rules" | "agent";
+  status?: "processing" | "ready" | "unavailable";
+  analysis_for_entry_id?: string | null;
+  generated_at?: string;
+  reflection?: MoodCoachReflection | null;
+  next_action?: MoodCoachAction | null;
+  follow_up_prompt?: string | null;
 }
 
 // Processed map: YYYY-MM-DD → mood value 1–5

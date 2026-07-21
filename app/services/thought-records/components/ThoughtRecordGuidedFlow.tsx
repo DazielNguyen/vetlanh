@@ -67,7 +67,11 @@ export function ThoughtRecordGuidedFlow({ onExitToStatic, onSaved }: Props) {
 
   const summary = QUESTIONS.slice(0, step).map((q) => ({ label: q.label, value: answers[q.key] }));
 
-  const companionState: CompanionState = isReview ? "idle" : draft.trim() ? "listening" : "thinking";
+  const companionState: CompanionState = isReview
+    ? "idle"
+    : draft.trim()
+      ? "listening"
+      : "thinking";
 
   function confirmStep() {
     if (!current || !draft.trim()) return;
@@ -87,12 +91,17 @@ export function ThoughtRecordGuidedFlow({ onExitToStatic, onSaved }: Props) {
 
   return (
     <GuidedFlowShell
-      title="Ghi chú suy nghĩ cùng trợ lý"
+      title="Gỡ rối suy nghĩ cùng trợ lý"
       stepIndex={step}
       totalSteps={QUESTIONS.length}
       companionState={companionState}
       summary={isReview ? [] : summary}
-      onExitToStatic={() => onExitToStatic({ ...answers, ...(current ? { [current.key]: draft.trim() || undefined } : {}) })}
+      onExitToStatic={() =>
+        onExitToStatic({
+          ...answers,
+          ...(current ? { [current.key]: draft.trim() || undefined } : {}),
+        })
+      }
       footer={
         isReview ? (
           <>
@@ -105,7 +114,12 @@ export function ThoughtRecordGuidedFlow({ onExitToStatic, onSaved }: Props) {
             >
               Quay lại
             </Button>
-            <Button type="button" className="rounded-2xl font-bold" onClick={handleSave} disabled={isPending}>
+            <Button
+              type="button"
+              className="rounded-2xl font-bold"
+              onClick={handleSave}
+              disabled={isPending}
+            >
               {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Lưu ghi chú"}
             </Button>
           </>
@@ -121,7 +135,12 @@ export function ThoughtRecordGuidedFlow({ onExitToStatic, onSaved }: Props) {
                 Quay lại
               </Button>
             )}
-            <Button type="button" className="rounded-2xl font-bold" onClick={confirmStep} disabled={!draft.trim()}>
+            <Button
+              type="button"
+              className="rounded-2xl font-bold"
+              onClick={confirmStep}
+              disabled={!draft.trim()}
+            >
               Tiếp theo
             </Button>
           </>
@@ -132,7 +151,10 @@ export function ThoughtRecordGuidedFlow({ onExitToStatic, onSaved }: Props) {
         <div className="space-y-3">
           <p className="text-sm font-semibold text-foreground/70">Xem lại trước khi lưu</p>
           {QUESTIONS.map((q, i) => (
-            <div key={q.key} className="flex items-start justify-between gap-3 px-3 py-2.5 rounded-2xl bg-secondary/30">
+            <div
+              key={q.key}
+              className="flex items-start justify-between gap-3 px-3 py-2.5 rounded-2xl bg-secondary/30"
+            >
               <div className="min-w-0">
                 <p className="text-xs font-semibold text-foreground/50">{q.label}</p>
                 <p className="text-sm text-foreground/80 mt-0.5">{answers[q.key]}</p>

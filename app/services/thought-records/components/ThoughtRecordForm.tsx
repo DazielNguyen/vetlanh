@@ -26,7 +26,8 @@ const FIELDS: { key: keyof ThoughtRecordRequest; label: string; description: str
   {
     key: "emotion",
     label: "3. Cảm xúc",
-    description: "Bạn cảm thấy gì? Ví dụ: lo âu, buồn, tức giận, với cường độ từ 0 đến 100 phần trăm",
+    description:
+      "Bạn cảm thấy gì? Ví dụ: lo âu, buồn, tức giận, với cường độ từ 0 đến 100 phần trăm",
   },
   {
     key: "evidence_for",
@@ -117,10 +118,11 @@ export function ThoughtRecordForm({ editId, initialValues, onSaved, onCancel }: 
     <Card className="card-lifted border-none rounded-3xl">
       <CardHeader>
         <CardTitle className="text-lg font-bold text-foreground">
-          {isEditing ? "Chỉnh sửa ghi chú" : "Ghi chú suy nghĩ mới"}
+          {isEditing ? "Chỉnh sửa lần gỡ rối" : "Gỡ rối suy nghĩ mới"}
         </CardTitle>
         <p className="text-sm text-foreground/50">
-          Mô hình năm cột nhận thức và hành vi giúp bạn nhận ra và thách thức những suy nghĩ tiêu cực.
+          Mô hình năm cột nhận thức và hành vi giúp bạn nhận ra và thách thức những suy nghĩ tiêu
+          cực.
         </p>
       </CardHeader>
       <CardContent>
@@ -167,7 +169,7 @@ export function ThoughtRecordForm({ editId, initialValues, onSaved, onCancel }: 
               ) : isEditing ? (
                 "Cập nhật"
               ) : (
-                "Lưu ghi chú"
+                "Lưu lại"
               )}
             </Button>
           </div>

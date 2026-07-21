@@ -97,7 +97,8 @@ export function ChatInput({ stream }: Props) {
       </div>
 
       <p className="text-[10px] text-foreground/40 text-center uppercase tracking-widest font-medium">
-        <span className="font-dancing font-bold text-sm">Vết Lành</span> AI không thay thế chẩn đoán y khoa
+        <span className="font-baloo font-bold text-sm">Vết Lành</span> AI không thay thế chẩn đoán y
+        khoa
       </p>
     </div>
   );

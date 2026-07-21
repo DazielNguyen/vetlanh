@@ -123,7 +123,7 @@ export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) 
           <div className="space-y-1.5">
             <h2 className="font-bold text-foreground text-lg">
               Xin chào! Tôi là{" "}
-              <span className="font-dancing font-bold text-primary text-xl">Vết Lành</span> AI
+              <span className="font-baloo font-bold text-primary text-xl">Vết Lành</span> AI
             </h2>
             <p className="text-sm text-foreground/50 max-w-xs leading-relaxed">
               Một người bạn đồng hành sẵn sàng lắng nghe và đồng hành cùng bạn bất cứ lúc nào.
@@ -164,13 +164,17 @@ export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) 
   );
 
   // ID of the last user message across server + pending — emotion tag is only shown there
-  const lastServerUserMsgId = [...(serverMessages ?? [])].reverse().find((m) => m.role === "user")?.id;
-  const lastLocalUserMsg = [...pendingLocal].reverse().find((m) => m.kind === "text" && m.role === "user");
+  const lastServerUserMsgId = [...(serverMessages ?? [])]
+    .reverse()
+    .find((m) => m.role === "user")?.id;
+  const lastLocalUserMsg = [...pendingLocal]
+    .reverse()
+    .find((m) => m.kind === "text" && m.role === "user");
   const lastUserMsgId: string = lastLocalUserMsg
     ? lastLocalUserMsg.id
     : lastServerUserMsgId !== undefined
-    ? String(lastServerUserMsgId)
-    : "";
+      ? String(lastServerUserMsgId)
+      : "";
 
   return (
     <div className="flex-1 overflow-y-auto space-y-6 pr-2">
@@ -183,13 +187,20 @@ export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) 
             emotionTag={String(msg.id) === lastUserMsgId ? stream.lastEmotion : null}
           />
         ) : (
-          <AssistantBubble key={msg.id} content={msg.content} timestamp={formatDate(msg.created_at)} />
+          <AssistantBubble
+            key={msg.id}
+            content={msg.content}
+            timestamp={formatDate(msg.created_at)}
+          />
         )
       )}
 
       {pendingLocal.map((msg) => {
         if (msg.kind === "exercise") {
-          const totalSeconds = msg.card.steps.reduce((sum, s) => sum + (s.duration_seconds ?? 0), 0);
+          const totalSeconds = msg.card.steps.reduce(
+            (sum, s) => sum + (s.duration_seconds ?? 0),
+            0
+          );
           const minutes = Math.ceil(totalSeconds / 60);
           return (
             <div key={msg.id} className="flex items-start gap-3 max-w-[85%]">
@@ -200,7 +211,9 @@ export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) 
                     Gợi ý bài tập
                   </p>
                   <h4 className="font-bold text-foreground">{msg.card.title}</h4>
-                  <p className="text-xs text-foreground/50 leading-relaxed">{msg.card.description}</p>
+                  <p className="text-xs text-foreground/50 leading-relaxed">
+                    {msg.card.description}
+                  </p>
                   {minutes > 0 && (
                     <p className="flex items-center gap-1 text-xs text-primary">
                       <Clock className="w-3 h-3" strokeWidth={2} />
@@ -225,9 +238,12 @@ export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) 
               <div className="w-8 h-8 shrink-0" />
               <Card className="card-lifted border-none rounded-2xl overflow-hidden flex-1">
                 <CardContent className="p-4 space-y-2">
-                  <p className="text-xs font-semibold text-red-500/80 uppercase tracking-wide">Hỗ trợ khẩn cấp</p>
+                  <p className="text-xs font-semibold text-red-500/80 uppercase tracking-wide">
+                    Hỗ trợ khẩn cấp
+                  </p>
                   <p className="text-sm text-foreground/80 leading-relaxed">
-                    Mình đang ở đây cùng bạn. Nếu bạn cần hỗ trợ ngay, hãy tìm đến người thân hoặc chuyên gia tâm lý gần nhất.
+                    Mình đang ở đây cùng bạn. Nếu bạn cần hỗ trợ ngay, hãy tìm đến người thân hoặc
+                    chuyên gia tâm lý gần nhất.
                   </p>
                 </CardContent>
               </Card>
@@ -268,9 +284,7 @@ export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) 
         </div>
       )}
 
-      {error && (
-        <p className="text-xs text-red-500 text-center py-2">{error}</p>
-      )}
+      {error && <p className="text-xs text-red-500 text-center py-2">{error}</p>}
 
       <div ref={bottomRef} />
     </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Check, Clock3, Loader2 } from "lucide-react";
 import { usePhq9Reminder, usePhq9Latest } from "@/hooks/usePhq9";
 import { Phq9Form } from "./components/Phq9Form";
 import { Phq9Result } from "./components/Phq9Result";
@@ -38,37 +38,43 @@ export default function AssessmentPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-40">
-        <Loader2 className="h-6 w-6 animate-spin text-slate-300" />
+      <div className="flex h-64 items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-primary/35" />
       </div>
     );
   }
 
   return (
-    <div className="w-full pb-10 space-y-8">
-      <div className="animate-in slide-in-from-bottom-4 fade-in duration-500">
-        <h1 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">
-          Đánh giá sức khỏe tâm lý
-        </h1>
-        <p className="text-muted-foreground mt-1">
-          Bảng câu hỏi PHQ-9 giúp theo dõi mức độ trầm cảm theo thời gian.
+    <div className="mx-auto w-full max-w-6xl space-y-7 pb-12">
+      <header className="animate-in fade-in slide-in-from-bottom-3 duration-500">
+        <p className="mb-2 text-xs font-semibold tracking-[0.16em] text-primary/75">
+          NHÌN LẠI 2 TUẦN
         </p>
-      </div>
+        <h1 className="max-w-2xl text-3xl font-baloo font-bold tracking-[-0.04em] text-foreground md:text-4xl">
+          Hiểu mình trong 2 phút
+        </h1>
+        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs font-medium text-foreground/45">
+          <span className="inline-flex items-center gap-1.5">
+            <Check className="h-3.5 w-3.5 text-emerald-600" /> 9 câu chạm nhanh
+          </span>
+          <span className="inline-flex items-center gap-1.5">
+            <Clock3 className="h-3.5 w-3.5 text-primary" /> Tự lưu tiến độ
+          </span>
+        </div>
+      </header>
 
       {/* Next due banner — only when not due and has a previous result */}
       {!assessmentDue && hasPrevious && reminder?.next_due_in_days != null && (
-        <div className="w-full bg-primary/5 border border-glass-border rounded-2xl px-5 py-4">
-          <p className="text-sm font-semibold text-foreground">Đánh giá tiếp theo</p>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Còn{" "}
-            <span className="font-semibold">{reminder.next_due_in_days} ngày</span>
-            {" "}nữa đến lần kiểm tra tiếp theo.
+        <div className="flex w-full items-center justify-between gap-4 rounded-2xl border border-hero-wordmark/8 bg-white/45 px-5 py-3">
+          <p className="text-xs font-medium text-foreground/55">Lần tiếp theo</p>
+          <p className="text-sm font-semibold text-foreground">
+            Sau {reminder.next_due_in_days} ngày
           </p>
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1.8fr)_minmax(17rem,0.75fr)]">
+        <div>
           {shouldShowForm ? (
             <Phq9Form onComplete={handleComplete} />
           ) : (
@@ -76,9 +82,9 @@ export default function AssessmentPage() {
           )}
         </div>
 
-        <div>
+        <aside className="lg:sticky lg:top-24">
           <Phq9History />
-        </div>
+        </aside>
       </div>
     </div>
   );

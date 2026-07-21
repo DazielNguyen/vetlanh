@@ -25,8 +25,8 @@ export function DailyPromptCard({ onUsePrompt }: Props) {
   // When a topic is active, cycle through its prompts by index.
   // When no topic, fall back to /next cycling then daily.
   const displayedPrompt = selectedTopic
-    ? topicPrompts?.[topicIndex] ?? null
-    : nextPrompt ?? dailyData?.prompt;
+    ? (topicPrompts?.[topicIndex] ?? null)
+    : (nextPrompt ?? dailyData?.prompt);
 
   function handleTopicSelect(topic: string) {
     if (selectedTopic === topic) {
@@ -51,9 +51,9 @@ export function DailyPromptCard({ onUsePrompt }: Props) {
 
   if (isLoading) {
     return (
-      <Card className="border-none shadow-sm rounded-3xl">
+      <Card className="card-lifted border-none rounded-[2rem]">
         <CardContent className="p-6 flex items-center justify-center h-40">
-          <Loader2 className="h-6 w-6 animate-spin text-slate-300" />
+          <Loader2 className="h-6 w-6 animate-spin text-primary/35" />
         </CardContent>
       </Card>
     );
@@ -63,9 +63,9 @@ export function DailyPromptCard({ onUsePrompt }: Props) {
   if (!displayedPrompt) {
     if (fetchingTopic) {
       return (
-        <Card className="border-none shadow-sm rounded-3xl">
+        <Card className="card-lifted border-none rounded-[2rem]">
           <CardContent className="p-6 flex items-center justify-center h-40">
-            <Loader2 className="h-6 w-6 animate-spin text-slate-300" />
+            <Loader2 className="h-6 w-6 animate-spin text-primary/35" />
           </CardContent>
         </Card>
       );
@@ -74,17 +74,21 @@ export function DailyPromptCard({ onUsePrompt }: Props) {
   }
 
   return (
-    <Card className="border-none shadow-sm rounded-3xl bg-gradient-to-br from-violet-50 to-indigo-50 dark:from-violet-900/20 dark:to-indigo-900/20">
-      <CardHeader className="pb-2">
+    <Card className="card-lifted overflow-hidden rounded-[2rem] border-none bg-[#fff3db]/85 dark:bg-white/6">
+      <CardHeader className="pb-2 pt-7">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-violet-500 dark:text-violet-400" />
-            <CardTitle className="text-base font-bold text-violet-800 dark:text-violet-300">Gợi ý hôm nay</CardTitle>
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-illustration-sun-yellow/35">
+              <Sparkles className="h-4 w-4 text-primary" />
+            </span>
+            <CardTitle className="font-baloo text-lg font-bold text-foreground">
+              Một câu để bắt đầu
+            </CardTitle>
           </div>
           <button
             onClick={handleRefresh}
             disabled={isFetching}
-            className="text-violet-400 hover:text-violet-600 dark:text-violet-400/70 dark:hover:text-violet-300 transition"
+            className="rounded-xl p-2 text-foreground/35 transition-all hover:rotate-12 hover:bg-hero-wordmark/6 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
             title="Gợi ý tiếp theo"
           >
             <RefreshCw className={`h-4 w-4 ${isFetching ? "animate-spin" : ""}`} />
@@ -100,8 +104,8 @@ export function DailyPromptCard({ onUsePrompt }: Props) {
                 onClick={() => handleTopicSelect(topic)}
                 className={`text-[10px] font-semibold px-2.5 py-1 rounded-full transition ${
                   selectedTopic === topic
-                    ? "bg-violet-600 text-white dark:bg-violet-500"
-                    : "bg-violet-100 text-violet-600 hover:bg-violet-200 dark:bg-violet-900/30 dark:text-violet-300 dark:hover:bg-violet-900/50"
+                    ? "bg-hero-wordmark text-white"
+                    : "bg-white/60 text-hero-wordmark/65 hover:bg-white dark:bg-white/8 dark:text-white/65 dark:hover:bg-white/12"
                 }`}
               >
                 {topic}
@@ -110,17 +114,19 @@ export function DailyPromptCard({ onUsePrompt }: Props) {
           </div>
         )}
 
-        <span className="text-xs font-semibold text-violet-400 dark:text-violet-400/70 uppercase tracking-wide">
+        <span className="text-[11px] font-semibold tracking-[0.14em] text-primary/65 uppercase">
           {displayedPrompt.topic}
         </span>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="text-sm text-slate-700 dark:text-white/80 leading-relaxed italic">"{displayedPrompt.text}"</p>
+        <p className="max-w-xl text-lg font-medium leading-relaxed text-foreground/85 text-pretty">
+          “{displayedPrompt.text}”
+        </p>
         <Button
           onClick={() => onUsePrompt(displayedPrompt.text)}
-          className="w-full h-10 rounded-2xl font-bold bg-violet-600 hover:bg-violet-700 dark:bg-violet-600 dark:hover:bg-violet-500"
+          className="h-11 w-full rounded-2xl bg-hero-wordmark font-bold text-white shadow-[0_10px_24px_rgba(61,43,30,0.14)] transition-all hover:-translate-y-0.5 hover:bg-hero-wordmark/90 active:translate-y-0 dark:bg-primary dark:hover:bg-primary/90"
         >
-          Dùng gợi ý này
+          Viết từ gợi ý này
         </Button>
       </CardContent>
     </Card>

@@ -22,9 +22,9 @@ export function JournalEntry({ id, onEdit, onDeleted }: Props) {
 
   if (isLoading) {
     return (
-      <Card className="border-none shadow-sm rounded-3xl">
+      <Card className="card-lifted border-none rounded-[2rem]">
         <CardContent className="p-6 flex items-center justify-center h-40">
-          <Loader2 className="h-6 w-6 animate-spin text-slate-300" />
+          <Loader2 className="h-6 w-6 animate-spin text-primary/35" />
         </CardContent>
       </Card>
     );
@@ -33,14 +33,14 @@ export function JournalEntry({ id, onEdit, onDeleted }: Props) {
   if (!entry) return null;
 
   return (
-    <Card className="border-none shadow-sm rounded-3xl">
+    <Card className="card-lifted border-none rounded-[2rem]">
       <CardHeader>
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
-            <CardTitle className="text-lg font-bold text-slate-800 dark:text-white wrap-break-word">
-              {entry.title ?? "Không có tiêu đề"}
+            <CardTitle className="wrap-break-word font-baloo text-xl font-bold text-foreground">
+              {entry.title ?? "Một ghi chép nhỏ"}
             </CardTitle>
-            <p className="text-xs text-slate-400 dark:text-white/40 mt-1">
+            <p className="mt-1 text-xs text-foreground/40">
               {formatDate(entry.created_at)} · {entry.word_count} từ
             </p>
           </div>
@@ -72,7 +72,7 @@ export function JournalEntry({ id, onEdit, onDeleted }: Props) {
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-slate-700 dark:text-white/80 whitespace-pre-wrap leading-relaxed">
+        <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/80">
           {entry.content}
         </p>
       </CardContent>

@@ -4,7 +4,12 @@ import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, Check } from "lucide-react";
-import { useCreateJournal, useUpdateJournal, useAutoSaveJournal, useJournalEntry } from "@/hooks/useJournal";
+import {
+  useCreateJournal,
+  useUpdateJournal,
+  useAutoSaveJournal,
+  useJournalEntry,
+} from "@/hooks/useJournal";
 
 interface Props {
   id?: number;
@@ -32,7 +37,7 @@ export function JournalEditor({ id, initialPromptText, onSaved, onCancel }: Prop
       setTitle(existing.title ?? "");
       setContent(existing.content);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [existing]);
 
   // Auto-save: debounce 2s after content/title changes, edit mode only
@@ -57,7 +62,7 @@ export function JournalEditor({ id, initialPromptText, onSaved, onCancel }: Prop
     return () => {
       if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [title, content]);
 
   const isPending = isCreating || isUpdating;
@@ -67,41 +72,39 @@ export function JournalEditor({ id, initialPromptText, onSaved, onCancel }: Prop
     if (!content.trim() || isPending) return;
 
     if (isEdit) {
-      update(
-        { title: title.trim() || null, content: content.trim() },
-        { onSuccess: onSaved }
-      );
+      update({ title: title.trim() || null, content: content.trim() }, { onSuccess: onSaved });
     } else {
-      create(
-        { title: title.trim() || null, content: content.trim() },
-        { onSuccess: onSaved }
-      );
+      create({ title: title.trim() || null, content: content.trim() }, { onSuccess: onSaved });
     }
   }
 
   if (isEdit && loadingExisting) {
     return (
-      <Card className="border-none shadow-sm rounded-3xl">
+      <Card className="card-lifted border-none rounded-[2rem]">
         <CardContent className="p-6 flex items-center justify-center h-40">
-          <Loader2 className="h-6 w-6 animate-spin text-slate-300" />
+          <Loader2 className="h-6 w-6 animate-spin text-primary/35" />
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className="border-none shadow-sm rounded-3xl">
+    <Card className="card-lifted border-none rounded-[2rem]">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-bold text-slate-800 dark:text-white">
-            {isEdit ? "Chỉnh sửa nhật ký" : "Viết nhật ký mới"}
+          <CardTitle className="font-baloo text-xl font-bold text-foreground">
+            {isEdit ? "Chỉnh sửa ghi chép" : "Điều gì đang ở trong lòng bạn?"}
           </CardTitle>
           {isEdit && (
-            <span className="text-xs text-slate-400 dark:text-white/40 flex items-center gap-1">
+            <span className="flex items-center gap-1 text-xs text-foreground/40">
               {isAutoSaving ? (
-                <><Loader2 className="h-3 w-3 animate-spin" /> Đang lưu...</>
+                <>
+                  <Loader2 className="h-3 w-3 animate-spin" /> Đang lưu...
+                </>
               ) : savedIndicator ? (
-                <><Check className="h-3 w-3 text-emerald-500" /> Đã lưu</>
+                <>
+                  <Check className="h-3 w-3 text-emerald-500" /> Đã lưu
+                </>
               ) : null}
             </span>
           )}
@@ -110,26 +113,26 @@ export function JournalEditor({ id, initialPromptText, onSaved, onCancel }: Prop
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-slate-600 dark:text-white/60">Tiêu đề</label>
+            <label className="text-sm font-semibold text-foreground/65">
+              Tiêu đề <span className="font-normal text-foreground/35">(không bắt buộc)</span>
+            </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Tiêu đề nhật ký... (tuỳ chọn)"
-              className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/5 px-4 py-2.5 text-sm text-slate-700 dark:text-white placeholder-slate-400 dark:placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-white dark:focus:bg-white/10 transition"
+              placeholder="Đặt tên cho khoảnh khắc này"
+              className="w-full rounded-2xl border border-hero-wordmark/10 bg-[#fff9ef]/70 px-4 py-2.5 text-sm text-foreground placeholder:text-foreground/30 transition focus:border-primary/25 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-white/10 dark:bg-white/5 dark:focus:bg-white/10"
             />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-slate-600 dark:text-white/60">
-              Nội dung <span className="text-red-400">*</span>
-            </label>
+            <label className="text-sm font-semibold text-foreground/65">Ghi lại</label>
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Hôm nay bạn muốn ghi lại điều gì?"
-              rows={10}
-              className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-white/5 px-4 py-3 text-sm text-slate-700 dark:text-white placeholder-slate-400 dark:placeholder-white/30 resize-none focus:outline-none focus:ring-2 focus:ring-primary/30 focus:bg-white dark:focus:bg-white/10 transition leading-relaxed"
+              rows={9}
+              className="w-full resize-none rounded-2xl border border-hero-wordmark/10 bg-[#fff9ef]/70 px-4 py-3 text-sm leading-relaxed text-foreground placeholder:text-foreground/30 transition focus:border-primary/25 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-white/10 dark:bg-white/5 dark:focus:bg-white/10"
             />
           </div>
 
@@ -152,7 +155,7 @@ export function JournalEditor({ id, initialPromptText, onSaved, onCancel }: Prop
               ) : isEdit ? (
                 "Lưu thay đổi"
               ) : (
-                "Lưu nhật ký"
+                "Lưu ghi chép"
               )}
             </Button>
           </div>

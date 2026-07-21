@@ -95,7 +95,10 @@ export function ChatHeader({ conversationId, onConversationChange, companionStat
   }
 
   return (
-    <div ref={dropdownRef} className="flex items-center justify-between pb-4 border-b border-border/40 mb-4 relative">
+    <div
+      ref={dropdownRef}
+      className="flex items-center justify-between pb-4 border-b border-border/40 mb-4 relative"
+    >
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-2xl bg-secondary/60 flex items-center justify-center shrink-0">
           {env.enableCompanion ? (
@@ -109,8 +112,11 @@ export function ChatHeader({ conversationId, onConversationChange, companionStat
             onClick={() => setOpen((v) => !v)}
             className="flex items-center gap-1 font-bold text-foreground text-lg hover:text-primary transition"
           >
-            <span className="font-dancing font-bold text-[1.2rem] mr-1">Vết Lành</span> AI
-            <ChevronDown className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`} strokeWidth={2} />
+            <span className="font-baloo font-bold text-[1.2rem] mr-1">Vết Lành</span> AI
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${open ? "rotate-180" : ""}`}
+              strokeWidth={2}
+            />
           </button>
           <p className="text-xs text-foreground/50 truncate max-w-50">{activeTitle}</p>
         </div>
@@ -165,7 +171,9 @@ export function ChatHeader({ conversationId, onConversationChange, companionStat
                 }`}
               >
                 <div className="flex-1 min-w-0 mr-2">
-                  <p className={`truncate text-sm font-medium ${conv.id === conversationId ? "text-primary" : "text-foreground"}`}>
+                  <p
+                    className={`truncate text-sm font-medium ${conv.id === conversationId ? "text-primary" : "text-foreground"}`}
+                  >
                     {conv.title ?? "Cuộc hội thoại mới"}
                   </p>
                   {conv.last_message_preview && (
