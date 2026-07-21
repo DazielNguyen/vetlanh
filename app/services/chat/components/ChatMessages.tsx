@@ -41,6 +41,8 @@ interface Props {
   conversationId: number | undefined;
   stream: StreamChatState;
   onPromptSelect: (text: string) => void;
+  contextPrompts?: string[];
+  compact?: boolean;
 }
 
 function UserBubble({
@@ -93,11 +95,21 @@ function AssistantBubble({ content, timestamp }: { content: string; timestamp?: 
   );
 }
 
-export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) {
+export function ChatMessages({
+  conversationId,
+  stream,
+  onPromptSelect,
+  contextPrompts,
+  compact = false,
+}: Props) {
   const { data: serverMessages, isLoading } = useConversationMessages(conversationId);
   const { data: promptsData } = useQuickPrompts();
   const quickPrompts = (promptsData ?? []).slice(0, 5).map((p) => p.text);
-  const prompts = quickPrompts.length > 0 ? quickPrompts : FALLBACK_PROMPTS;
+  const prompts = contextPrompts?.length
+    ? contextPrompts
+    : quickPrompts.length > 0
+      ? quickPrompts
+      : FALLBACK_PROMPTS;
   const bottomRef = useRef<HTMLDivElement>(null);
   const { localMessages, streamingText, isStreaming, error } = stream;
 
@@ -115,18 +127,27 @@ export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) 
   // Welcome state — no conversation, OR conversation exists but has no messages yet
   if (!conversationId || isConversationEmpty) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center gap-8 px-4 pb-6">
+      <div
+        className={`flex flex-1 flex-col items-center justify-center px-3 ${compact ? "gap-5 pb-3" : "gap-8 pb-6"}`}
+      >
         <div className="flex flex-col items-center gap-4 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-secondary/60 flex items-center justify-center">
-            <Image src="/images/logo.svg" alt="Vết Lành" width={32} height={32} />
+          <div
+            className={`${compact ? "h-12 w-12" : "h-16 w-16"} flex items-center justify-center rounded-2xl bg-secondary/60`}
+          >
+            <Image
+              src="/images/logo.svg"
+              alt="Vết Lành"
+              width={compact ? 26 : 32}
+              height={compact ? 26 : 32}
+            />
           </div>
           <div className="space-y-1.5">
             <h2 className="font-bold text-foreground text-lg">
               Xin chào! Tôi là{" "}
               <span className="font-baloo font-bold text-primary text-xl">Vết Lành</span> AI
             </h2>
-            <p className="text-sm text-foreground/50 max-w-xs leading-relaxed">
-              Một người bạn đồng hành sẵn sàng lắng nghe và đồng hành cùng bạn bất cứ lúc nào.
+            <p className="max-w-xs text-sm leading-relaxed text-foreground/50">
+              Mình đang ở đây. Bạn có thể bắt đầu bằng điều nhỏ nhất đang cảm thấy.
             </p>
           </div>
         </div>
@@ -135,7 +156,7 @@ export function ChatMessages({ conversationId, stream, onPromptSelect }: Props) 
           <p className="text-[11px] font-semibold text-foreground/40 uppercase tracking-wider text-center">
             Bắt đầu bằng...
           </p>
-          {prompts.map((prompt) => (
+          {prompts.slice(0, compact ? 3 : 5).map((prompt) => (
             <button
               key={prompt}
               onClick={() => onPromptSelect(prompt)}

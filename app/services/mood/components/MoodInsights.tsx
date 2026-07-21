@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useMoodInsights } from "@/hooks/useMood";
 import type { InsightItem } from "@/types/mood";
+import { openServiceChat } from "@/lib/chatAssistant";
 
 const MIN_ENTRIES = 7;
 
@@ -109,10 +110,9 @@ export function MoodInsights() {
   const observation = reflection?.observation ?? primaryInsight?.text ?? "";
   const prompt =
     data.follow_up_prompt ?? `Giúp tôi hiểu thêm về xu hướng tâm trạng này: ${observation}`;
-  const fallbackChatUrl = `/services/chat?prompt=${encodeURIComponent(prompt)}`;
-  const actionUrl = isSafeRelativeUrl(data.next_action?.url)
-    ? data.next_action.url
-    : fallbackChatUrl;
+  const hasExternalAction =
+    data.next_action?.type !== "chat" && isSafeRelativeUrl(data.next_action?.url);
+  const actionUrl = hasExternalAction ? data.next_action?.url : undefined;
   const secondaryInsights = (data.insights ?? [])
     .filter((item) => item !== primaryInsight)
     .slice(0, 2);
@@ -166,25 +166,48 @@ export function MoodInsights() {
           </div>
         )}
 
-        <Link
-          href={actionUrl}
-          className="group flex items-center justify-between gap-3 rounded-xl bg-slate-800 px-4 py-3 text-white outline-none transition duration-200 hover:-translate-y-0.5 hover:bg-slate-700 focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 active:translate-y-0 dark:bg-white dark:text-slate-900 dark:hover:bg-white/90"
-        >
-          <span className="flex min-w-0 items-center gap-2.5">
-            <MessageCircle className="h-4 w-4 shrink-0" />
-            <span className="min-w-0">
-              <span className="block truncate text-sm font-semibold">
-                {data.next_action?.title ?? "Cùng AI nhìn kỹ hơn"}
-              </span>
-              {data.next_action?.description && (
-                <span className="mt-0.5 block truncate text-[11px] text-white/60 dark:text-slate-500">
-                  {data.next_action.description}
+        {actionUrl ? (
+          <Link
+            href={actionUrl}
+            className="group flex items-center justify-between gap-3 rounded-xl bg-slate-800 px-4 py-3 text-white outline-none transition duration-200 hover:-translate-y-0.5 hover:bg-slate-700 focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 active:translate-y-0 dark:bg-white dark:text-slate-900 dark:hover:bg-white/90"
+          >
+            <span className="flex min-w-0 items-center gap-2.5">
+              <MessageCircle className="h-4 w-4 shrink-0" />
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-semibold">
+                  {data.next_action?.title}
                 </span>
-              )}
+                {data.next_action?.description && (
+                  <span className="mt-0.5 block truncate text-[11px] text-white/60 dark:text-slate-500">
+                    {data.next_action.description}
+                  </span>
+                )}
+              </span>
             </span>
-          </span>
-          <ArrowUpRight className="h-4 w-4 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-        </Link>
+            <ArrowUpRight className="h-4 w-4 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          </Link>
+        ) : (
+          <button
+            type="button"
+            onClick={() => openServiceChat(prompt)}
+            className="group flex w-full items-center justify-between gap-3 rounded-xl bg-slate-800 px-4 py-3 text-left text-white outline-none transition duration-200 hover:-translate-y-0.5 hover:bg-slate-700 focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 active:translate-y-0 dark:bg-white dark:text-slate-900 dark:hover:bg-white/90"
+          >
+            <span className="flex min-w-0 items-center gap-2.5">
+              <MessageCircle className="h-4 w-4 shrink-0" />
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-semibold">
+                  {data.next_action?.title ?? "Cùng AI nhìn kỹ hơn"}
+                </span>
+                {data.next_action?.description && (
+                  <span className="mt-0.5 block truncate text-[11px] text-white/60 dark:text-slate-500">
+                    {data.next_action.description}
+                  </span>
+                )}
+              </span>
+            </span>
+            <ArrowUpRight className="h-4 w-4 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          </button>
+        )}
 
         {data.generated_by === "agent" && (
           <p className="text-[10px] leading-relaxed text-slate-500 dark:text-white/35">

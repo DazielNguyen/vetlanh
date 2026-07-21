@@ -16,9 +16,15 @@ interface Props {
   conversationId: number | undefined;
   onConversationChange: (id: number | undefined) => void;
   companionState?: CompanionState;
+  compact?: boolean;
 }
 
-export function ChatHeader({ conversationId, onConversationChange, companionState }: Props) {
+export function ChatHeader({
+  conversationId,
+  onConversationChange,
+  companionState,
+  compact = false,
+}: Props) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState<string | undefined>(undefined);
@@ -97,12 +103,14 @@ export function ChatHeader({ conversationId, onConversationChange, companionStat
   return (
     <div
       ref={dropdownRef}
-      className="flex items-center justify-between pb-4 border-b border-border/40 mb-4 relative"
+      className={`relative flex items-center justify-between border-b border-border/40 ${compact ? "mb-3 pb-3" : "mb-4 pb-4"}`}
     >
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-2xl bg-secondary/60 flex items-center justify-center shrink-0">
+        <div
+          className={`${compact ? "h-9 w-9" : "h-10 w-10"} flex shrink-0 items-center justify-center rounded-2xl bg-secondary/60`}
+        >
           {env.enableCompanion ? (
-            <SafeCompanion state={companionState} className="w-8 h-8" />
+            <SafeCompanion state={companionState} className={compact ? "h-7 w-7" : "h-8 w-8"} />
           ) : (
             <Image src="/images/logo.svg" alt="Vết Lành" width={20} height={20} />
           )}
@@ -110,7 +118,7 @@ export function ChatHeader({ conversationId, onConversationChange, companionStat
         <div>
           <button
             onClick={() => setOpen((v) => !v)}
-            className="flex items-center gap-1 font-bold text-foreground text-lg hover:text-primary transition"
+            className={`flex items-center gap-1 font-bold text-foreground transition hover:text-primary ${compact ? "text-base" : "text-lg"}`}
           >
             <span className="font-baloo font-bold text-[1.2rem] mr-1">Vết Lành</span> AI
             <ChevronDown

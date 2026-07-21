@@ -2,6 +2,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./components/AppSidebar";
 import { UserAvatarButton } from "./components/UserAvatarButton";
 import { ServiceTour } from "./components/ServiceTour";
+import { ServiceChatAssistant } from "./components/ServiceChatAssistant";
 
 export default function ServicesLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -27,6 +28,7 @@ export default function ServicesLayout({ children }: { children: React.ReactNode
           >
             {children}
           </main>
+          <ServiceChatAssistant />
         </div>
       </SidebarProvider>
     </div>

@@ -3,7 +3,6 @@
 import {
   Home,
   Dumbbell,
-  MessageSquare,
   PanelLeftClose,
   PanelLeftOpen,
   Settings,
@@ -46,7 +45,6 @@ const navItems: Array<{
   activeAliases?: string[];
 }> = [
   { title: "Trang chủ", url: "/services", icon: Home, exact: true },
-  { title: "Tin nhắn", url: "/services/chat", icon: MessageSquare, exact: false },
   { title: "Tâm trạng", url: "/services/mood", icon: Smile, exact: false },
   {
     title: "Bài tập",

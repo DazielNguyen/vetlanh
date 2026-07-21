@@ -5,11 +5,13 @@ import { X, MessageSquare, Smile, Dumbbell, type LucideIcon } from "lucide-react
 import { motion, useReducedMotion } from "motion/react";
 import { EASING } from "@/lib/motion";
 import { SafeCompanion } from "@/components/illustrations/SafeCompanion";
+import { openServiceChat } from "@/lib/chatAssistant";
 
 interface Feature {
   label: string;
   description: string;
-  href: string;
+  href?: string;
+  action?: "chat";
   icon: LucideIcon;
 }
 
@@ -18,9 +20,24 @@ interface Feature {
 // intentionally excluded: they're always reachable via SupportToolsEntryPoint
 // and don't count against this 3-feature limit.
 const FIRST_RUN_FEATURES: Feature[] = [
-  { label: "Trò chuyện AI", description: "Chia sẻ điều bạn đang nghĩ", href: "/services/chat", icon: MessageSquare },
-  { label: "Tâm trạng", description: "Ghi lại cảm xúc hôm nay", href: "/services/mood", icon: Smile },
-  { label: "Bài tập", description: "Thử một bài thư giãn ngắn", href: "/services/exercises", icon: Dumbbell },
+  {
+    label: "Trò chuyện AI",
+    description: "Chia sẻ điều bạn đang nghĩ",
+    action: "chat",
+    icon: MessageSquare,
+  },
+  {
+    label: "Tâm trạng",
+    description: "Ghi lại cảm xúc hôm nay",
+    href: "/services/mood",
+    icon: Smile,
+  },
+  {
+    label: "Bài tập",
+    description: "Thử một bài thư giãn ngắn",
+    href: "/services/exercises",
+    icon: Dumbbell,
+  },
 ];
 
 interface CompanionOnboardingProps {
@@ -56,21 +73,36 @@ export function CompanionOnboarding({ onDismiss }: CompanionOnboardingProps) {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
-        {FIRST_RUN_FEATURES.map((feature) => (
-          <Link
-            key={feature.href}
-            href={feature.href}
-            className="group flex items-center gap-3 rounded-2xl px-4 py-3 bg-white/50 dark:bg-white/8 border border-white/60 dark:border-white/15 hover:border-primary/40 hover:bg-white/70 dark:hover:bg-white/12 transition-colors"
-          >
-            <div className="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center shrink-0 group-hover:bg-primary/25 transition-colors">
-              <feature.icon className="w-4 h-4 text-primary" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-sm font-semibold text-foreground truncate">{feature.label}</p>
-              <p className="text-xs text-foreground/50 truncate">{feature.description}</p>
-            </div>
-          </Link>
-        ))}
+        {FIRST_RUN_FEATURES.map((feature) => {
+          const content = (
+            <>
+              <div className="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center shrink-0 group-hover:bg-primary/25 transition-colors">
+                <feature.icon className="w-4 h-4 text-primary" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-foreground truncate">{feature.label}</p>
+                <p className="text-xs text-foreground/50 truncate">{feature.description}</p>
+              </div>
+            </>
+          );
+          const className =
+            "group flex items-center gap-3 rounded-2xl px-4 py-3 bg-white/50 dark:bg-white/8 border border-white/60 dark:border-white/15 hover:border-primary/40 hover:bg-white/70 dark:hover:bg-white/12 transition-colors";
+
+          return feature.action === "chat" ? (
+            <button
+              key={feature.label}
+              type="button"
+              onClick={() => openServiceChat()}
+              className={`${className} text-left`}
+            >
+              {content}
+            </button>
+          ) : (
+            <Link key={feature.label} href={feature.href!} className={className}>
+              {content}
+            </Link>
+          );
+        })}
       </div>
     </motion.div>
   );

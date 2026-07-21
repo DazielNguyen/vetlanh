@@ -1,6 +1,8 @@
+"use client";
+
 import Image from "next/image";
-import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { openServiceChat } from "@/lib/chatAssistant";
 
 export function AIPromoCard() {
   return (
@@ -35,15 +37,16 @@ export function AIPromoCard() {
         </div>
 
         {/* CTA button matching landing page style exactly */}
-        <Link
-          href="/services/chat"
+        <button
+          type="button"
+          onClick={() => openServiceChat()}
           className="group/btn inline-flex items-center gap-2 self-start md:self-end shrink-0 rounded-full bg-white/15 border border-white/35 backdrop-blur-sm py-2 pl-5 pr-2 text-sm font-semibold text-white transition-all hover:bg-white/25 hover:gap-3"
         >
           Bắt đầu trò chuyện
           <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 transition-transform group-hover/btn:scale-110">
             <ArrowRight className="h-3.5 w-3.5 text-white" />
           </span>
-        </Link>
+        </button>
       </div>
     </div>
   );
