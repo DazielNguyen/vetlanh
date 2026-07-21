@@ -3,6 +3,7 @@
 import { ReactNode } from "react";
 import { useSignalR } from "@/hooks/useSignalR";
 import { useSignalRNotifications } from "@/hooks/useSignalRNotifications";
+import { ProactiveCheckInCard } from "@/components/checkin/ProactiveCheckInCard";
 
 /**
  * Auto-connects SignalR WebSocket khi app load.
@@ -11,5 +12,10 @@ import { useSignalRNotifications } from "@/hooks/useSignalRNotifications";
 export function SignalRProvider({ children }: { children: ReactNode }) {
   useSignalR();
   useSignalRNotifications();
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <ProactiveCheckInCard />
+    </>
+  );
 }

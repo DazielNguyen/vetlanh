@@ -48,6 +48,15 @@ Daily emotional check-in with:
 
 Data feeds into the dashboard summary card and long-term trend analytics for Pro users.
 
+### 2.2a Proactive AI Check-Ins (Nhắc nhở chủ động)
+
+Real-time AI-initiated wellness check-ins delivered as a global floating card, mounted app-wide and accessible from any page. When the backend triggers a check-in (based on configured conditions like "3 days without mood entry" or "worsening PHQ-9 trend"), a dismissible card appears with the companion in its empathetic state, showing a personalized message. Users can tap to open chat or dismiss. Check-ins missed while offline are recovered on next app mount via a one-shot pending-fetch (no polling). Dismissed check-ins are tracked server-side and do not reappear.
+
+- Receives check-ins via realtime hub event (SignalR `ReceiveProactiveCheckIn`)
+- Recovers missed check-ins on app mount via REST catch-up fetch
+- Non-intrusive, dismissible design — never forces a modal
+- Integration with companion mascot in empathetic state
+
 ### 2.3 PHQ-9 Depression Assessment (Đánh giá)
 Route: `/services/assessment`
 
@@ -289,6 +298,8 @@ Key endpoint groups:
 - `api/v1/phq9` — assessment questions and submission
 - `api/v1/safety-plan` — upsert safety plan
 - `api/v1/subscriptions` — subscription requests
+- `api/v1/checkins` — proactive wellness check-ins (pending fetch, dismiss tracking)
+- `POST /hubs/app` (SignalR) — realtime events including `ReceiveProactiveCheckIn`
 
 ### 5.5 Theme System
 
