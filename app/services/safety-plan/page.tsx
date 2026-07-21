@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Loader2, ShieldCheck, Plus, X } from "lucide-react";
+import { Loader2, ShieldCheck, Plus, X, Sparkles, PenLine } from "lucide-react";
 import { useSafetyPlan, useUpsertSafetyPlan } from "@/hooks/useSafetyPlan";
 import { ErrorCard } from "@/components/ui/state";
+import { SafetyPlanGuidedFlow } from "./components/SafetyPlanGuidedFlow";
 import type { SafetyPlan, TrustedContact } from "@/types/safetyPlan";
 
 const LIST_SECTIONS: {
@@ -41,11 +42,21 @@ export default function SafetyPlanPage() {
   const { mutate: upsert, isPending } = useUpsertSafetyPlan();
 
   const [form, setForm] = useState<SafetyPlan>(EMPTY);
+  const [mode, setMode] = useState<"static" | "guided">("static");
 
   // Pre-fill form when existing plan loads
   useEffect(() => {
     if (plan) setForm(plan);
   }, [plan]);
+
+  function handleExitGuidedToStatic(partial: SafetyPlan) {
+    setForm(partial);
+    setMode("static");
+  }
+
+  function handleGuidedSaved() {
+    setMode("static");
+  }
 
   function addListItem(key: "warning_signs" | "coping_activities", value: string): boolean {
     const trimmed = value.trim();
@@ -97,16 +108,40 @@ export default function SafetyPlanPage() {
 
   return (
     <div className="w-full pb-10 space-y-6 max-w-2xl">
-      <div>
-        <h1 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">
-          Kế hoạch an toàn
-        </h1>
-        <p className="text-foreground/70 mt-1">
-          Kế hoạch cá nhân giúp bạn vượt qua những thời điểm khó khăn nhất.
-        </p>
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">
+            Kế hoạch an toàn
+          </h1>
+          <p className="text-foreground/70 mt-1">
+            Kế hoạch cá nhân giúp bạn vượt qua những thời điểm khó khăn nhất.
+          </p>
+        </div>
+        <Button
+          type="button"
+          variant="outline"
+          className="rounded-2xl font-semibold shrink-0"
+          onClick={() => setMode((m) => (m === "static" ? "guided" : "static"))}
+        >
+          {mode === "static" ? (
+            <>
+              <Sparkles className="w-4 h-4 mr-2" />
+              Điền cùng trợ lý
+            </>
+          ) : (
+            <>
+              <PenLine className="w-4 h-4 mr-2" />
+              Tự điền biểu mẫu
+            </>
+          )}
+        </Button>
       </div>
 
-      {!plan && (
+      {mode === "guided" && (
+        <SafetyPlanGuidedFlow initialPlan={form} onExitToStatic={handleExitGuidedToStatic} onSaved={handleGuidedSaved} />
+      )}
+
+      {mode === "static" && !plan && (
         <Card className="border-none shadow-sm rounded-3xl bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800/30">
           <CardContent className="p-5 flex items-start gap-4">
             <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center shrink-0 mt-0.5">
@@ -123,6 +158,7 @@ export default function SafetyPlanPage() {
         </Card>
       )}
 
+      {mode === "static" && (
       <Card className="border-none shadow-sm rounded-3xl">
         <CardHeader>
           <CardTitle className="text-base font-bold text-slate-800 dark:text-white">
@@ -181,6 +217,7 @@ export default function SafetyPlanPage() {
           </form>
         </CardContent>
       </Card>
+      )}
     </div>
   );
 }

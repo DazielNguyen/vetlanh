@@ -50,18 +50,21 @@ const EMPTY: ThoughtRecordRequest = {
 
 interface Props {
   editId?: string;
+  /** Prefill for a fresh (non-editing) form — used when a user switches
+   * over from the guided flow mid-way, so partial answers aren't lost. */
+  initialValues?: Partial<ThoughtRecordRequest>;
   onSaved: () => void;
   onCancel: () => void;
 }
 
-export function ThoughtRecordForm({ editId, onSaved, onCancel }: Props) {
+export function ThoughtRecordForm({ editId, initialValues, onSaved, onCancel }: Props) {
   const isEditing = !!editId;
   const { data: hints } = useThoughtRecordHints();
   const { data: existing, isLoading: isLoadingExisting } = useThoughtRecord(editId);
   const { mutate: create, isPending: isCreating } = useCreateThoughtRecord();
   const { mutate: update, isPending: isUpdating } = useUpdateThoughtRecord();
 
-  const [form, setForm] = useState<ThoughtRecordRequest>(EMPTY);
+  const [form, setForm] = useState<ThoughtRecordRequest>({ ...EMPTY, ...initialValues });
 
   useEffect(() => {
     if (existing) {
@@ -73,8 +76,9 @@ export function ThoughtRecordForm({ editId, onSaved, onCancel }: Props) {
         evidence_against: existing.evidence_against,
       });
     } else {
-      setForm(EMPTY);
+      setForm({ ...EMPTY, ...initialValues });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [existing, editId]);
 
   function getHint(field: keyof ThoughtRecordRequest): string {

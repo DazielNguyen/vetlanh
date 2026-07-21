@@ -3,21 +3,25 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, PlusCircle, Brain } from "lucide-react";
+import { Loader2, PlusCircle, Brain, Sparkles } from "lucide-react";
 import { useThoughtRecords } from "@/hooks/useThoughtRecords";
 import { ThoughtRecordCard } from "./components/ThoughtRecordCard";
 import { ThoughtRecordForm } from "./components/ThoughtRecordForm";
+import { ThoughtRecordGuidedFlow } from "./components/ThoughtRecordGuidedFlow";
+import type { ThoughtRecordRequest } from "@/types/thoughtRecord";
 
 const PAGE_SIZE = 10;
 
 type View =
   | { mode: "idle" }
   | { mode: "create" }
+  | { mode: "guided" }
   | { mode: "edit"; id: string };
 
 export default function ThoughtRecordsPage() {
   const [view, setView] = useState<View>({ mode: "idle" });
   const [offset, setOffset] = useState(0);
+  const [guidedPrefill, setGuidedPrefill] = useState<Partial<ThoughtRecordRequest>>();
 
   const { data: records, isLoading } = useThoughtRecords({ limit: PAGE_SIZE, offset });
 
@@ -25,7 +29,13 @@ export default function ThoughtRecordsPage() {
   const showForm = view.mode === "create" || view.mode === "edit";
 
   function handleSaved() {
+    setGuidedPrefill(undefined);
     setView({ mode: "idle" });
+  }
+
+  function handleExitGuidedToStatic(partial: Partial<ThoughtRecordRequest>) {
+    setGuidedPrefill(partial);
+    setView({ mode: "create" });
   }
 
   return (
@@ -103,9 +113,9 @@ export default function ThoughtRecordsPage() {
           </Card>
         </div>
 
-        {/* Right: intro or form */}
+        {/* Right: intro, static form, or guided flow */}
         <div className="lg:col-span-3">
-          {!showForm && (
+          {view.mode === "idle" && (
             <Card className="border-none card-lifted rounded-3xl">
               <CardContent className="p-8 flex flex-col items-center text-center gap-4">
                 <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
@@ -118,20 +128,35 @@ export default function ThoughtRecordsPage() {
                     và tìm bằng chứng để nhìn nhận vấn đề cân bằng hơn.
                   </p>
                 </div>
-                <Button
-                  onClick={() => setView({ mode: "create" })}
-                  className="rounded-2xl px-6 font-bold"
-                >
-                  <PlusCircle className="w-4 h-4 mr-2" />
-                  Tạo ghi chú mới
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                  <Button
+                    onClick={() => {
+                      setGuidedPrefill(undefined);
+                      setView({ mode: "create" });
+                    }}
+                    variant="outline"
+                    className="rounded-2xl px-6 font-bold"
+                  >
+                    <PlusCircle className="w-4 h-4 mr-2" />
+                    Tự điền biểu mẫu
+                  </Button>
+                  <Button onClick={() => setView({ mode: "guided" })} className="rounded-2xl px-6 font-bold">
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Điền cùng trợ lý
+                  </Button>
+                </div>
               </CardContent>
             </Card>
+          )}
+
+          {view.mode === "guided" && (
+            <ThoughtRecordGuidedFlow onExitToStatic={handleExitGuidedToStatic} onSaved={handleSaved} />
           )}
 
           {showForm && (
             <ThoughtRecordForm
               editId={view.mode === "edit" ? view.id : undefined}
+              initialValues={view.mode === "create" ? guidedPrefill : undefined}
               onSaved={handleSaved}
               onCancel={() => setView({ mode: "idle" })}
             />

@@ -179,12 +179,16 @@ Ghi chép cảm xúc và suy nghĩ hàng ngày.
 
 Bảng ghi chép theo phương pháp Cognitive Behavioral Therapy (CBT) giúp nhận ra và tái cấu trúc suy nghĩ tiêu cực.
 
-**Cách điền:**
-1. **Tình huống** — Điều gì đã xảy ra?
-2. **Suy nghĩ tự động** — Suy nghĩ đầu tiên xuất hiện trong đầu là gì?
-3. **Loại méo mó nhận thức** — Chọn kiểu suy nghĩ không chính xác (phóng đại, tư duy nhị phân, đọc suy nghĩ...)
-4. **Bằng chứng** — Điều gì ủng hộ / phản bác suy nghĩ đó?
-5. **Suy nghĩ cân bằng hơn** — Viết lại suy nghĩ theo hướng thực tế hơn
+**Hai cách điền:**
+
+1. **Tự điền biểu mẫu** — Điền trực tiếp vào các ô:
+   - **Tình huống** — Điều gì đã xảy ra?
+   - **Suy nghĩ tự động** — Suy nghĩ đầu tiên xuất hiện trong đầu là gì?
+   - **Loại méo mó nhận thức** — Chọn kiểu suy nghĩ không chính xác (phóng đại, tư duy nhị phân, đọc suy nghĩ...)
+   - **Bằng chứng** — Điều gì ủng hộ / phản bác suy nghĩ đó?
+   - **Suy nghĩ cân bằng hơn** — Viết lại suy nghĩ theo hướng thực tế hơn
+
+2. **Điền cùng trợ lý** — AI trợ lý sẽ hướng dẫn từng bước. Chọn "Điền cùng trợ lý" trên trang, trả lời theo câu hỏi, rồi xem lại trước khi lưu. Bạn có thể chuyển sang biểu mẫu thường bất kỳ lúc nào.
 
 ---
 
@@ -221,16 +225,20 @@ Kết quả bao gồm mô tả và gợi ý các mục tiêu phù hợp. Lịch 
 
 Kế hoạch cá nhân giúp bạn vượt qua những thời điểm khó khăn nhất. Chỉ bạn mới thấy được nội dung này.
 
-**Các mục cần điền:**
+**Hai cách điền:**
 
-| Mục | Mô tả | Ví dụ |
-|-----|-------|-------|
-| **Dấu hiệu cảnh báo** | Những suy nghĩ/cảm xúc báo hiệu bạn đang gặp khó khăn | Mất ngủ liên tiếp, cảm thấy vô vọng |
-| **Hoạt động đối phó** | Việc bạn có thể tự làm để cảm thấy tốt hơn | Đi bộ 15 phút, nghe nhạc |
-| **Người tin cậy** | Tên và số điện thoại người có thể gọi | Mẹ — 0901 234 567 |
-| **Lý do để sống** | Những điều quan trọng và có ý nghĩa nhất | Gia đình, ước mơ chưa thực hiện |
+1. **Tự điền biểu mẫu** — Điền trực tiếp các mục:
 
-Nhấn **"Lưu kế hoạch"** / **"Cập nhật kế hoạch"** để lưu.
+   | Mục | Mô tả | Ví dụ |
+   |-----|-------|-------|
+   | **Dấu hiệu cảnh báo** | Những suy nghĩ/cảm xúc báo hiệu bạn đang gặp khó khăn | Mất ngủ liên tiếp, cảm thấy vô vọng |
+   | **Hoạt động đối phó** | Việc bạn có thể tự làm để cảm thấy tốt hơn | Đi bộ 15 phút, nghe nhạc |
+   | **Người tin cậy** | Tên và số điện thoại người có thể gọi | Mẹ — 0901 234 567 |
+   | **Lý do để sống** | Những điều quan trọng và có ý nghĩa nhất | Gia đình, ước mơ chưa thực hiện |
+
+2. **Điền cùng trợ lý** — Nhấn nút **"Điền cùng trợ lý"** ở trên cùng. AI trợ lý sẽ hướng dẫn từng phần, những câu trả lời được lưu tự động, bạn có thể thoát và tiếp tục sau. Chuyển về biểu mẫu thường bất kỳ lúc nào để chỉnh sửa tiếp.
+
+Nhấn **"Lưu kế hoạch"** / **"Cập nhật kế hoạch"** để hoàn tất.
 
 > Nút **"Tài nguyên khẩn"** trên dashboard cung cấp đường dây hỗ trợ khủng hoảng 24/7 và luôn hiển thị.
 

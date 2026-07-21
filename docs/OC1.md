@@ -73,7 +73,7 @@ Curated library of ambient audio tracks (nature, meditation music, white noise).
 Routes: `/services/journal`, `/services/thought-records`
 
 - **Journal:** Free-form daily writing with date-organized entries. Supports rich text input. Private and encrypted per user.
-- **Thought Records (CBT):** Structured Cognitive Behavioral Therapy worksheet — users log a negative thought, identify the distortion type, and reframe it into a balanced perspective.
+- **Thought Records (CBT):** Structured Cognitive Behavioral Therapy worksheet — users log a negative thought, identify the distortion type, and reframe it into a balanced perspective. Users can complete via a static form or a guided conversational flow (scripted companion assistant).
 
 ### 2.7 Safety Plan (Kế hoạch an toàn)
 Route: `/services/safety-plan`
@@ -84,7 +84,7 @@ A structured crisis safety plan with four editable sections:
 3. Trusted contacts with phone numbers (name + phone pairs)
 4. Reasons to live
 
-Data is persisted per user via upsert — one plan per account, always editable. The dashboard surfaces a separate **Crisis Resources** button at all times for immediate access.
+Users can complete via a static form or a guided conversational flow (scripted companion assistant). Data is persisted per user via upsert — one plan per account, always editable. Partial answers in the guided flow are auto-saved as drafts. The dashboard surfaces a separate **Crisis Resources** button at all times for immediate access.
 
 ### 2.8 Content Library (Thư viện)
 Route: `/services/library`
