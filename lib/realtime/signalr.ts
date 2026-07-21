@@ -13,6 +13,23 @@ let connection: HubConnection | null = null;
 let startPromise: Promise<void> | null = null;
 let stopPromise: Promise<void> | null = null;
 
+// Module-level (not per-connection) so subscribers survive a stop/reconnect
+// cycle that tears down and rebuilds `connection`. HubConnection.onreconnected
+// has no matching "off" — registering it once per hook mount would leak
+// listeners, so hooks subscribe here instead and we fan out to them from the
+// single onreconnected handler wired up in getHubConnection().
+const reconnectListeners = new Set<(connectionId: string | undefined) => void>();
+
+/**
+ * Subscribe to SignalR reconnect events — used by hooks to resync query state
+ * that push events may have missed while the connection was down. Returns an
+ * unsubscribe function; call it on effect cleanup.
+ */
+export function onHubReconnected(listener: (connectionId: string | undefined) => void): () => void {
+  reconnectListeners.add(listener);
+  return () => reconnectListeners.delete(listener);
+}
+
 function getBaseUrl(): string {
   return env.apiUrl;
 }
@@ -58,7 +75,10 @@ export function getHubConnection(): HubConnection {
     .build();
 
   connection.onreconnecting((err) => console.info("[SignalR] reconnecting...", err));
-  connection.onreconnected((id) => console.info("[SignalR] reconnected:", id));
+  connection.onreconnected((id) => {
+    console.info("[SignalR] reconnected:", id);
+    reconnectListeners.forEach((listener) => listener(id));
+  });
   connection.onclose((err) => err ? console.warn("[SignalR] closed with error", err) : console.info("[SignalR] closed gracefully"));
 
   return connection;

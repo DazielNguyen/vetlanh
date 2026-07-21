@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchCheckIns } from "@/lib/api/services/fetchCheckIns";
-import { getHubConnection } from "@/lib/realtime/signalr";
+import { getHubConnection, onHubReconnected } from "@/lib/realtime/signalr";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { selectIsAuthenticated } from "@/lib/redux/slices/authSlice";
 import { skipRetryOn } from "@/lib/api/queryConfig";
@@ -61,8 +61,16 @@ export function usePendingCheckIns() {
 
     connection.on("ReceiveProactiveCheckIn", handleCheckIn);
 
+    // A check-in broadcast while the connection was down would otherwise be
+    // missed permanently (staleTime: Infinity means no automatic refetch) —
+    // refetch on reconnect to resync.
+    const unsubscribeReconnect = onHubReconnected(() => {
+      queryClient.invalidateQueries({ queryKey: CHECKIN_KEYS.pending });
+    });
+
     return () => {
       connection.off("ReceiveProactiveCheckIn", handleCheckIn);
+      unsubscribeReconnect();
     };
   }, [isAuthenticated, queryClient]);
 

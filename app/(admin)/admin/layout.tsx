@@ -14,12 +14,14 @@ import {
     ShieldPlus,
     Music2,
     BookOpen,
+    Flag,
 } from "lucide-react";
 
 const sidebarNav = [
     { title: "Bảng điều khiển", href: "/admin/dashboard", icon: LayoutDashboard },
     { title: "Người dùng", href: "/admin/users", icon: Users },
     { title: "Đăng ký gói", href: "/admin/subscriptions", icon: CreditCard },
+    { title: "Báo cáo cộng đồng", href: "/admin/community-reports", icon: Flag },
     { title: "Âm thanh", href: "/admin/sounds", icon: Music2 },
     { title: "Thư viện", href: "/admin/library", icon: BookOpen },
     { title: "Báo lỗi hệ thống", href: "/admin/errors", icon: Bug },

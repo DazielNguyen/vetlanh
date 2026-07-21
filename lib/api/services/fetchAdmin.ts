@@ -1,4 +1,5 @@
 import apiService from "../core";
+import type { CommunityReport } from "@/types/community";
 
 export type AdminStats = {
   total_users: number;
@@ -103,5 +104,25 @@ export const fetchAdmin = {
 
   deleteUser: async (userId: number): Promise<void> => {
     await apiService.delete<void>(`api/v1/admin/users/${userId}`);
+  },
+
+  getCommunityReports: async (status?: "open" | "resolved"): Promise<CommunityReport[]> => {
+    const res = await apiService.get<CommunityReport[]>("api/v1/admin/community/reports", status ? { status } : undefined);
+    return res.data;
+  },
+
+  warnCommunityReport: async (id: string): Promise<CommunityReport> => {
+    const res = await apiService.post<CommunityReport>(`api/v1/admin/community/reports/${id}/warn`);
+    return res.data;
+  },
+
+  unmatchCommunityReport: async (id: string): Promise<CommunityReport> => {
+    const res = await apiService.post<CommunityReport>(`api/v1/admin/community/reports/${id}/unmatch`);
+    return res.data;
+  },
+
+  banCommunityReport: async (id: string): Promise<CommunityReport> => {
+    const res = await apiService.post<CommunityReport>(`api/v1/admin/community/reports/${id}/ban`);
+    return res.data;
   },
 };

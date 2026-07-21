@@ -1,58 +1,33 @@
 "use client";
 
+import Link from "next/link";
+import { Users } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useCommunityFeatured } from "@/hooks/useServices";
 
-const AVATAR_COLORS = [
-    { bg: "bg-secondary/60", text: "text-primary" },
-    { bg: "bg-accent/60", text: "text-rose-500" },
-    { bg: "bg-[#E8E4F4]/70", text: "text-violet-500" },
-    { bg: "bg-[#FFF0D4]/80", text: "text-amber-600" },
-];
-
-const MOCK_INITIALS = ["LA", "MT", "BH", "TN"];
-
 export function CommunitySupport() {
     const { data } = useCommunityFeatured();
-
-    const message = data?.message ?? "Bạn mạnh mẽ hơn bạn nghĩ. Tiếp tục bước đi nhé!";
-    const author = data?.author_display ?? "Lan A.";
     const activeCount = data?.active_users_count ?? 4;
 
     return (
         <div className="h-full flex flex-col space-y-4">
             <h2 className="text-xl font-bold text-primary">Hỗ trợ Cộng đồng</h2>
-            <Card className="border-none card-lifted rounded-3xl overflow-hidden p-6 flex-1 flex flex-col">
-                {/* Avatar row */}
-                <div className="flex items-center gap-1.5 mb-4">
-                    {MOCK_INITIALS.map((init, i) => {
-                        const { bg, text } = AVATAR_COLORS[i % AVATAR_COLORS.length];
-                        return (
-                            <div
-                                key={init}
-                                className={`w-8 h-8 rounded-full ${bg} ${text} flex items-center justify-center text-[10px] font-extrabold shrink-0 ring-2 ring-white`}
-                                style={{ marginLeft: i > 0 ? "-6px" : "0" }}
-                            >
-                                {init}
-                            </div>
-                        );
-                    })}
-                    <span className="text-xs text-foreground/60 font-medium ml-3">{activeCount} đang hoạt động</span>
-                </div>
-
-                <div className="bg-background/60 p-4 rounded-2xl rounded-tl-none flex-1 flex flex-col justify-center">
-                    <p className="text-sm italic text-foreground/60 leading-relaxed mb-2">
-                        "{message}"
-                    </p>
-                    <p className="text-xs font-bold text-foreground/60">- {author}</p>
-                </div>
-
-                <div className="mt-4">
-                    <span className="text-xs font-bold text-primary uppercase tracking-wider">
-                        Đang được nhiều người quan tâm
+            <Link href="/services/community" className="flex-1">
+                <Card className="border-none card-lifted rounded-3xl overflow-hidden p-6 h-full flex flex-col justify-between hover:shadow-md transition-shadow group">
+                    <div className="w-12 h-12 rounded-2xl bg-primary/15 flex items-center justify-center group-hover:bg-primary/25 transition-colors">
+                        <Users className="w-6 h-6 text-primary" strokeWidth={2} />
+                    </div>
+                    <div className="mt-4 space-y-1">
+                        <p className="text-sm font-bold text-foreground">
+                            Kết nối ẩn danh với người khác đang trải qua điều tương tự
+                        </p>
+                        <p className="text-xs text-foreground/50 font-medium">{activeCount} đang hoạt động</p>
+                    </div>
+                    <span className="text-xs font-bold text-primary uppercase tracking-wider mt-4 group-hover:underline">
+                        Tham gia ngay →
                     </span>
-                </div>
-            </Card>
+                </Card>
+            </Link>
         </div>
     );
 }

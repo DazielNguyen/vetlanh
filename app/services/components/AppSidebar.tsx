@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, Dumbbell, MessageSquare, PanelLeftClose, PanelLeftOpen, Settings, LogOut, Brain, BookOpen, Headphones, User, ShieldCheck, Smile, NotebookPen, ClipboardList, type LucideIcon } from "lucide-react";
+import { Home, Dumbbell, MessageSquare, PanelLeftClose, PanelLeftOpen, Settings, LogOut, Brain, BookOpen, Headphones, User, ShieldCheck, Smile, NotebookPen, ClipboardList, Users, type LucideIcon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useBadgesData } from "@/hooks/useBadges";
 import { usePathname } from "next/navigation";
@@ -30,6 +30,7 @@ const navItems: Array<{ title: string; url: string; icon: LucideIcon; exact: boo
     { title: "Đánh giá", url: "/services/assessment", icon: ClipboardList, exact: false },
     { title: "An toàn", url: "/services/safety-plan", icon: ShieldCheck, exact: false },
     { title: "Thư viện", url: "/services/library", icon: BookOpen, exact: false, tourId: "library", requiredLevel: 3 },
+    { title: "Cộng đồng", url: "/services/community", icon: Users, exact: false, requiredLevel: 5 },
     { title: "Hồ sơ", url: "/services/profile", icon: User, exact: false },
     { title: "Cài đặt", url: "/services/settings", icon: Settings, exact: false, tourId: "settings" },
 ];

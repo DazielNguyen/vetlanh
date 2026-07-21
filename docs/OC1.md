@@ -110,7 +110,21 @@ Route: `/services/library`
 
 Curated articles, guides, and educational content on mental health topics. Admin-managed. Accessible from the dashboard.
 
-### 2.9 Subscription / Upgrade (Nâng cấp Pro)
+### 2.9 Community 1-1 Matching (Cộng đồng ẩn danh)
+Route: `/services/community`
+
+Opt-in anonymous peer-to-peer 1-1 matching at Level 5+. Users are paired with another anonymous user and can exchange plain-text messages. Both parties see only an anonymized handle (e.g., "Người bạn ẩn danh #A3F2") — never real names, emails, or avatars. 
+
+**Safety & Moderation:**
+- Report/block/exit controls always visible during a match
+- Reporting immediately exits the reporter and creates an entry in the admin queue with an 8-hour review SLA
+- Blocking prevents re-matching between the two parties for a cooldown period
+- Blocked parties receive a neutral message (not informed they were blocked) to reduce retaliation risk
+- Real-time updates via SignalR (`ReceiveCommunityMatch`, `CommunityMatchEnded`, `ReceiveCommunityMessage`)
+
+All anonymization and pairing logic is backend-owned.
+
+### 2.10 Subscription / Upgrade (Nâng cấp Pro)
 Route: `/services/upgrade`
 
 Manual bank transfer payment flow:
@@ -168,6 +182,7 @@ Landing Page (/)
         ├── Bài tập → /services/exercises
         ├── Âm thanh → /services/sounds
         ├── Thư viện → /services/library
+        ├── Cộng đồng → /services/community
         ├── Hồ sơ → /services/profile
         └── Cài đặt → /services/settings
 ```
@@ -252,7 +267,21 @@ Two tabs:
 
 Create, edit, and delete content library articles. Controls what appears in `/services/library`.
 
-### 4.6 Error Reports (`/admin/errors`)
+### 4.6 Community Reports Moderation (`/admin/community-reports`)
+
+Moderation queue for reported matches from `/services/community`. Each report includes:
+- Anonymized handles of both parties (reporter and reported)
+- Report reason (if provided by user)
+- Timestamp and 8-hour SLA deadline (auto-computed by backend)
+
+Admin actions per report:
+- **Warn** — mark resolved and issue a warning to the reported user
+- **Unmatch** — mark resolved and force-end the associated match (if still active); both parties receive `CommunityMatchEnded` via SignalR
+- **Ban** — mark resolved and permanently ban the reported user from the community-matching feature
+
+Reports can be filtered by status (`open` or `resolved`). SLA overdue reports are highlighted to prioritize urgent reviews.
+
+### 4.7 Error Reports (`/admin/errors`)
 
 System error log — users can submit bug reports from the app. Admin reviews, triages by severity (HIGH / MEDIUM / LOW).
 
@@ -309,8 +338,10 @@ Key endpoint groups:
 - `api/v1/safety-plan` — upsert safety plan
 - `api/v1/subscriptions` — subscription requests
 - `api/v1/checkins` — proactive wellness check-ins (pending fetch, dismiss tracking)
+- `api/v1/community` — anonymous peer-to-peer matching (opt-in, messages, exit/block/report)
+- `api/v1/admin/community` — admin moderation queue (reports list, warn/unmatch/ban actions)
 - `api/v1/dashboard/personalized-recommendation` — AI-derived recommendation for dashboard (cached 24h)
-- `POST /hubs/app` (SignalR) — realtime events including `ReceiveProactiveCheckIn`
+- `POST /hubs/app` (SignalR) — realtime events including `ReceiveProactiveCheckIn`, `ReceiveCommunityMatch`, `CommunityMatchEnded`, `ReceiveCommunityMessage`
 
 ### 5.5 Theme System
 
